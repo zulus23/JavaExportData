@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Готэк",
+    "NameInDB": "ait_db",
+    "NameinAxapta": "г01"
+  },
+  {
+    "Name": "Готэк-ЦПУ",
+    "NameInDB": "ait_cpu",
+    "NameinAxapta": "г05"
+  },
+  {
+    "Name": "Готэк-Инвест",
+    "NameInDB": "g_invst",
+    "NameinAxapta": "г05"
+  }
+]
