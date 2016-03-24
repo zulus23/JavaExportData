@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 /**
  * Created by Gukov on 24.03.2016.
  */
+
 public class BaseApplicationController implements Initializable {
 
     private ResourceBundle resourceBundle;
