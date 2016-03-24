@@ -21,6 +21,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
@@ -61,6 +62,7 @@ public class ApplicationController  {
     public void createApplicationWindow(){
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
+            fxmlAppLoader.setResources(ResourceBundle.getBundle("ru.zhukov.base.BasicApplication", Locale.getDefault()));
             //LoginController loginController = fxmlLoginLoader.getController();
             VBox app = fxmlAppLoader.load();
             Stage stage = new Stage();
