@@ -1,31 +1,28 @@
 package ru.zhukov;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import ru.zhukov.base.BaseApplicationController;
 import ru.zhukov.domain.Database;
-import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.login.LoginController;
 import ru.zhukov.service.DBAuthenticationService;
 
+import javax.swing.*;
 import java.io.IOException;
-import java.net.URLClassLoader;
-import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Zhukov on 18.03.2016.
@@ -35,6 +32,7 @@ public class ApplicationController  {
 
     private Stage loginStage;
     private LoginController loginController;
+    private BaseApplicationController baseWindowController;
     public void createLoginWindow(){
         try {
 
@@ -63,9 +61,22 @@ public class ApplicationController  {
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
             fxmlAppLoader.setResources(ResourceBundle.getBundle("ru.zhukov.base.BasicApplication", Locale.getDefault()));
-            //LoginController loginController = fxmlLoginLoader.getController();
+            baseWindowController = new BaseApplicationController();
+            fxmlAppLoader.setController(baseWindowController);
             VBox app = fxmlAppLoader.load();
             Stage stage = new Stage();
+            stage.setOnCloseRequest(e -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
+                alert.setTitle("Внимание");
+                alert.setHeaderText("Закрыть программу");
+                alert.showAndWait().ifPresent(response ->{
+                    if(response== ButtonType.CANCEL){
+                        e.consume();
+                    }
+                });
+
+
+            });
             stage.initOwner(null);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setMaximized(true);
