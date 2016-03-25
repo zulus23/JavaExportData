@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: sqljdbc42.jar gson-2.6.2.jar controlsfx-8.40.10.jar gson-2
+ .6.2-javadoc.jar gson-2.6.2-sources.jar controlsfx-8.40.10-javadoc.ja
+ r controlsfx-8.40.10-sources.jar controlsfx-8.40.10.jar sqljdbc42.jar
+  gson-2.6.2.jar
+Main-Class: ru.zhukov.bootstrap.BootstrapApplication
+

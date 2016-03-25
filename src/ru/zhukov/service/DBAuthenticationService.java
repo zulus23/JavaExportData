@@ -34,12 +34,8 @@ public class DBAuthenticationService implements Authentication {
     public CompletableFuture<CurrentUser> authentication(String username, String password, Database database) {
 
         return checkLogin(username, password, database).thenApply(u-> {
-
-            if(!u.getUsername().isEmpty()  ){
-              return  u;
-            } else {
-                return null;
-            }
+            u.ifPresent( e ->  currentUser =new CurrentUser(e.getUsername(),e.getDatabase()));
+            return currentUser;
 
         });
 
@@ -47,7 +43,7 @@ public class DBAuthenticationService implements Authentication {
 
     }
 
-    private CompletableFuture<CurrentUser> checkLogin(String username, String password, Database database){
+    private CompletableFuture<Optional<CurrentUser>> checkLogin(String username, String password, Database database){
         return  CompletableFuture.supplyAsync(()-> {
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setDatabaseName(database.getNameInDB());
@@ -57,11 +53,11 @@ public class DBAuthenticationService implements Authentication {
                     sqlServerDataSource.setPassword(password);
                     try (Connection connection = sqlServerDataSource.getConnection()) {
 
-                        currentUser = new CurrentUser(username, database);
-                        return  currentUser;
+
+                        return  Optional.of(new CurrentUser(username, database));
                     } catch (SQLException e) {
 
-                        return new CurrentUser("",null);
+                        return  Optional.empty();
 
                     }
                 }
