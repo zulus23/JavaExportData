@@ -51,7 +51,7 @@ public class ApplicationController  {
             loginStage.setResizable(false);
             loginStage.setTitle("Передача данных из АиТ");
             Scene scene = new Scene(login);
-            loginStage.getIcons().add(new Image(getClass().getResource("res/proforma-to_employee.png").toExternalForm()));
+            loginStage.getIcons().add(new Image(getClass().getResource("/ru/zhukov/assests/image/proforma-to_employee.png").toExternalForm()));
             loginStage.setScene(scene);
             loginStage.show();
         }catch(IOException ex){
@@ -61,16 +61,16 @@ public class ApplicationController  {
     public void createApplicationWindow(){
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
-            fxmlAppLoader.setResources(ResourceBundle.getBundle("ru/zhukov/base/BasicApplication", Locale.getDefault()));
+            fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
             baseWindowController = new BasicApplicationController();
             fxmlAppLoader.setController(baseWindowController);
             VBox app = fxmlAppLoader.load();
             Stage stage = new Stage();
-            stage.setOnCloseRequest(Action.exit);
+            stage.setOnCloseRequest(Action::exit);
             stage.initOwner(null);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setMaximized(true);
-            stage.getIcons().add(new Image(getClass().getResource("res/proforma-to_employee.png").toExternalForm()));
+            stage.getIcons().add(new Image(getClass().getResource("/ru/zhukov/assests/image/proforma-to_employee.png").toExternalForm()));
             Scene scene = new Scene(app);
             stage.setTitle("Передача данных из АиТ");
 

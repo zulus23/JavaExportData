@@ -45,13 +45,21 @@ public class DBAuthenticationService implements Authentication {
 
     private CompletableFuture<Optional<CurrentUser>> checkLogin(String username, String password, Database database){
         return  CompletableFuture.supplyAsync(()-> {
+                   /*
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setDatabaseName(database.getNameInDB());
                     sqlServerDataSource.setServerName("SRV-SQLBOX");
                     sqlServerDataSource.setInstanceName("AIT");
                     sqlServerDataSource.setUser(username);
+                    sqlServerDataSource.setPassword(password);*/
+                    SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
+                    sqlServerDataSource.setDatabaseName(database.getNameInDB());
+                    sqlServerDataSource.setServerName("Zhukov-PC");
+                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");
+                    sqlServerDataSource.setUser(username);
                     sqlServerDataSource.setPassword(password);
-                    try (Connection connection = sqlServerDataSource.getConnection()) {
+
+            try (Connection connection = sqlServerDataSource.getConnection()) {
 
 
                         return  Optional.of(new CurrentUser(username, database));

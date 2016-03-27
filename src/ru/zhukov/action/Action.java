@@ -14,7 +14,7 @@ import javafx.stage.WindowEvent;
  */
 public class Action {
 
-   public static  EventHandler exit = (e) -> {
+  /* private static  EventHandler exitEvent = (e) -> {
        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
        alert.setTitle("Внимание");
        alert.setHeaderText("Закрыть программу");
@@ -29,4 +29,21 @@ public class Action {
 
        });
     };
+
+*/
+    public static <T extends Event> void exit(T actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
+        alert.setTitle("Внимание");
+        alert.setHeaderText("Закрыть программу");
+        alert.showAndWait().ifPresent(response ->{
+            if(response== ButtonType.CANCEL && actionEvent.getEventType().getName()== WindowEvent.WINDOW_CLOSE_REQUEST.getName()){
+                actionEvent.consume();
+
+            }
+            if(response== ButtonType.OK && actionEvent.getEventType().getName() == ActionEvent.ACTION.getName()){
+                Platform.exit();
+            }
+
+        });
+    }
 }

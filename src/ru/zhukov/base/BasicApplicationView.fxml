@@ -18,7 +18,7 @@
       <menus>
         <Menu mnemonicParsing="false" text="%menu.title.file">
           <items>
-            <MenuItem mnemonicParsing="false" text="%menu.title.new" />
+            <MenuItem fx:id="miNewDocument" mnemonicParsing="false" text="%menu.title.new" />
             <MenuItem mnemonicParsing="false" text="%menu.title.open" />
             <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
@@ -27,9 +27,11 @@
             <MenuItem mnemonicParsing="false" text="Save As…" />
             <MenuItem mnemonicParsing="false" text="Revert" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <MenuItem fx:id="miPrintDocument" mnemonicParsing="false" text="%menu.title.print" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="%menu.title.quit" />
+            <MenuItem fx:id="miPreferences" mnemonicParsing="false" text="%menu.title.preferences" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="miExit" mnemonicParsing="false" text="%menu.title.quit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">

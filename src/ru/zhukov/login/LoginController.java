@@ -76,7 +76,8 @@ public class LoginController  implements Initializable{
         cNameEnterprise.setOnAction(e -> valueChanged(cNameEnterprise));
         cNameEnterprise.getSelectionModel().selectedItemProperty().addListener(this::enterpriseChanged);
         cNameEnterprise.getSelectionModel().selectFirst();
-        BooleanBinding booleanBinding = Bindings.or(tUserName.textProperty().isEmpty(),tPassword.textProperty().isEmpty()).or(cNameEnterprise.getSelectionModel().selectedItemProperty().isNull());
+        BooleanBinding booleanBinding = Bindings.or(tUserName.textProperty().isEmpty(),tPassword.textProperty().isEmpty())
+                                                .or(cNameEnterprise.getSelectionModel().selectedItemProperty().isNull());
         bLogin.disableProperty().bind(booleanBinding);
         bCancelLogin.setOnAction(event -> Platform.exit());
         bLogin.setOnAction(e -> eventLoginAction(e));
