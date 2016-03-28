@@ -1,4 +1,4 @@
-package ru.zhukov.dao;
+package ru.zhukov.repository;
 
 import ru.zhukov.domain.AccountRecord;
 
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Gukov on 28.03.2016.
  */
-public interface AccountDao {
+public interface AccountRepository {
 
     List<AccountRecord> listAccountRecords();
 

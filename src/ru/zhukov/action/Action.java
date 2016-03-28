@@ -3,15 +3,12 @@ package ru.zhukov.action;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.zhukov.config.ApplicationContextConfig;
-import ru.zhukov.dao.AccountDao;
-import ru.zhukov.dao.JDBCAccountDao;
+import ru.zhukov.repository.JDBCAccountRepository;
 
 import javax.sql.DataSource;
 
@@ -58,7 +55,7 @@ public class Action {
         try(AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class)) {
 
             DataSource  dataSource = (DataSource) context.getBean("dataSource");
-            JDBCAccountDao accountDao = new JDBCAccountDao();
+            JDBCAccountRepository accountDao = new JDBCAccountRepository();
             accountDao.setDataSource(dataSource);
 
             System.out.println(accountDao.listAccountRecords().size());

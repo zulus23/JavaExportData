@@ -1,9 +1,11 @@
-package ru.zhukov.dao;
+package ru.zhukov.repository;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import ru.zhukov.domain.AccountRecord;
 
 import javax.sql.DataSource;
@@ -16,10 +18,12 @@ import java.util.Map;
 /**
  * Created by Gukov on 28.03.2016.
  */
-public class JDBCAccountDao implements AccountDao,InitializingBean {
+@Repository
+public class JDBCAccountRepository implements AccountRepository,InitializingBean {
     private DataSource dataSource;
     private NamedParameterJdbcTemplate jdbcTemplate;
 
+    @Autowired
     public void setDataSource(DataSource dataSource){
         this.dataSource = dataSource;
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
