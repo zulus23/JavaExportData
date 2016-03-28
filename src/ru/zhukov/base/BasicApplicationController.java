@@ -47,7 +47,7 @@ public class BasicApplicationController implements Initializable {
 
         //preferencesButton.setTooltip(new Tooltip("Выход из приложения"));
         //preferencesButton.setOnAction(Action::exit);
-
+        preferencesButton.setOnAction(Action::createAccountRecord);
 
 
 

@@ -14,6 +14,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Created by Zhukov on 22.03.2016.
@@ -25,6 +27,8 @@ public class DBAuthenticationService implements Authentication {
 
     private CompletableFuture login;
 
+
+
     public DBAuthenticationService() {
 
     }
@@ -34,7 +38,7 @@ public class DBAuthenticationService implements Authentication {
     public CompletableFuture<CurrentUser> authentication(String username, String password, Database database) {
 
         return checkLogin(username, password, database).thenApply(u-> {
-            u.ifPresent( e ->  currentUser =new CurrentUser(e.getUsername(),e.getDatabase()));
+            u.ifPresent( e ->  currentUser =new CurrentUser(e.getUsername(),e.getPassword(),e.getDatabase()));
             return currentUser;
 
         });
@@ -44,31 +48,53 @@ public class DBAuthenticationService implements Authentication {
     }
 
     private CompletableFuture<Optional<CurrentUser>> checkLogin(String username, String password, Database database){
-        return  CompletableFuture.supplyAsync(()-> {
+        return  CompletableFuture.supplyAsync(getConnectSupplier(username, password, database)
+        );
+    }
+
+    private Supplier<Optional<CurrentUser>> getConnectSupplier(String username, String password, Database database) {
+        return ()-> {
+            SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
+            sqlServerDataSource.setDatabaseName(database.getNameInDB());
+            System.getenv().entrySet().stream().filter(e -> e.getKey().contains("HOSTNAME")|| e.getKey().contains("COMPUTERNAME"))
+                           .map(e->e.getValue())
+                           .findFirst().ifPresent(e -> {
+                if (e.toUpperCase().contains("Zhukov-PC".toUpperCase())) {
+                    sqlServerDataSource.setServerName("Zhukov-PC");
+                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");
+
+
+                }
+                if (e.toUpperCase().contains("Zhukov-W7".toUpperCase())) {
+                    sqlServerDataSource.setServerName("SRV-SQLBOX");
+                    sqlServerDataSource.setInstanceName("AIT");
+
+                }});
+
                    /*
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setDatabaseName(database.getNameInDB());
                     sqlServerDataSource.setServerName("SRV-SQLBOX");
                     sqlServerDataSource.setInstanceName("AIT");
                     sqlServerDataSource.setUser(username);
-                    sqlServerDataSource.setPassword(password);*/
+                    sqlServerDataSource.setPassword(password);
                     SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
                     sqlServerDataSource.setDatabaseName(database.getNameInDB());
                     sqlServerDataSource.setServerName("Zhukov-PC");
-                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");
+                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");*/
                     sqlServerDataSource.setUser(username);
                     sqlServerDataSource.setPassword(password);
+
 
             try (Connection connection = sqlServerDataSource.getConnection()) {
 
 
-                        return  Optional.of(new CurrentUser(username, database));
+                        return  Optional.of(new CurrentUser(username, password,database));
                     } catch (SQLException e) {
 
                         return  Optional.empty();
 
                     }
-                }
-        );
+                };
     }
 }

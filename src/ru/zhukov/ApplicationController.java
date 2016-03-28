@@ -8,6 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
 import ru.zhukov.domain.Database;
@@ -25,6 +27,7 @@ import java.util.ResourceBundle;
 /**
  * Created by Zhukov on 18.03.2016.
  */
+@Configuration
 public class ApplicationController  {
     private static final ApplicationController applicationController = new ApplicationController();
 
@@ -118,6 +121,11 @@ public class ApplicationController  {
     public String exceptionReporter(Throwable t) {
         loginController.setTextError(t.getMessage());
         return t.getMessage();
+    }
+
+    @Bean
+    public CurrentUser currentUser(){
+        return  applicationController.currentUser;
     }
 
 

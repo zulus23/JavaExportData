@@ -8,6 +8,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.zhukov.config.ApplicationContextConfig;
+import ru.zhukov.dao.AccountDao;
+import ru.zhukov.dao.JDBCAccountDao;
+
+import javax.sql.DataSource;
 
 /**
  * Created by Gukov on 25.03.2016.
@@ -46,4 +52,19 @@ public class Action {
 
         });
     }
+
+    public static void createAccountRecord(ActionEvent event){
+
+        try(AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class)) {
+
+            DataSource  dataSource = (DataSource) context.getBean("dataSource");
+            JDBCAccountDao accountDao = new JDBCAccountDao();
+            accountDao.setDataSource(dataSource);
+
+            System.out.println(accountDao.listAccountRecords().size());
+
+        }
+
+    }
+
 }

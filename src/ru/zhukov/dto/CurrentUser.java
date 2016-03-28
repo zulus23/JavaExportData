@@ -14,14 +14,23 @@ public class CurrentUser {
     @NotNull
     private Database database;
 
+    private String password;
 
-    public CurrentUser(String username, Database database){
+
+
+
+    public CurrentUser(String username, String password, Database database){
         this.username = username;
+        this.password = password;
         this.database = database;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public Database getDatabase() {
