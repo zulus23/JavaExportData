@@ -2,13 +2,17 @@ package ru.zhukov.service;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.repository.AccountRepository;
 
 /**
  * Created by Gukov on 29.03.2016.
  */
+
 public class AccountRecordDataService {
+
+  @Autowired
   private AccountRepository accountRepository;
 
 
@@ -17,6 +21,9 @@ public class AccountRecordDataService {
   }
 
   public ObservableList<AccountRecord> accountRecordList() {
+
+
+
         ObservableList<AccountRecord> accountRecords = FXCollections.observableArrayList();
         accountRecords.addAll(accountRepository.listAccountRecords());
 
