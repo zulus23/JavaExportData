@@ -64,24 +64,15 @@ public class DBAuthenticationService implements Authentication {
                     sqlServerDataSource.setInstanceName("MSSQLSERVER2012");
 
 
-                }
-                if (e.toUpperCase().contains("Zhukov-W7".toUpperCase())) {
+                } else
+                 {
                     sqlServerDataSource.setServerName("SRV-SQLBOX");
                     sqlServerDataSource.setInstanceName("AIT");
+                   // sqlServerDataSource.setPortNumber(14333);
 
                 }});
 
-                   /*
-                    SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
-                    sqlServerDataSource.setDatabaseName(database.getNameInDB());
-                    sqlServerDataSource.setServerName("SRV-SQLBOX");
-                    sqlServerDataSource.setInstanceName("AIT");
-                    sqlServerDataSource.setUser(username);
-                    sqlServerDataSource.setPassword(password);
-                    SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
-                    sqlServerDataSource.setDatabaseName(database.getNameInDB());
-                    sqlServerDataSource.setServerName("Zhukov-PC");
-                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");*/
+
                     sqlServerDataSource.setUser(username);
                     sqlServerDataSource.setPassword(password);
 

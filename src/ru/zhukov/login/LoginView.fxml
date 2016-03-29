@@ -16,19 +16,19 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="pLoginWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="283.0" prefWidth="399.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="pLoginWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="265.0" prefWidth="351.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox prefHeight="283.0" prefWidth="399.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Group VBox.vgrow="NEVER">
+                  <Group>
                      <children>
-                        <Region prefHeight="77.0" prefWidth="410.0" style="-fx-background-color: #E57373;" />
+                        <Region prefHeight="77.0" prefWidth="365.0" style="-fx-background-color: #E57373;" />
                         <Label fx:id="tError" layoutX="43.0" layoutY="15.0" prefHeight="48.0" prefWidth="201.0" text="Label" visible="false" />
                      </children>
                   </Group>
-                  <GridPane alignment="CENTER" prefHeight="129.0" prefWidth="417.0">
+                  <GridPane alignment="CENTER" prefHeight="107.0" prefWidth="365.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -49,12 +49,12 @@
                               <Insets left="20.0" right="20.0" />
                            </GridPane.margin>
                         </TextField>
-                        <Label prefHeight="17.0" prefWidth="103.0" text="Пароль" GridPane.rowIndex="1">
+                        <Label prefHeight="17.0" prefWidth="88.0" text="Пароль" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="20.0" />
                            </GridPane.margin>
                         </Label>
-                        <PasswordField fx:id="tPassword" prefHeight="25.0" prefWidth="227.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <PasswordField fx:id="tPassword" prefHeight="25.0" prefWidth="204.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets left="20.0" right="20.0" />
                            </GridPane.margin>
@@ -64,7 +64,7 @@
                               <Insets left="20.0" />
                            </GridPane.margin>
                         </Label>
-                        <ComboBox fx:id="cNameEnterprise" prefHeight="25.0" prefWidth="246.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                        <ComboBox fx:id="cNameEnterprise" prefHeight="25.0" prefWidth="226.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets right="20.0" />
                            </GridPane.margin>
@@ -74,17 +74,14 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </GridPane>
-                  <HBox spacing="25.0">
+                  <HBox prefHeight="31.0" prefWidth="338.0" spacing="20.0">
                      <children>
                         <Button id="bCancelLogin" fx:id="bCancelLogin" cancelButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" style="-fx-background-color: #FFCC80;" text="Отмена" />
                         <Button id="bLogin" fx:id="bLogin" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" style="-fx-background-color: #FFCC80;" text="Логин" />
                      </children>
                      <VBox.margin>
-                        <Insets top="15.0" />
+                        <Insets left="120.0" top="15.0" />
                      </VBox.margin>
-                     <padding>
-                        <Insets left="158.0" />
-                     </padding>
                   </HBox>
                </children>
             </VBox>

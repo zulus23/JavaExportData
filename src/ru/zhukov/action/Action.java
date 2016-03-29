@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.WindowEvent;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.zhukov.ApplicationController;
 import ru.zhukov.config.ApplicationContextConfig;
 import ru.zhukov.repository.JDBCAccountRepository;
 
@@ -64,4 +65,7 @@ public class Action {
 
     }
 
+    public static void showAccountRecord(ActionEvent actionEvent) {
+        ApplicationController.getInstance().showAccountRecord();
+    }
 }

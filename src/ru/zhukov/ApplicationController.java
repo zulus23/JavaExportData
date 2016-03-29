@@ -3,6 +3,8 @@ package ru.zhukov;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -10,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
 import ru.zhukov.domain.Database;
@@ -99,7 +102,7 @@ public class ApplicationController  {
                Platform.runLater(()-> exceptionReporter(new SQLException("Ошибка базы данных")));
            } else{
                currentUser = (CurrentUser) user;
-               System.out.println(currentUser.getUsername());
+
                Platform.runLater(()->this.createApplicationWindow());
            }
             return "";
@@ -121,6 +124,36 @@ public class ApplicationController  {
     public String exceptionReporter(Throwable t) {
         loginController.setTextError(t.getMessage());
         return t.getMessage();
+    }
+
+    public void  showAccountRecord(){
+        try {
+            FXMLLoader fxmlAccountLoader = new FXMLLoader(ApplicationController.class.getResource("/ru/zhukov/account/AccountRecordView.fxml"));
+            TabPane tabPane =applicationController.baseWindowController.getTpWindowContainer();
+            AccountRecordController accountRecordController = new AccountRecordController();
+            fxmlAccountLoader.setController(accountRecordController);
+
+            AnchorPane app = fxmlAccountLoader.load();
+          //  app.setMinWidth(tabPane.getTabMaxWidth());
+           // app.setMinHeight(tabPane.getTabMaxHeight());
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(app, 0.0);
+            AnchorPane.setLeftAnchor(app, 0.0);
+            AnchorPane.setRightAnchor(app, 0.0);
+            AnchorPane.setBottomAnchor(app, 0.0);
+
+            anchorPane.getChildren().add(app);
+
+            Tab tabAccount = new Tab();
+
+            tabAccount.setText("Проводки за период...");
+            tabAccount.setContent(anchorPane);
+
+            tabPane.getTabs().addAll(tabAccount);
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
     }
 
     @Bean
