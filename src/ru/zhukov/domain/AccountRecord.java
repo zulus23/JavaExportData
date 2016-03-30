@@ -6,13 +6,27 @@ package ru.zhukov.domain;
  */
 public class AccountRecord {
 
+    private String department;
     private String employee;
     private String debit;
     private String credit;
     private Double summa;
+    private String costItem;
+    private String objectId;
+    private String taxArticle;
+    private String cfo;
+
     private int  year;
     private int month;
     private String description;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public String getEmployee() {
         return employee;
@@ -44,6 +58,38 @@ public class AccountRecord {
 
     public void setSumma(Double summa) {
         this.summa = summa;
+    }
+
+    public String getCostItem() {
+        return costItem;
+    }
+
+    public void setCostItem(String costItem) {
+        this.costItem = costItem;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getTaxArticle() {
+        return taxArticle;
+    }
+
+    public void setTaxArticle(String taxArticle) {
+        this.taxArticle = taxArticle;
+    }
+
+    public String getCfo() {
+        return cfo;
+    }
+
+    public void setCfo(String cfo) {
+        this.cfo = cfo;
     }
 
     public int getYear() {

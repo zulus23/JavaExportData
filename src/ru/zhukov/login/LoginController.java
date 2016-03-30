@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.controlsfx.control.MaskerPane;
 
@@ -24,6 +25,7 @@ import ru.zhukov.utils.ReadFileWithDatabase;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -108,6 +110,10 @@ public class LoginController  implements Initializable{
            tError.setText(s);
 
     }
+    public void close(){
+        Optional.of(this.bLogin).map(e -> (Stage)e.getScene().getWindow()).ifPresent(e ->e.close());
+    }
+
 
     class  DatabaseStringConverter extends StringConverter<Database>{
 
@@ -130,6 +136,8 @@ public class LoginController  implements Initializable{
     public void enterpriseChanged(ObservableValue<? extends Database> observableValue, Database oldValue, Database newValue){
        currenSelect = cNameEnterprise.getValue();
     }
+
+
 }
 
 

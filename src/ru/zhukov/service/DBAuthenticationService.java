@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.service.auth.Authentication;
+import ru.zhukov.utils.ApplicationUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -56,22 +57,8 @@ public class DBAuthenticationService implements Authentication {
         return ()-> {
             SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
             sqlServerDataSource.setDatabaseName(database.getNameInDB());
-            System.getenv().entrySet().stream().filter(e -> e.getKey().contains("HOSTNAME")|| e.getKey().contains("COMPUTERNAME"))
-                           .map(e->e.getValue())
-                           .findFirst().ifPresent(e -> {
-                if (e.toUpperCase().contains("Zhukov-PC".toUpperCase())) {
-                    sqlServerDataSource.setServerName("Zhukov-PC");
-                    sqlServerDataSource.setInstanceName("MSSQLSERVER2012");
 
-
-                } else
-                 {
-                    sqlServerDataSource.setServerName("SRV-SQLBOX");
-                    sqlServerDataSource.setInstanceName("AIT");
-                   // sqlServerDataSource.setPortNumber(14333);
-
-                }});
-
+            sqlServerDataSource = ApplicationUtils.setupServerAndHostDb(new CurrentUser(username,password,database),sqlServerDataSource);
 
                     sqlServerDataSource.setUser(username);
                     sqlServerDataSource.setPassword(password);

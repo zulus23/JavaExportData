@@ -53,19 +53,9 @@ public class Action {
 
     public static void createAccountRecord(ActionEvent event){
 
-        try(AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfig.class)) {
 
-            DataSource  dataSource = (DataSource) context.getBean("dataSource");
-            JDBCAccountRepository accountDao = new JDBCAccountRepository();
-            accountDao.setDataSource(dataSource);
-
-            System.out.println(accountDao.listAccountRecords().size());
-
-        }
 
     }
 
-    public static void showAccountRecord(ActionEvent actionEvent) {
-        ApplicationController.getInstance().showAccountRecord();
-    }
+
 }

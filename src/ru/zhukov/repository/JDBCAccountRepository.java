@@ -23,16 +23,18 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
     private DataSource dataSource;
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public void setDataSource(DataSource dataSource){
+    public JDBCAccountRepository(DataSource dataSource){
         this.dataSource = dataSource;
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcTemplate = jdbcTemplate;
     }
-    @Override
-    public List<AccountRecord> listAccountRecords() {
 
-        String queryAccount = "SELECT  B.CREDIT, B.DEBET, B.TEXT, B.MES, B.ZATR, B.XCHECK, X.MNEMOKOD, " +
+
+    @Override
+    public List<AccountRecord> listAccountRecordsByMonthAndYear(int month, int year) {
+
+        String queryAccount = "SELECT  (RTrim(x.brief_name)+' '+RTRIM(x.naz_otd)) AS Otdel," +
+                              " RTRIM(B.CREDIT) as credit, RTRIM(B.DEBET) as debit, B.TEXT, B.MES, B.ZATR, B.XCHECK, X.MNEMOKOD as cfo, " +
                               " (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name)) AS employee, " +
                               " AP9 AS MESPROVOD, AP10 AS YEARPROVOD, AP1 AS OBJECT, AP7 AS NALOG, B.SUMMA, B.idKey " +
                               " FROM PROVOD_BO B " +
@@ -41,8 +43,8 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
                               " WHERE  B.AP9 = :VMES AND  B.AP10 = :VYEAR " +
                               " AND B.SUMMA <> 0";
         Map<String,Object> nameParameters = new HashMap<>();
-        nameParameters.put("VMES",10);
-        nameParameters.put("VYEAR",2011);
+        nameParameters.put("VMES",month);
+        nameParameters.put("VYEAR",year);
 
          return jdbcTemplate.query(queryAccount,nameParameters, new AccountRecordMapper());
 
@@ -58,11 +60,16 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
         @Override
         public AccountRecord mapRow(ResultSet resultSet, int i) throws SQLException {
             AccountRecord accountRecord = new AccountRecord();
+            accountRecord.setDepartment(resultSet.getString("Otdel"));
             accountRecord.setEmployee(resultSet.getString("employee"));
-            accountRecord.setDebit(resultSet.getString("debet"));
+            accountRecord.setDebit(resultSet.getString("debit"));
             accountRecord.setCredit(resultSet.getString("credit"));
             accountRecord.setSumma(resultSet.getDouble("summa"));
             accountRecord.setDescription(resultSet.getString("text"));
+            accountRecord.setCostItem(resultSet.getString("zatr"));
+            accountRecord.setObjectId(resultSet.getString("object"));
+            accountRecord.setTaxArticle(resultSet.getString("nalog"));
+            accountRecord.setCfo(resultSet.getString("cfo"));
             return accountRecord;
         }
     }

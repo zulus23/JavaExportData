@@ -15,9 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
+import ru.zhukov.config.ApplicationContextConfig;
 import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.login.LoginController;
+import ru.zhukov.repository.AccountRepository;
+import ru.zhukov.repository.JDBCAccountRepository;
+import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.DBAuthenticationService;
 
 import java.io.IOException;
@@ -34,10 +38,19 @@ import java.util.ResourceBundle;
 public class ApplicationController  {
     private static final ApplicationController applicationController = new ApplicationController();
 
-    private Stage loginStage;
+    //private Stage loginStage;
     private LoginController loginController;
     private BasicApplicationController baseWindowController;
     private CurrentUser currentUser;
+
+    private AccountRepository accountRepository;
+
+    private AccountRecordDataService getDataService(){
+        accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser));
+
+         return new AccountRecordDataService(accountRepository);
+    }
+
 
 
     public void createLoginWindow(){
@@ -51,7 +64,7 @@ public class ApplicationController  {
           ///  loginController.setMainController(applicationController);
 
 
-            loginStage = new Stage();
+            Stage loginStage = new Stage();
             loginStage.initOwner(null);
             loginStage.initModality(Modality.APPLICATION_MODAL);
             loginStage.setResizable(false);
@@ -68,7 +81,7 @@ public class ApplicationController  {
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
             fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
-            baseWindowController = new BasicApplicationController();
+            baseWindowController = new BasicApplicationController(this.getDataService());
             fxmlAppLoader.setController(baseWindowController);
             VBox app = fxmlAppLoader.load();
             Stage stage = new Stage();
@@ -82,7 +95,7 @@ public class ApplicationController  {
 
             stage.setScene(scene);
             stage.show();
-            loginStage.close();
+            loginController.close();
         }catch(IOException ex){
             ex.printStackTrace();
         }
@@ -117,20 +130,17 @@ public class ApplicationController  {
 
     }
 
-    private Stage getLoginStage(){
-        return  loginStage;
-    }
 
     public String exceptionReporter(Throwable t) {
         loginController.setTextError(t.getMessage());
         return t.getMessage();
     }
 
-    public void  showAccountRecord(){
+    /*public void  showAccountRecord(){
         try {
             FXMLLoader fxmlAccountLoader = new FXMLLoader(ApplicationController.class.getResource("/ru/zhukov/account/AccountRecordView.fxml"));
             TabPane tabPane =applicationController.baseWindowController.getTpWindowContainer();
-            AccountRecordController accountRecordController = new AccountRecordController();
+            AccountRecordController accountRecordController = new AccountRecordController(this.getDataService());
             fxmlAccountLoader.setController(accountRecordController);
 
             AnchorPane app = fxmlAccountLoader.load();
@@ -155,12 +165,12 @@ public class ApplicationController  {
             ex.printStackTrace();
         }
     }
-
-    @Bean
+*/
+  /*  @Bean
     public CurrentUser currentUser(){
         return  applicationController.currentUser;
     }
-
+*/
 
 
 

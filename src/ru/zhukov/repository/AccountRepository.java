@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface AccountRepository {
 
-    List<AccountRecord> listAccountRecords();
+    List<AccountRecord> listAccountRecordsByMonthAndYear(int month, int year);
 
 }

@@ -1,15 +1,23 @@
 package ru.zhukov.base;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+import ru.zhukov.ApplicationController;
+import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
+import ru.zhukov.service.AccountRecordDataService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,9 +44,11 @@ public class BasicApplicationController implements Initializable {
     @FXML
     private MenuItem miPrintDocument;
 
-    public TabPane getTpWindowContainer() {
+   /* public TabPane getTpWindowContainer() {
         return tpWindowContainer;
     }
+*/
+
 
     @FXML
     private TabPane tpWindowContainer;
@@ -46,6 +56,13 @@ public class BasicApplicationController implements Initializable {
 
 
     private DatePicker datePicker;
+    private AccountRecordDataService dataService;
+    private int month;
+    private int year;
+
+    public BasicApplicationController(AccountRecordDataService dataService){
+        this.dataService = dataService;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -63,7 +80,7 @@ public class BasicApplicationController implements Initializable {
         createAccountRecordButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
         Button showAccountRecordView = new Button();
         showAccountRecordView.setText("Проводки");
-        showAccountRecordView.setOnAction(Action::showAccountRecord);
+        showAccountRecordView.setOnAction(this::showAccountRecordView);
 
 
         //preferencesButton.setTooltip(new Tooltip("Выход из приложения"));
@@ -102,6 +119,40 @@ public class BasicApplicationController implements Initializable {
 
     }
 
+    public void  showAccountRecordView(ActionEvent event){
+        try {
+            month = datePicker.getValue().getMonthValue();
+            year = datePicker.getValue().getYear();
+            FXMLLoader fxmlAccountLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/AccountRecordView.fxml"));
+
+            AccountRecordController accountRecordController = new AccountRecordController(dataService,month,year);
+            fxmlAccountLoader.setController(accountRecordController);
+
+            AnchorPane app = fxmlAccountLoader.load();
+            //  app.setMinWidth(tabPane.getTabMaxWidth());
+            // app.setMinHeight(tabPane.getTabMaxHeight());
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(app, 0.0);
+            AnchorPane.setLeftAnchor(app, 0.0);
+            AnchorPane.setRightAnchor(app, 0.0);
+            AnchorPane.setBottomAnchor(app, 0.0);
+
+            anchorPane.getChildren().add(app);
+
+            Tab tabAccount = new Tab();
+
+            tabAccount.setText(String.format("Проводки за %s ",datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY"))));
+            tabAccount.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+            tpWindowContainer.getTabs().addAll(tabAccount);
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
+
     private class MyStringConverter extends StringConverter<LocalDate> {
         String pattern = "MMMM-yyyy";
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
@@ -131,5 +182,8 @@ public class BasicApplicationController implements Initializable {
             }
         }
     }
+
+
+
 
 }
