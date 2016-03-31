@@ -88,6 +88,8 @@ public class ApplicationController  {
             stage.setOnCloseRequest(Action::exit);
             stage.initOwner(null);
             stage.initModality(Modality.WINDOW_MODAL);
+            stage.setMinWidth(800);
+            stage.setMinHeight(400);
             stage.setMaximized(true);
             stage.getIcons().add(new Image(getClass().getResource("/ru/zhukov/assests/image/proforma-to_employee.png").toExternalForm()));
             Scene scene = new Scene(app);

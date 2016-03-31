@@ -49,8 +49,6 @@ public class AccountRecordController  implements Initializable{
     TableColumn<AccountRecord,String> cfo;
 
     @FXML
-    Label lMy;
-    @FXML
     TextField allSumma;
 
     @FXML
@@ -76,7 +74,7 @@ public class AccountRecordController  implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-          this.lMy.setText("Создано окно");
+
 
           department.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("department"));
           employee.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("employee"));
