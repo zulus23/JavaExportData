@@ -1,15 +1,21 @@
 package ru.zhukov.account;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.application.Platform;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import org.controlsfx.control.MaskerPane;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.service.AccountRecordDataService;
 
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Gukov on 29.03.2016.
@@ -47,14 +53,25 @@ public class AccountRecordController  implements Initializable{
     @FXML
     TextField allSumma;
 
+    @FXML
+    StackPane stackPane;
+
+    private MaskerPane masker;
+
 
     private int month;
     private int year;
+
 
     public AccountRecordController(AccountRecordDataService dataService,int month, int year){
         this.dataService = dataService;
         this.month = month;
         this.year = year;
+
+        masker = new MaskerPane();
+        masker.setVisible(false);
+        masker.setText("Выполняю загрузку. Ожидайте...");
+
     }
 
     @Override
@@ -92,9 +109,20 @@ public class AccountRecordController  implements Initializable{
           cfo.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("cfo"));
           cfo.setStyle("-fx-alignment: CENTER;");
 
+          stackPane.getChildren().add(masker);
           //allSumma.layoutXProperty().bind(summa.getProperties().);
+        //masker.setVisible(true);
+        CompletableFuture.supplyAsync(()-> {
+                                             Platform.runLater(()-> masker.setVisible(true));
+                                             return dataService.accountRecordListByMonthAndYear(month,year);})
+                          .thenAcceptAsync(e ->Platform.runLater(()->{
+                              masker.setVisible(false);
+                              this.accountRecordTable.getItems().addAll(e);}
+                          ));
 
-          this.accountRecordTable.getItems().addAll(dataService.accountRecordListByMonthAndYear(month,year));
+
+
+        //  this.accountRecordTable.getItems().addAll(dataService.accountRecordListByMonthAndYear(month,year));
 
           accountRecordTable.getSelectionModel().select(0);
     }
