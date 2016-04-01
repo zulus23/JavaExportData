@@ -16,6 +16,6 @@ Class-Path: gson-2.6.2.jar spring-aspects-4.2.5.RELEASE.jar spring-aop
  ELEASE.jar spring-messaging-4.2.5.RELEASE.jar spring-expression-4.2.5
  .RELEASE.jar spring-instrument-4.2.5.RELEASE.jar spring-context-suppo
  rt-4.2.5.RELEASE.jar spring-instrument-tomcat-4.2.5.RELEASE.jar contr
- olsfx-8.40.10.jar
+ olsfx-8.40.11-SNAPSHOT.jar
 Main-Class: ru.zhukov.bootstrap.BootstrapApplication
 

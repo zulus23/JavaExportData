@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -42,11 +43,15 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="45.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                  <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="45.0" prefWidth="600.0">
                      <children>
-                        <TextField fx:id="allSumma" editable="false" layoutX="300.0" layoutY="10.0" prefHeight="25.0" prefWidth="70.0" />
+                        <AnchorPane prefHeight="45.0" prefWidth="606.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <TextField fx:id="allSumma" alignment="CENTER_RIGHT" editable="false" layoutX="486.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="100.0" AnchorPane.rightAnchor="14.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
-                  </Pane>
+                  </HBox>
                </children>
             </VBox>
          </children>

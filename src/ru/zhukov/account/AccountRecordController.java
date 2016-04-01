@@ -1,6 +1,8 @@
 package ru.zhukov.account;
 
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -9,10 +11,12 @@ import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.MaskerPane;
+import org.controlsfx.control.table.TableFilter;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.service.AccountRecordDataService;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +30,7 @@ public class AccountRecordController  implements Initializable{
 
 
     @FXML
-    TableView accountRecordTable;
+    TableView<AccountRecord> accountRecordTable;
     @FXML
     TableColumn department;
     @FXML
@@ -59,7 +63,7 @@ public class AccountRecordController  implements Initializable{
 
     private int month;
     private int year;
-
+    private TableFilter tableFilter;
 
     public AccountRecordController(AccountRecordDataService dataService,int month, int year){
         this.dataService = dataService;
@@ -84,19 +88,20 @@ public class AccountRecordController  implements Initializable{
           credit.setStyle("-fx-alignment: CENTER;");
           summa.setCellValueFactory(new PropertyValueFactory<AccountRecord,Number>("summa"));
           summa.setStyle("-fx-alignment: CENTER-RIGHT;");
-          summa.setCellFactory(cellData -> {
+
+          /*summa.setCellFactory(cellData -> {
               TableCell<AccountRecord,Number> cell = new TableCell<AccountRecord, Number>(){
                   @Override
                   protected void updateItem(Number item, boolean empty) {
                       super.updateItem(item, empty);
                       if(!empty){
-                          this.setText(item == null ? "" : NumberFormat.getCurrencyInstance().format(item));
+                          this.setText(item == null ? "" : NumberFormat.getNumberInstance().format(item));
 
                       }
                   }
               };
             return cell;
-          });
+          });*/
           description.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("description"));
           costItem.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("costItem"));
           costItem.setStyle("-fx-alignment: CENTER;");
@@ -108,20 +113,42 @@ public class AccountRecordController  implements Initializable{
           cfo.setStyle("-fx-alignment: CENTER;");
 
           stackPane.getChildren().add(masker);
+
+
           //allSumma.layoutXProperty().bind(summa.getProperties().);
         //masker.setVisible(true);
         CompletableFuture.supplyAsync(()-> {
                                              Platform.runLater(()-> masker.setVisible(true));
                                              return dataService.accountRecordListByMonthAndYear(month,year);})
+
                           .thenAcceptAsync(e ->Platform.runLater(()->{
                               masker.setVisible(false);
-                              this.accountRecordTable.getItems().addAll(e);}
+                              this.accountRecordTable.getItems().addAll(e);
+                              tableFilter = new TableFilter(accountRecordTable);
+                              setListener();
+                          }
                           ));
 
 
 
         //  this.accountRecordTable.getItems().addAll(dataService.accountRecordListByMonthAndYear(month,year));
 
-          accountRecordTable.getSelectionModel().select(0);
+
+
+
+
+    }
+
+    private void setListener(){
+        ObservableList<AccountRecord> accountRecords =  tableFilter.getFilteredList();
+        accountRecords.addListener(new ListChangeListener<AccountRecord>() {
+            @Override
+            public void onChanged(Change<? extends AccountRecord> c) {
+              FilteredList<AccountRecord> filteredList =  tableFilter.getFilteredList();
+                NumberFormat f = DecimalFormat.getInstance();
+                f.setGroupingUsed(true);
+                allSumma.setText( f.format( filteredList.stream().mapToDouble(a -> a.getSumma()).sum()));
+            }
+        });
     }
 }
