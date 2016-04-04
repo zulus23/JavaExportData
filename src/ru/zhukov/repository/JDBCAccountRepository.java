@@ -34,7 +34,7 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
     public List<AccountRecord> listAccountRecordsByMonthAndYear(int month, int year) {
 
         String queryAccount = "SELECT  (RTrim(x.brief_name)+' '+RTRIM(x.naz_otd)) AS Otdel," +
-                              " RTRIM(B.CREDIT) as credit, RTRIM(B.DEBET) as debit, RTRIM(B.TEXT) as text, B.MES, B.ZATR, B.XCHECK, X.MNEMOKOD as cfo, " +
+                              " RTRIM(B.CREDIT) as credit, RTRIM(B.DEBET) as debit, RTRIM(B.TEXT) as text, B.MES, B.ZATR, B.XCHECK, X.MNEMOKOD as cfo, b.code as code, " +
                               " (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name)) AS employee, " +
                               " AP9 AS MESPROVOD, AP10 AS YEARPROVOD, AP1 AS OBJECT, AP7 AS NALOG, B.SUMMA, B.idKey " +
                               " FROM PROVOD_BO B " +
@@ -70,6 +70,7 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
             accountRecord.setObjectId(resultSet.getString("object"));
             accountRecord.setTaxArticle(resultSet.getString("nalog"));
             accountRecord.setCfo(resultSet.getString("cfo"));
+            accountRecord.setCode(resultSet.getString("code"));
             return accountRecord;
         }
     }

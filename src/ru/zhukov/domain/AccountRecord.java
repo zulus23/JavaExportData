@@ -15,7 +15,7 @@ public class AccountRecord {
     private String objectId;
     private String taxArticle;
     private String cfo;
-
+    private String code; //Код начисления
     private int  year;
     private int month;
     private String description;
@@ -90,6 +90,14 @@ public class AccountRecord {
 
     public void setCfo(String cfo) {
         this.cfo = cfo;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public int getYear() {

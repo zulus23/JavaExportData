@@ -18,23 +18,7 @@ import javax.sql.DataSource;
  */
 public class Action {
 
-  /* private static  EventHandler exitEvent = (e) -> {
-       Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
-       alert.setTitle("Внимание");
-       alert.setHeaderText("Закрыть программу");
-       alert.showAndWait().ifPresent(response ->{
-           if(response== ButtonType.CANCEL && e.getEventType().getName()== WindowEvent.WINDOW_CLOSE_REQUEST.getName()){
-               e.consume();
 
-           }
-           if(response== ButtonType.OK && e.getEventType().getName() == ActionEvent.ACTION.getName()){
-                   Platform.exit();
-           }
-
-       });
-    };
-
-*/
     public static <T extends Event> void exit(T actionEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
         alert.setTitle("Внимание");
@@ -52,7 +36,7 @@ public class Action {
     }
 
     public static void createAccountRecord(ActionEvent event){
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
 
 
     }

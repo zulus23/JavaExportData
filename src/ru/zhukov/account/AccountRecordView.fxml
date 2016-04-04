@@ -33,6 +33,7 @@
                               <TableColumn fx:id="description" prefWidth="75.0" text="Текст" />
                               <TableColumn fx:id="summa" prefWidth="75.0" text="Сумма" />
                               <TableColumn fx:id="costItem" prefWidth="75.0" text="Затраты" />
+                              <TableColumn fx:id="code" prefWidth="75.0" text="Код начисления" visible="false"/>
                               <TableColumn fx:id="objectId" prefWidth="75.0" text="Объект" />
                               <TableColumn fx:id="cfo" prefWidth="75.0" text="ЦФО" />
                               <TableColumn fx:id="taxArticle" prefWidth="75.0" text="Налог" />

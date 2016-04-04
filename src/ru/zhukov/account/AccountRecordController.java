@@ -51,6 +51,9 @@ public class AccountRecordController  implements Initializable{
     TableColumn<AccountRecord,String> taxArticle;
     @FXML
     TableColumn<AccountRecord,String> cfo;
+    @FXML
+    TableColumn<AccountRecord,String> code;
+
 
     @FXML
     TextField allSumma;
@@ -111,6 +114,8 @@ public class AccountRecordController  implements Initializable{
           taxArticle.setStyle("-fx-alignment: CENTER;");
           cfo.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("cfo"));
           cfo.setStyle("-fx-alignment: CENTER;");
+          code.setCellValueFactory(new PropertyValueFactory<AccountRecord,String>("code"));
+          code.setStyle("-fx-alignment: CENTER;");
 
           stackPane.getChildren().add(masker);
 

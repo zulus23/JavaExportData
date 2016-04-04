@@ -1,0 +1,27 @@
+.alert.confirmation.dialog-pane {
+    -fx-background-color: greenyellow;
+}
+
+.dialog-pane > .content {
+    -fx-padding: 0.833em; /* 10 */
+
+}
+
+.dialog > .dialog-pane > .button-bar {
+    -fx-font-size: 24px;
+    -fx-background-color: indianred;
+    -fx-font-family: "Andalus";
+}
+
+.dialog > .dialog-pane > .content.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: blue;
+}
+
+
+
+/*.alert.confirmation.dialog-pane {
+    -fx-graphic: url("lock24.png");
+}
+*/

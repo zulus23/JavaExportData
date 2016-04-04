@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.util.StringConverter;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.zhukov.ApplicationController;
@@ -43,6 +45,9 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miPreferences;
     @FXML
     private MenuItem miPrintDocument;
+
+    @FXML
+    private VBox mainWindow;
 
    /* public TabPane getTpWindowContainer() {
         return tpWindowContainer;
@@ -78,6 +83,8 @@ public class BasicApplicationController implements Initializable {
         preferencesButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/application-gear.png").toExternalForm())));
         Button createAccountRecordButton = new Button();
         createAccountRecordButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
+        createAccountRecordButton.setOnAction(this::createAccountRecord);
+
         Button showAccountRecordView = new Button();
         showAccountRecordView.setText("Проводки");
         showAccountRecordView.setOnAction(this::showAccountRecordView);
@@ -151,6 +158,29 @@ public class BasicApplicationController implements Initializable {
             ex.printStackTrace();
         }
     }
+
+    public void createAccountRecord(ActionEvent event){
+        ButtonType yesButtonType = new ButtonType("Да",ButtonBar.ButtonData.YES);
+        ButtonType noButtonType = new ButtonType("Нет",ButtonBar.ButtonData.NO);
+        Alert askCreateAccount = new Alert(Alert.AlertType.CONFIRMATION,"",yesButtonType,noButtonType);
+        askCreateAccount.getDialogPane().getStylesheets().addAll(getClass().getResource("/ru/zhukov/assests/css/MyDialog.css").toExternalForm());
+        askCreateAccount.setTitle("Формирование проводок");
+        askCreateAccount.setHeaderText("Сформировать проводки");
+        askCreateAccount.setContentText("Для формирования проводок будет использован текущий месяц в АиТ. Предыдущие данные будут удалены. Продолжить?");
+        askCreateAccount.initOwner(mainWindow.getScene().getWindow());
+
+        askCreateAccount.initModality(Modality.WINDOW_MODAL);
+        askCreateAccount.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
+        askCreateAccount.showAndWait().ifPresent(result ->{
+            if(result == yesButtonType){
+
+
+            }
+        });
+
+
+    }
+
 
 
     private class MyStringConverter extends StringConverter<LocalDate> {
