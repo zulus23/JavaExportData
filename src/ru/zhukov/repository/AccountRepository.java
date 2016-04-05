@@ -11,4 +11,7 @@ public interface AccountRepository {
 
     List<AccountRecord> listAccountRecordsByMonthAndYear(int month, int year);
 
+    List<AccountRecord> createAccountRecord();
+
+
 }

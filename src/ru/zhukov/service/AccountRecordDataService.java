@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.repository.AccountRepository;
 
+import java.util.List;
+
 /**
  * Created by Gukov on 29.03.2016.
  */
@@ -28,4 +30,8 @@ public class AccountRecordDataService {
         return  accountRecords;
     }
 
+
+  public List<AccountRecord> createAccountRecord(){
+      return accountRepository.createAccountRecord();
+  }
 }

@@ -1,5 +1,6 @@
 package ru.zhukov.base;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,19 +18,28 @@ import org.springframework.format.annotation.DateTimeFormat;
 import ru.zhukov.ApplicationController;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
+import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.service.AccountRecordDataService;
+import ru.zhukov.utils.ImportIntoXLS;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Gukov on 24.03.2016.
  */
 
 public class BasicApplicationController implements Initializable {
+
+    private Map<Tab,AccountRecordController> accountRecordControllerWeakHashMap  = new WeakHashMap<>();
+
 
     private ResourceBundle resourceBundle;
 
@@ -45,9 +55,15 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miPreferences;
     @FXML
     private MenuItem miPrintDocument;
+    @FXML
+    private ProgressBar progressBarCreateAccount;
+    @FXML
+    private AnchorPane progressPanel;
+
 
     @FXML
     private VBox mainWindow;
+
 
    /* public TabPane getTpWindowContainer() {
         return tpWindowContainer;
@@ -62,6 +78,7 @@ public class BasicApplicationController implements Initializable {
 
     private DatePicker datePicker;
     private AccountRecordDataService dataService;
+    private Tab currentTab;
     private int month;
     private int year;
 
@@ -77,6 +94,12 @@ public class BasicApplicationController implements Initializable {
         miNewDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document.png").toExternalForm())));
         miPreferences.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/application-gear.png").toExternalForm())));
         miPrintDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-print.png").toExternalForm())));
+        miPrintDocument.setOnAction(this::PrintFile);
+
+        progressPanel.setVisible(false);
+
+        progressBarCreateAccount.setVisible(false);
+
 
         Button preferencesButton = new Button();
 
@@ -126,6 +149,14 @@ public class BasicApplicationController implements Initializable {
 
     }
 
+
+    //TODO необходимо проверка на то что tab существует
+    private void PrintFile(ActionEvent event) {
+
+        AccountRecordController accountRecordController = accountRecordControllerWeakHashMap.get(tpWindowContainer.getSelectionModel().getSelectedItem());
+        new ImportIntoXLS().CreateXLS(accountRecordController.getAccountRecordTable());
+    }
+
     public void  showAccountRecordView(ActionEvent event){
         try {
             month = datePicker.getValue().getMonthValue();
@@ -134,6 +165,8 @@ public class BasicApplicationController implements Initializable {
 
             AccountRecordController accountRecordController = new AccountRecordController(dataService,month,year);
             fxmlAccountLoader.setController(accountRecordController);
+
+
 
             AnchorPane app = fxmlAccountLoader.load();
             //  app.setMinWidth(tabPane.getTabMaxWidth());
@@ -153,6 +186,7 @@ public class BasicApplicationController implements Initializable {
             tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);
             tpWindowContainer.getTabs().addAll(tabAccount);
+            accountRecordControllerWeakHashMap.putIfAbsent(tabAccount,accountRecordController);
 
         }catch(IOException ex){
             ex.printStackTrace();
@@ -173,6 +207,8 @@ public class BasicApplicationController implements Initializable {
         askCreateAccount.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
         askCreateAccount.showAndWait().ifPresent(result ->{
             if(result == yesButtonType){
+                progressPanel.setVisible(true);
+                progressBarCreateAccount.setVisible(true);
 
 
             }
@@ -181,7 +217,18 @@ public class BasicApplicationController implements Initializable {
 
     }
 
+    private class CreateAccountRecordTask extends Task<List<AccountRecord>>{
 
+         private AccountRecordDataService accountRecordDataService;
+
+        @Override
+        protected List<AccountRecord> call() throws Exception {
+
+
+
+            return null;
+        }
+    }
 
     private class MyStringConverter extends StringConverter<LocalDate> {
         String pattern = "MMMM-yyyy";

@@ -18,6 +18,7 @@ import ru.zhukov.service.AccountRecordDataService;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -155,5 +156,9 @@ public class AccountRecordController  implements Initializable{
                 allSumma.setText( f.format( filteredList.stream().mapToDouble(a -> a.getSumma()).sum()));
             }
         });
+    }
+
+    public List<AccountRecord> getAccountRecordTable() {
+        return tableFilter.getFilteredList();
     }
 }
