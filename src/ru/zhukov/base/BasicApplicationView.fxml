@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox fx:id="mainWindow" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
@@ -29,12 +26,12 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="miPrintDocument" mnemonicParsing="false" text="%menu.title.print" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="miPreferences" mnemonicParsing="false" text="%menu.title.preferences" />
+            <MenuItem fx:id="miPreferences" mnemonicParsing="false" text="%menu.title.preferences"  disable="true"/>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="miExit" mnemonicParsing="false" text="%menu.title.quit" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
+        <!--<Menu mnemonicParsing="false" text="Edit">
           <items>
             <MenuItem mnemonicParsing="false" text="Undo" />
             <MenuItem mnemonicParsing="false" text="Redo" />
@@ -48,6 +45,13 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
+        -->
+        <Menu mnemonicParsing="false" text="%menu.title.action">
+          <items>
+          <MenuItem mnemonicParsing="false" text="%menu.title.createaccount"  fx:id="miCreateAccountRecord"/>
+          <MenuItem mnemonicParsing="false" text="%menu.title.exportaccount"  fx:id="miExportAccountRecord"/>
+          </items>
+        </Menu>
         <Menu mnemonicParsing="false" text="%menu.title.help">
           <items>
             <MenuItem mnemonicParsing="false" text="%menu.title.about" />
@@ -58,14 +62,6 @@
       <ToolBar fx:id="tToolBar" prefHeight="40.0" prefWidth="200.0">
 
       </ToolBar>
-      <AnchorPane fx:id="progressPanel" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="640.0" VBox.vgrow="NEVER">
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <children>
-            <ProgressBar fx:id="progressBarCreateAccount" layoutY="-10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" prefWidth="640.0" progress="0.17" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-0.0" />
-         </children>
-      </AnchorPane>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <TabPane fx:id="tpWindowContainer" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -75,7 +71,6 @@
             </TabPane>
          </children>
     </AnchorPane>
-      <Pane fx:id="statusBar" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" prefWidth="640.0" VBox.vgrow="NEVER" />
   </children>
 
 </VBox>

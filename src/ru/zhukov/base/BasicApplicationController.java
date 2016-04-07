@@ -1,24 +1,26 @@
 package ru.zhukov.base;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import org.springframework.format.annotation.DateTimeFormat;
-import ru.zhukov.ApplicationController;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
-import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.utils.ImportIntoXLS;
 
@@ -26,11 +28,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Gukov on 24.03.2016.
@@ -55,35 +55,36 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miPreferences;
     @FXML
     private MenuItem miPrintDocument;
+
+
     @FXML
-    private ProgressBar progressBarCreateAccount;
+    private MenuItem miCreateAccountRecord;
     @FXML
-    private AnchorPane progressPanel;
+    private MenuItem miExportAccountRecord;
 
 
     @FXML
     private VBox mainWindow;
 
-
-   /* public TabPane getTpWindowContainer() {
-        return tpWindowContainer;
-    }
-*/
-
-
     @FXML
     private TabPane tpWindowContainer;
 
-
-
+    private CreateAccountRecordTask createAccountRecordTask;
+    private Button createAccountRecordButton;
     private DatePicker datePicker;
-    private AccountRecordDataService dataService;
     private Tab currentTab;
+    private ProgressBar progressBarCreateAccountRecord;
+
+
+    private AccountRecordDataService dataService;
+
+
     private int month;
     private int year;
 
     public BasicApplicationController(AccountRecordDataService dataService){
         this.dataService = dataService;
+        createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
     }
 
     @Override
@@ -96,27 +97,31 @@ public class BasicApplicationController implements Initializable {
         miPrintDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-print.png").toExternalForm())));
         miPrintDocument.setOnAction(this::PrintFile);
 
-        progressPanel.setVisible(false);
+        miPrintDocument.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
+       // miExportAccountRecord.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
 
-        progressBarCreateAccount.setVisible(false);
+        miCreateAccountRecord.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-save.png").toExternalForm())));
+        miCreateAccountRecord.setOnAction(this::CreateAccountRecord);
 
+        miExportAccountRecord.setOnAction(this::ExportAccountRecordAction);
 
         Button preferencesButton = new Button();
 
         preferencesButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/application-gear.png").toExternalForm())));
-        Button createAccountRecordButton = new Button();
+        createAccountRecordButton = new Button();
         createAccountRecordButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
-        createAccountRecordButton.setOnAction(this::createAccountRecord);
+        createAccountRecordButton.setOnAction(this::CreateAccountRecord);
+       // createAccountRecordButton.disableProperty().bind(createAccountRecordTask.runningProperty());
 
         Button showAccountRecordView = new Button();
-        showAccountRecordView.setText("Проводки");
+        showAccountRecordView.setTooltip(new Tooltip("Формирование проводок"));
+        showAccountRecordView.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/document-save.png").toExternalForm())));
         showAccountRecordView.setOnAction(this::showAccountRecordView);
 
 
         //preferencesButton.setTooltip(new Tooltip("Выход из приложения"));
         //preferencesButton.setOnAction(Action::exit);
         preferencesButton.setOnAction(Action::createAccountRecord);
-
 
 
 
@@ -130,6 +135,7 @@ public class BasicApplicationController implements Initializable {
          datePicker = new DatePicker();
         datePicker.setTooltip(new Tooltip("Период"));
         datePicker.setValue(LocalDate.now());
+        datePicker.setMinWidth(150);
         datePicker.setConverter(new MyStringConverter());
         datePicker.setEditable(false);
 
@@ -143,12 +149,32 @@ public class BasicApplicationController implements Initializable {
        // tToolBar.getItems().add(new Separator(Orientation.VERTICAL));
 
 
+        miCreateAccountRecord.disableProperty().bindBidirectional(createAccountRecordButton.disableProperty());
+
 
 
 
 
     }
+    private void bindTaskCreateAccountRecord(){
+        mainWindow.sceneProperty().getValue().getWindow().widthProperty().addListener( e ->{
+            if(createAccountRecordTask.isRunning()){
+                Double withProgressBar  = ((ReadOnlyDoubleProperty) e).getValue() -  tToolBar.getItems().get(tToolBar.getItems().size()-2).layoutXProperty().getValue()-75;
+                progressBarCreateAccountRecord.setMinWidth(withProgressBar);
+            }
+        });
+        createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
+        Double withProgressBar  =  tToolBar.getWidth() -  tToolBar.getItems().get(tToolBar.getItems().size()-1).layoutXProperty().getValue()-75;
+        progressBarCreateAccountRecord = new ProgressBar();
+        progressBarCreateAccountRecord.minHeight(20);
+        progressBarCreateAccountRecord.setMinWidth(withProgressBar);
 
+        tToolBar.getItems().add(progressBarCreateAccountRecord);
+         //  progressBarCreateAccount.visibleProperty().bind(createAccountRecordTask.runningProperty());
+        createAccountRecordButton.disableProperty().bind(createAccountRecordTask.runningProperty());
+
+
+    }
 
     //TODO необходимо проверка на то что tab существует
     private void PrintFile(ActionEvent event) {
@@ -161,6 +187,7 @@ public class BasicApplicationController implements Initializable {
         try {
             month = datePicker.getValue().getMonthValue();
             year = datePicker.getValue().getYear();
+
             FXMLLoader fxmlAccountLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/AccountRecordView.fxml"));
 
             AccountRecordController accountRecordController = new AccountRecordController(dataService,month,year);
@@ -193,7 +220,7 @@ public class BasicApplicationController implements Initializable {
         }
     }
 
-    public void createAccountRecord(ActionEvent event){
+    public void CreateAccountRecord(ActionEvent event){
         ButtonType yesButtonType = new ButtonType("Да",ButtonBar.ButtonData.YES);
         ButtonType noButtonType = new ButtonType("Нет",ButtonBar.ButtonData.NO);
         Alert askCreateAccount = new Alert(Alert.AlertType.CONFIRMATION,"",yesButtonType,noButtonType);
@@ -207,8 +234,10 @@ public class BasicApplicationController implements Initializable {
         askCreateAccount.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
         askCreateAccount.showAndWait().ifPresent(result ->{
             if(result == yesButtonType){
-                progressPanel.setVisible(true);
-                progressBarCreateAccount.setVisible(true);
+                bindTaskCreateAccountRecord();
+                Thread threadCreateAccount =  new Thread(createAccountRecordTask);
+                threadCreateAccount.setDaemon(true);
+                threadCreateAccount.start();
 
 
             }
@@ -217,18 +246,63 @@ public class BasicApplicationController implements Initializable {
 
     }
 
-    private class CreateAccountRecordTask extends Task<List<AccountRecord>>{
+
+    private void ExportAccountRecordAction(ActionEvent event){
+       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/ExportAccountRecordDialog.fxml"));
+        try {
+            DialogPane dialogPane =  fxmlLoader.load();
+
+            Dialog exportDialog = new Dialog();
+            exportDialog.setTitle("Экспорт проводок в Axapta");
+            exportDialog.setDialogPane(dialogPane);
+            ButtonType yesButtonType = new ButtonType("Выполнить",ButtonBar.ButtonData.YES);
+            ButtonType noButtonType = new ButtonType("Нет",ButtonBar.ButtonData.NO);
+            exportDialog.getDialogPane().getButtonTypes().removeAll();
+            exportDialog.getDialogPane().getButtonTypes().addAll(yesButtonType,noButtonType);
+
+
+            exportDialog.initOwner(this.mainWindow.getScene().getWindow());
+            exportDialog.initModality(Modality.WINDOW_MODAL);
+            exportDialog.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private class CreateAccountRecordTask extends Task<Integer>{
 
          private AccountRecordDataService accountRecordDataService;
 
-        @Override
-        protected List<AccountRecord> call() throws Exception {
-
-
-
-            return null;
+        public CreateAccountRecordTask(AccountRecordDataService dataService){
+            this.accountRecordDataService = dataService;
         }
+
+        @Override
+        protected void succeeded() {
+            super.succeeded();
+            tToolBar.getItems().remove(progressBarCreateAccountRecord);
+        }
+
+        @Override
+        protected void updateMessage(String message) {
+            super.updateMessage(message);
+
+        }
+
+        @Override
+        protected Integer call() throws Exception {
+
+            accountRecordDataService.createAccountRecord();
+
+            return 1;
+        }
+
+
     }
+
+
 
     private class MyStringConverter extends StringConverter<LocalDate> {
         String pattern = "MMMM-yyyy";

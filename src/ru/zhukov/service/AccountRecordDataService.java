@@ -31,7 +31,7 @@ public class AccountRecordDataService {
     }
 
 
-  public List<AccountRecord> createAccountRecord(){
-      return accountRepository.createAccountRecord();
+  public void createAccountRecord(){
+      accountRepository.createAccountRecord();
   }
 }

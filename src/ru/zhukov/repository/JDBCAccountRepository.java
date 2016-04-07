@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Gukov on 28.03.2016.
@@ -52,10 +53,9 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
     }
 
     @Override
-    public List<AccountRecord> createAccountRecord() {
+    public void createAccountRecord() {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(dataSource);
-
-        return null;
+        jdbcCall.withProcedureName("sp_create_provodki").execute();
     }
 
     @Override

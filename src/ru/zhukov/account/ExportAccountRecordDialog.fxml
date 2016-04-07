@@ -1,93 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="249.0" prefWidth="442.0" vgap="15.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
-  <children>
-    <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefWidth="400.0" spacing="7.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-         <children>
-            <GridPane prefHeight="175.0" prefWidth="400.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="104.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="303.0" minWidth="10.0" prefWidth="296.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="74.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="90.0" minHeight="10.0" prefHeight="85.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+<DialogPane fx:id="exportDialog" expanded="true" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <GridPane hgap="14.0" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="225.0" prefWidth="442.0" vgap="15.0">
+        <children>
+          <VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" prefWidth="400.0" spacing="7.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                <children>
-                  <Label text="Номер:" />
-                  <HBox alignment="CENTER" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
+                  <GridPane prefHeight="175.0" prefWidth="400.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="104.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="303.0" minWidth="10.0" prefWidth="296.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="74.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="90.0" minHeight="10.0" prefHeight="85.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
                      <children>
-                        <TextField alignment="TOP_LEFT" prefHeight="25.0" prefWidth="100.0">
-                           <HBox.margin>
+                        <Label text="Номер:" />
+                        <HBox alignment="CENTER" spacing="20.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+                           <GridPane.margin>
                               <Insets />
-                           </HBox.margin>
-                        </TextField>
-                        <DatePicker />
+                           </GridPane.margin>
+                           <children>
+                              <TextField alignment="TOP_LEFT" prefHeight="25.0" prefWidth="100.0">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                              <DatePicker />
+                           </children>
+                        </HBox>
+                        <Label text="Наименование:" GridPane.rowIndex="1" />
+                        <Label text="Описание:" GridPane.rowIndex="2" />
+                        <TextField prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                      </children>
-                  </HBox>
-                  <Label text="Наименование:" GridPane.rowIndex="1" />
-                  <Label text="Описание:" GridPane.rowIndex="2" />
-                  <TextField prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  </GridPane>
                </children>
-            </GridPane>
-         </children>
-    </VBox>
-    <HBox maxHeight="-Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
-      <children>
-        <HBox fx:id="actionParent" alignment="CENTER">
-          <HBox.margin>
-            <Insets />
-          </HBox.margin>
-        </HBox>
-        <Pane maxWidth="+Infinity" HBox.hgrow="ALWAYS" />
-        <Button fx:id="cancelButton" cancelButton="true" minWidth="80.0" mnemonicParsing="false" text="Отмена" HBox.hgrow="NEVER">
-          <HBox.margin>
-            <Insets />
-          </HBox.margin>
-        </Button>
-        <HBox fx:id="okParent" alignment="CENTER">
-          <children>
-            <Button fx:id="okButton" minWidth="80.0" mnemonicParsing="false" text="Ok" HBox.hgrow="NEVER">
-              <HBox.margin>
-                <Insets left="14.0" />
-              </HBox.margin>
-            </Button>
-          </children>
-        </HBox>
-      </children>
-    </HBox>
-  </children>
-  <columnConstraints>
-    <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
-    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="+Infinity" minWidth="-Infinity" />
-  </columnConstraints>
-  <padding>
-    <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
-  </padding>
-  <rowConstraints>
-    <RowConstraints maxHeight="+Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
-  </rowConstraints>
-  <stylesheets>
-    <URL value="@AlertDialog.css" />
-  </stylesheets>
-</GridPane>
+          </VBox>
+        </children>
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="+Infinity" minWidth="-Infinity" />
+        </columnConstraints>
+        <padding>
+          <Insets bottom="14.0" left="14.0" right="14.0" top="14.0" />
+        </padding>
+        <rowConstraints>
+          <RowConstraints maxHeight="+Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="NEVER" />
+        </rowConstraints>
+
+      </GridPane>
+   </content>
+
+</DialogPane>
