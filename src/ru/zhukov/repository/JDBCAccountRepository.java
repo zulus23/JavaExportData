@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.zhukov.domain.AccountRecord;
 
@@ -56,6 +58,28 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
     public void createAccountRecord() {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(dataSource);
         jdbcCall.withProcedureName("sp_create_provodki").execute();
+    }
+
+    @Override
+    public List<AccountRecord> listAccountRecordForExportByMonthAndYear(int month, int year) {
+        String listExport = "SELECT B.CREDIT,B.DEBET,B.TEXT,B.MES,\n" +
+                            "B.ZATR as AP2,B.AP1,B.AP7,X.MNEMOKOD,sum(B.SUMMA) AS SUMMA\n" +
+                            "FROM PROVOD_BO B\n" +
+                            "LEFT JOIN XCHECK X ON B.XCHECK = X.N_OTD\n" +
+                            "WHERE SUBSTRING(B.CREDIT,1,2) NOT IN ('50','51','62','71','73.20.00')\n" +
+                            "AND   B.SUMMA <> 0  AND\n" +
+                            "B.AP9 = :VMES AND  B.AP10 = :VYEAR\n" +
+                            "GROUP BY B.CREDIT,B.DEBET,B.TEXT,B.MES,B.ZATR,B.AP1,B.AP7,X.MNEMOKOD\n";
+        Map<String,Object> nameParameters = new HashMap<>();
+        nameParameters.put("VMES",month);
+        nameParameters.put("VYEAR",year);
+        return jdbcTemplate.query(listExport,nameParameters, new AccountRecordMapper());
+    }
+
+
+    public void exportAccountRecord() {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
     }
 
     @Override

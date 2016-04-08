@@ -8,19 +8,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import ru.zhukov.account.AccountRecordController;
+import ru.zhukov.account.ExportAccountRecordController;
 import ru.zhukov.action.Action;
+import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.utils.ImportIntoXLS;
 
@@ -29,6 +28,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 
@@ -95,22 +95,22 @@ public class BasicApplicationController implements Initializable {
         miNewDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document.png").toExternalForm())));
         miPreferences.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/application-gear.png").toExternalForm())));
         miPrintDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-print.png").toExternalForm())));
-        miPrintDocument.setOnAction(this::PrintFile);
+        miPrintDocument.setOnAction(this::printFile);
 
         miPrintDocument.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
        // miExportAccountRecord.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
 
         miCreateAccountRecord.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-save.png").toExternalForm())));
-        miCreateAccountRecord.setOnAction(this::CreateAccountRecord);
+        miCreateAccountRecord.setOnAction(this::createAccountRecord);
 
-        miExportAccountRecord.setOnAction(this::ExportAccountRecordAction);
+        miExportAccountRecord.setOnAction(this::exportAccountRecordAction);
 
         Button preferencesButton = new Button();
 
         preferencesButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/application-gear.png").toExternalForm())));
         createAccountRecordButton = new Button();
         createAccountRecordButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/contract-execute.png").toExternalForm())));
-        createAccountRecordButton.setOnAction(this::CreateAccountRecord);
+        createAccountRecordButton.setOnAction(this::createAccountRecord);
        // createAccountRecordButton.disableProperty().bind(createAccountRecordTask.runningProperty());
 
         Button showAccountRecordView = new Button();
@@ -177,10 +177,14 @@ public class BasicApplicationController implements Initializable {
     }
 
     //TODO необходимо проверка на то что tab существует
-    private void PrintFile(ActionEvent event) {
+    private void printFile(ActionEvent event) {
 
-        AccountRecordController accountRecordController = accountRecordControllerWeakHashMap.get(tpWindowContainer.getSelectionModel().getSelectedItem());
-        new ImportIntoXLS().CreateXLS(accountRecordController.getAccountRecordTable());
+        //AccountRecordController accountRecordController = getCurrentAccountRecordController();
+        new ImportIntoXLS().CreateXLS(getCurrentAccountRecordController().getAccountRecordTable());
+    }
+
+    private AccountRecordController getCurrentAccountRecordController() {
+        return accountRecordControllerWeakHashMap.get(tpWindowContainer.getSelectionModel().getSelectedItem());
     }
 
     public void  showAccountRecordView(ActionEvent event){
@@ -220,7 +224,7 @@ public class BasicApplicationController implements Initializable {
         }
     }
 
-    public void CreateAccountRecord(ActionEvent event){
+    public void createAccountRecord(ActionEvent event){
         ButtonType yesButtonType = new ButtonType("Да",ButtonBar.ButtonData.YES);
         ButtonType noButtonType = new ButtonType("Нет",ButtonBar.ButtonData.NO);
         Alert askCreateAccount = new Alert(Alert.AlertType.CONFIRMATION,"",yesButtonType,noButtonType);
@@ -247,9 +251,14 @@ public class BasicApplicationController implements Initializable {
     }
 
 
-    private void ExportAccountRecordAction(ActionEvent event){
+    private void exportAccountRecordAction(ActionEvent event){
        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/ExportAccountRecordDialog.fxml"));
+       AccountRecordController accountRecordController = getCurrentAccountRecordController();
+       ExportAccountRecordController exportAccountRecordController =
+               new ExportAccountRecordController(accountRecordController.getYear(),accountRecordController.getMonth());
+       fxmlLoader.setController(exportAccountRecordController);
         try {
+
             DialogPane dialogPane =  fxmlLoader.load();
 
             Dialog exportDialog = new Dialog();
@@ -263,11 +272,22 @@ public class BasicApplicationController implements Initializable {
 
             exportDialog.initOwner(this.mainWindow.getScene().getWindow());
             exportDialog.initModality(Modality.WINDOW_MODAL);
-            exportDialog.showAndWait();
+
+
+            exportDialog.showAndWait().filter(e -> e == yesButtonType)
+                                      .ifPresent(result -> runExportAccountRecord(exportAccountRecordController));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    //@TODO перенос проводок
+    private void runExportAccountRecord(ExportAccountRecordController controller) {
+
+        ExportJournal exportJournal = new ExportJournal(controller.getCode(),controller.getDate(),
+                                                        controller.getName(),controller.getDescription());
+
+
     }
 
 

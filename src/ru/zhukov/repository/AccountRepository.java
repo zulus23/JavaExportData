@@ -15,4 +15,9 @@ public interface AccountRepository {
     void createAccountRecord();
 
 
+    List<AccountRecord> listAccountRecordForExportByMonthAndYear(int month, int year);
+
+
+
+
 }

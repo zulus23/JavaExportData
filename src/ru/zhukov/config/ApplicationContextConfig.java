@@ -28,6 +28,18 @@ public class ApplicationContextConfig{
         dataSource.setPassword(currentUser.getPassword());
         return dataSource;
     }
+    public static DataSource dataSourceAxapta(){
+        SQLServerDataSource dataSource = new SQLServerDataSource();
+
+        dataSource.setServerName("SRV-AXDB");
+        dataSource.setDatabaseName("DBImpExp");
+        //dataSource.setInstanceName("MSSQLSERVER2012");
+
+        dataSource.setUser("dbimpexp");
+        dataSource.setPassword("dbimpexp");
+        return dataSource;
+    }
+
 
 
 

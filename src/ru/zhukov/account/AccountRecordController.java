@@ -67,6 +67,15 @@ public class AccountRecordController  implements Initializable{
 
     private int month;
     private int year;
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
     private TableFilter tableFilter;
 
     public AccountRecordController(AccountRecordDataService dataService,int month, int year){

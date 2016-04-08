@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
@@ -36,18 +35,18 @@
                               <Insets />
                            </GridPane.margin>
                            <children>
-                              <TextField alignment="TOP_LEFT" prefHeight="25.0" prefWidth="100.0">
+                              <TextField fx:id="tCode" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="100.0">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
                               </TextField>
-                              <DatePicker />
+                              <DatePicker fx:id="tDate" />
                            </children>
                         </HBox>
                         <Label text="Наименование:" GridPane.rowIndex="1" />
                         <Label text="Описание:" GridPane.rowIndex="2" />
-                        <TextField prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                        <TextField fx:id="tName" prefHeight="25.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextArea fx:id="tDescription" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </children>
