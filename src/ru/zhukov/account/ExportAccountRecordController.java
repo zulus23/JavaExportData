@@ -36,13 +36,15 @@ public class ExportAccountRecordController implements Initializable {
 
     private int year;
     private int month;
+    private String dimensionDb;
 
 
 
 
-    public ExportAccountRecordController(int year, int month){
+    public ExportAccountRecordController(int year, int month,String dimensionDb){
         this.month = month;
         this.year = year;
+        this.dimensionDb = dimensionDb;
 
     }
     @Override
@@ -62,7 +64,7 @@ public class ExportAccountRecordController implements Initializable {
 
     public ExportJournal getExportJournal(){
         return new ExportJournal(tCode.getText(),tDate.getValue(),
-                          tName.getText(),tDescription.getText());
+                          tName.getText(),tDescription.getText(),this.dimensionDb);
     }
 
 

@@ -1,6 +1,8 @@
 package ru.zhukov.repository;
 
 import ru.zhukov.domain.AccountRecord;
+import ru.zhukov.domain.AccountRecordExport;
+import ru.zhukov.dto.ExportJournal;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,8 +17,10 @@ public interface AccountRepository {
     void createAccountRecord();
 
 
-    List<AccountRecord> listAccountRecordForExportByMonthAndYear(int month, int year);
+    List<AccountRecordExport> listAccountRecordForExportByMonthAndYear(int month, int year);
 
+
+    void exportAccountRecord(int month, int year, ExportJournal journal);
 
 
 

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.zhukov.domain.AccountRecord;
+import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.repository.AccountRepository;
 
 import java.util.List;
@@ -30,6 +31,10 @@ public class AccountRecordDataService {
         return  accountRecords;
     }
 
+
+  public void exportAccountRecord(int month, int year, ExportJournal journal){
+      accountRepository.exportAccountRecord(month,year,journal);
+  }
 
   public void createAccountRecord(){
       accountRepository.createAccountRecord();

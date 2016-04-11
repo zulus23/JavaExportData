@@ -1,36 +1,43 @@
 package ru.zhukov.repository;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 import ru.zhukov.domain.AccountRecord;
+import ru.zhukov.domain.AccountRecordExport;
+import ru.zhukov.dto.ExportJournal;
 
 import javax.sql.DataSource;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Gukov on 28.03.2016.
  */
-@Repository
-public class JDBCAccountRepository implements AccountRepository,InitializingBean {
+
+public class JDBCAccountRepository implements AccountRepository{
     private DataSource dataSource;
     private NamedParameterJdbcTemplate jdbcTemplate;
+    private DataSource exportDataSource;
 
-    public JDBCAccountRepository(DataSource dataSource){
+
+
+    public JDBCAccountRepository(DataSource dataSource,DataSource exportDataSource){
         this.dataSource = dataSource;
-        jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+        this.exportDataSource = exportDataSource;
     }
 
 
@@ -61,9 +68,10 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
     }
 
     @Override
-    public List<AccountRecord> listAccountRecordForExportByMonthAndYear(int month, int year) {
-        String listExport = "SELECT B.CREDIT,B.DEBET,B.TEXT,B.MES,\n" +
-                            "B.ZATR as AP2,B.AP1,B.AP7,X.MNEMOKOD,sum(B.SUMMA) AS SUMMA\n" +
+    public List<AccountRecordExport> listAccountRecordForExportByMonthAndYear(int month, int year) {
+        String listExport = "SELECT B.CREDIT,B.DEBET as debit,B.TEXT,B.MES,\n" +
+                            "B.ZATR as AP2,B.AP1 as ap4,B.AP7 as ap8,X.MNEMOKOD as ap7," +
+                            "sum(B.SUMMA) AS SUMMA\n" +
                             "FROM PROVOD_BO B\n" +
                             "LEFT JOIN XCHECK X ON B.XCHECK = X.N_OTD\n" +
                             "WHERE SUBSTRING(B.CREDIT,1,2) NOT IN ('50','51','62','71','73.20.00')\n" +
@@ -73,19 +81,22 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
         Map<String,Object> nameParameters = new HashMap<>();
         nameParameters.put("VMES",month);
         nameParameters.put("VYEAR",year);
-        return jdbcTemplate.query(listExport,nameParameters, new AccountRecordMapper());
-    }
 
-
-    public void exportAccountRecord() {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
+        return jdbcTemplate.query(listExport,nameParameters,new AccountRecordExportMapper());
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void exportAccountRecord(int month, int year, ExportJournal exportJournal) {
+         JDBCExportAccountRepository exportAccountRepository = new JDBCExportAccountRepository(exportDataSource);
+         Number parent = exportAccountRepository.addRecordInLedgerJournalTable(exportJournal);
+         exportAccountRepository.batchInsert(this.listAccountRecordForExportByMonthAndYear(month,year),exportJournal.getCode(),exportJournal.getDimensionDB());
+
 
     }
+
+
+
+
 
     private class AccountRecordMapper implements RowMapper<AccountRecord>{
 
@@ -104,6 +115,29 @@ public class JDBCAccountRepository implements AccountRepository,InitializingBean
             accountRecord.setCfo(resultSet.getString("cfo"));
             accountRecord.setCode(resultSet.getString("code"));
             return accountRecord;
+        }
+    }
+
+    private class AccountRecordExportMapper implements  RowMapper<AccountRecordExport> {
+        @Override
+        public AccountRecordExport mapRow(ResultSet resultSet, int i) throws SQLException {
+            AccountRecordExport recordExport = new AccountRecordExport();
+            recordExport.setDebit(resultSet.getString("debit"));
+            recordExport.setCredit(resultSet.getString("credit"));
+            recordExport.setSumma(resultSet.getDouble("summa"));
+            recordExport.setText(resultSet.getString("text"));
+            recordExport.setMonth(resultSet.getInt("mes"));
+            //TODO передача ввиде параметра
+            //recordExport.setTransDimension(resultSet.getString(""));
+            recordExport.setTransDimension2(resultSet.getString("ap2"));
+            recordExport.setTransDimension4(resultSet.getString("ap4"));
+            recordExport.setTransDimension7(resultSet.getString("ap7"));
+            recordExport.setTransDimension8(resultSet.getString("ap8"));
+
+
+
+            return  recordExport;
+
         }
     }
 }

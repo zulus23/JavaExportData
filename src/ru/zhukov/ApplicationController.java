@@ -46,7 +46,8 @@ public class ApplicationController  {
     private AccountRepository accountRepository;
 
     private AccountRecordDataService getDataService(){
-        accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser));
+        accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser),
+                                                      ApplicationContextConfig.dataSourceAxapta());
 
          return new AccountRecordDataService(accountRepository);
     }
@@ -84,7 +85,7 @@ public class ApplicationController  {
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
             fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
-            baseWindowController = new BasicApplicationController(this.getDataService());
+            baseWindowController = new BasicApplicationController(this.getDataService(),this.currentUser);
             fxmlAppLoader.setController(baseWindowController);
             VBox app = fxmlAppLoader.load();
             Stage stage = new Stage();

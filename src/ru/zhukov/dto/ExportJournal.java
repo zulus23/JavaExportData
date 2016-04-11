@@ -11,43 +11,31 @@ public class ExportJournal {
     private LocalDate date;
     private String name;
     private String description;
+    private String dimensionDB;
 
-    public ExportJournal(String code, LocalDate date, String name, String description) {
+    public ExportJournal(String code, LocalDate date, String name, String description, String dimensionDB) {
         this.code = code;
         this.date = date;
         this.name = name;
         this.description = description;
+        this.dimensionDB = dimensionDB;
     }
 
     public String getCode() {
         return code;
     }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public LocalDate getDate() {
         return date;
     }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getDimensionDB() {
+        return dimensionDB;
     }
+
+
 }

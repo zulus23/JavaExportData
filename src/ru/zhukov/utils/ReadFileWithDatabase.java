@@ -63,7 +63,7 @@ public class ReadFileWithDatabase {
                 .create();
         List<Database> databaseList = new ArrayList<>();
         databaseList.add(new Database("Готэк","ait_db","г01"));
-        databaseList.add(new Database("Готэк-ЦПУ","ait_cpu","г05"));
+        databaseList.add(new Database("Готэк-ЦПУ","ait_cpu","Г05"));
 
         try(FileWriter fileWriter = new FileWriter(Paths.get(System.getProperty("user.dir")+"/database/database.json").toString())){
            fileWriter.write(mapper.toJson(databaseList));

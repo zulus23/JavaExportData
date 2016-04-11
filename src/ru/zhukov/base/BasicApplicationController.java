@@ -19,6 +19,7 @@ import javafx.util.StringConverter;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.account.ExportAccountRecordController;
 import ru.zhukov.action.Action;
+import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.utils.ImportIntoXLS;
@@ -82,9 +83,12 @@ public class BasicApplicationController implements Initializable {
     private int month;
     private int year;
 
-    public BasicApplicationController(AccountRecordDataService dataService){
+    private CurrentUser currentUser;
+
+    public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -255,7 +259,8 @@ public class BasicApplicationController implements Initializable {
        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/ExportAccountRecordDialog.fxml"));
        AccountRecordController accountRecordController = getCurrentAccountRecordController();
        ExportAccountRecordController exportAccountRecordController =
-               new ExportAccountRecordController(accountRecordController.getYear(),accountRecordController.getMonth());
+               new ExportAccountRecordController(accountRecordController.getYear(),accountRecordController.getMonth(),
+                                                 currentUser.getDatabase().getNameinAxapta());
        fxmlLoader.setController(exportAccountRecordController);
         try {
 
@@ -277,15 +282,18 @@ public class BasicApplicationController implements Initializable {
             exportDialog.showAndWait().filter(e -> e == yesButtonType)
                                       .ifPresent(result -> runExportAccountRecord(exportAccountRecordController));
 
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     //@TODO перенос проводок
     private void runExportAccountRecord(ExportAccountRecordController controller) {
+        AccountRecordController accountRecordController =  getCurrentAccountRecordController();
+        ExportJournal exportJournal = controller.getExportJournal();
+        dataService.exportAccountRecord(accountRecordController.getMonth(),accountRecordController.getYear(),exportJournal);
 
-        ExportJournal exportJournal = new ExportJournal(controller.getCode(),controller.getDate(),
-                                                        controller.getName(),controller.getDescription());
 
 
     }
