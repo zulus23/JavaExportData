@@ -19,7 +19,7 @@
             <MenuItem mnemonicParsing="false" text="%menu.title.open" />
             <Menu mnemonicParsing="false" text="Open Recent" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="%menu.title.close" />
+            <MenuItem fx:id="miClose" mnemonicParsing="false" text="%menu.title.close" />
             <MenuItem mnemonicParsing="false" text="%menu.title.save" />
             <MenuItem mnemonicParsing="false" text="Save As…" />
             <MenuItem mnemonicParsing="false" text="Revert" />
@@ -30,6 +30,12 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="miExit" mnemonicParsing="false" text="%menu.title.quit" />
           </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="%menu.title.view">
+           <items>
+             <MenuItem fx:id="miViewAccount" mnemonicParsing="false" text="%menu.title.view.account"></MenuItem>
+             <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport"></MenuItem>
+           </items>
         </Menu>
         <!--<Menu mnemonicParsing="false" text="Edit">
           <items>

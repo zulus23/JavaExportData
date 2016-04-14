@@ -1,6 +1,7 @@
 package ru.zhukov.base;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -21,6 +22,7 @@ import ru.zhukov.account.ExportAccountRecordController;
 import ru.zhukov.action.Action;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
+import ru.zhukov.export.JournalExportController;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.utils.ImportIntoXLS;
 
@@ -29,7 +31,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 
@@ -57,11 +58,19 @@ public class BasicApplicationController implements Initializable {
     @FXML
     private MenuItem miPrintDocument;
 
+    @FXML
+    private MenuItem miViewAccount;
+    @FXML
+    private MenuItem miViewJournalExport;
+
 
     @FXML
     private MenuItem miCreateAccountRecord;
     @FXML
     private MenuItem miExportAccountRecord;
+
+    @FXML
+    private MenuItem miClose;
 
 
     @FXML
@@ -100,11 +109,16 @@ public class BasicApplicationController implements Initializable {
         miPreferences.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/application-gear.png").toExternalForm())));
         miPrintDocument.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-print.png").toExternalForm())));
         miPrintDocument.setOnAction(this::printFile);
-
-        miPrintDocument.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
+        BooleanBinding emptyTab =  Bindings.isEmpty(tpWindowContainer.getTabs());
+        miPrintDocument.disableProperty().bind(emptyTab);
+        miClose.disableProperty().bind(emptyTab);
        // miExportAccountRecord.disableProperty().bind(Bindings.isEmpty(tpWindowContainer.getTabs()));
+        miViewAccount.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/account_book-customer.png").toExternalForm())));
+        miViewAccount.setOnAction(this::showAccountRecordView);
+        miViewJournalExport.setOnAction(this::showJournalExport);
 
-        miCreateAccountRecord.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/document-save.png").toExternalForm())));
+
+        miCreateAccountRecord.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/contract-execute.png").toExternalForm())));
         miCreateAccountRecord.setOnAction(this::createAccountRecord);
 
         miExportAccountRecord.setOnAction(this::exportAccountRecordAction);
@@ -118,8 +132,8 @@ public class BasicApplicationController implements Initializable {
        // createAccountRecordButton.disableProperty().bind(createAccountRecordTask.runningProperty());
 
         Button showAccountRecordView = new Button();
-        showAccountRecordView.setTooltip(new Tooltip("Формирование проводок"));
-        showAccountRecordView.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/document-save.png").toExternalForm())));
+        showAccountRecordView.setTooltip(new Tooltip(resourceBundle.getString("tooltip.showProvod")));
+        showAccountRecordView.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/account_book-customer.png").toExternalForm())));
         showAccountRecordView.setOnAction(this::showAccountRecordView);
 
 
@@ -189,6 +203,37 @@ public class BasicApplicationController implements Initializable {
 
     private AccountRecordController getCurrentAccountRecordController() {
         return accountRecordControllerWeakHashMap.get(tpWindowContainer.getSelectionModel().getSelectedItem());
+    }
+
+    public void showJournalExport(ActionEvent event){
+        FXMLLoader fxmlJournalExportLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/export/JournalExportView.fxml"));
+
+        JournalExportController journalExportController = new JournalExportController();
+        fxmlJournalExportLoader.setController(journalExportController);
+        try {
+            AnchorPane splitPane = fxmlJournalExportLoader.load();
+
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(splitPane, 0.0);
+            AnchorPane.setLeftAnchor(splitPane, 0.0);
+            AnchorPane.setRightAnchor(splitPane, 0.0);
+            AnchorPane.setBottomAnchor(splitPane, 0.0);
+
+            anchorPane.getChildren().add(splitPane);
+
+            Tab tabJournalExport = new Tab();
+
+            tabJournalExport.setText("Журнал экспорта");
+            tabJournalExport.setContent(splitPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+            tpWindowContainer.getTabs().addAll(tabJournalExport);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void  showAccountRecordView(ActionEvent event){
