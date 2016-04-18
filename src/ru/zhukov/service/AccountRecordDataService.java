@@ -15,7 +15,7 @@ import java.util.List;
 
 public class AccountRecordDataService {
 
-  @Autowired
+
   private AccountRepository accountRepository;
 
 
@@ -30,6 +30,9 @@ public class AccountRecordDataService {
 
         return  accountRecords;
     }
+
+
+
 
 
   public void exportAccountRecord(int month, int year, ExportJournal journal){

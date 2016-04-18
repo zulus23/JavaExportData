@@ -20,10 +20,13 @@ import javafx.util.StringConverter;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.account.ExportAccountRecordController;
 import ru.zhukov.action.Action;
+import ru.zhukov.config.ApplicationContextConfig;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.export.JournalExportController;
+import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.service.AccountRecordDataService;
+import ru.zhukov.service.JournalExportDataService;
 import ru.zhukov.utils.ImportIntoXLS;
 
 import java.io.IOException;
@@ -88,6 +91,8 @@ public class BasicApplicationController implements Initializable {
 
     private AccountRecordDataService dataService;
 
+    private JournalExportDataService exportDataService;
+
 
     private int month;
     private int year;
@@ -98,6 +103,7 @@ public class BasicApplicationController implements Initializable {
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;
+
     }
 
     @Override
@@ -206,9 +212,13 @@ public class BasicApplicationController implements Initializable {
     }
 
     public void showJournalExport(ActionEvent event){
+
+        this.exportDataService = new JournalExportDataService(new JDBCExportAccountRepository(ApplicationContextConfig.dataSourceAxapta()));
+
+
         FXMLLoader fxmlJournalExportLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/export/JournalExportView.fxml"));
 
-        JournalExportController journalExportController = new JournalExportController();
+        JournalExportController journalExportController = new JournalExportController(exportDataService,currentUser.getDatabase().getNameinAxapta());
         fxmlJournalExportLoader.setController(journalExportController);
         try {
             AnchorPane splitPane = fxmlJournalExportLoader.load();

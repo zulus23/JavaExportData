@@ -1,13 +1,19 @@
 package ru.zhukov.repository;
 
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import ru.zhukov.domain.AccountRecordExport;
+import ru.zhukov.domain.JournalExportDetail;
+import ru.zhukov.domain.JournalExportHeader;
 import ru.zhukov.dto.ExportJournal;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +21,7 @@ import java.util.Map;
 /**
  * Created by Gukov on 11.04.2016.
  */
-public class JDBCExportAccountRepository {
+public class JDBCExportAccountRepository implements  JournalExportRepository {
 
     private DataSource dataSource;
     private SimpleJdbcInsert simpleJdbcInsert;
@@ -25,6 +31,26 @@ public class JDBCExportAccountRepository {
         this.dataSource = dataSource;
         jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
+    public List<JournalExportHeader> loadAllJournal(String dimension){
+       String loadJournal = "SELECT RecNo" +
+                            ",State " +
+                            ",IMPORTBATCH" +
+                            ",SystemId" +
+                            ",ParentRecId" +
+                            ",Name" +
+                            ",Dimension" +
+                            " FROM EXP_LEDGERJOURNALTABLE where dimension = :dimension";
+
+        Map<String,Object> nameParameters = new HashMap<>();
+        nameParameters.put("dimension",dimension);
+
+        return jdbcTemplate.query(loadJournal,nameParameters, new JournalExportHeaderRecordMapper());
+
+
+
+    }
+
 
     public Number addRecordInLedgerJournalTable(ExportJournal journal) {
 
@@ -62,4 +88,85 @@ public class JDBCExportAccountRepository {
 
     }
 
+    @Override
+    public List<JournalExportHeader> loadJournal(String dimension) {
+       return  loadAllJournal(dimension);
+    }
+
+    @Override
+    public void delete(long recNo) {
+        String deleteS = "delete from EXP_LEDGERJOURNALTABLE where RecNo = :recNo";
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("recNo",recNo);
+
+        this.jdbcTemplate.update(deleteS, parameters);
+
+    }
+
+    @Override
+    public List<JournalExportDetail> loadDetailJournal(String parentJournal) {
+        String loadDetailJournal = "SELECT RecNo" +
+                ",State " +
+                ",ParentRecId" +
+                ",TableRecNo" +
+                ",TransDate" +
+                ",AccountNum as Debit " +
+                ",OffsetAccount as Credit " +
+                ",CurrencyCode, AmountCurDebit as summa " +
+                ",Txt as text" +
+                ",Dimension as dimension" +
+                ",Dimension2_ as dimension2" +
+                ",Dimension4_ as dimension4" +
+                ",Dimension7_ as dimension7" +
+                ",Dimension8_ as dimension8" +
+                " FROM EXP_LEDGERJOURNALTRANS where ParentRecId = :ParentRecId";
+
+        Map<String,Object> nameParameters = new HashMap<>();
+        nameParameters.put("ParentRecId",parentJournal);
+
+        return jdbcTemplate.query(loadDetailJournal,nameParameters, new JournalExportDetailRecordMapper());
+    }
+
+    private class JournalExportHeaderRecordMapper implements RowMapper<JournalExportHeader> {
+
+        @Override
+        public JournalExportHeader mapRow(ResultSet resultSet, int i) throws SQLException {
+            JournalExportHeader journalExportHeaderRecord = new JournalExportHeader();
+            journalExportHeaderRecord.setRecNo(resultSet.getLong("RecNo"));
+            journalExportHeaderRecord.setState(resultSet.getInt("State"));
+            journalExportHeaderRecord.setImportBatch(resultSet.getString("IMPORTBATCH"));
+            journalExportHeaderRecord.setSystemId(resultSet.getString("SystemId"));
+            journalExportHeaderRecord.setParentRecId(resultSet.getString("ParentRecId"));
+            journalExportHeaderRecord.setName(resultSet.getString("Name"));
+            journalExportHeaderRecord.setDimension(resultSet.getString("Dimension"));
+
+            return journalExportHeaderRecord;
+        }
+    }
+
+    private class JournalExportDetailRecordMapper implements RowMapper<JournalExportDetail> {
+        @Override
+        public JournalExportDetail mapRow(ResultSet resultSet, int i) throws SQLException {
+            JournalExportDetail journalExportDetailRecord = new JournalExportDetail();
+            journalExportDetailRecord.setRecNo(resultSet.getLong("RecNo"));
+            journalExportDetailRecord.setState(resultSet.getInt("State"));
+            journalExportDetailRecord.setTransDate(resultSet.getDate("TransDate"));
+            journalExportDetailRecord.setTableRecNo(resultSet.getLong("TableRecNo"));
+            journalExportDetailRecord.setParentRecId(resultSet.getString("ParentRecId"));
+            journalExportDetailRecord.setDebit(resultSet.getString("debit"));
+            journalExportDetailRecord.setCredit(resultSet.getString("credit"));
+            journalExportDetailRecord.setSumma(resultSet.getDouble("summa"));
+            journalExportDetailRecord.setText(resultSet.getString("text"));
+            journalExportDetailRecord.setTransDimension(resultSet.getString("Dimension"));
+            journalExportDetailRecord.setTransDimension2(resultSet.getString("Dimension2"));
+            journalExportDetailRecord.setTransDimension4(resultSet.getString("Dimension4"));
+            journalExportDetailRecord.setTransDimension7(resultSet.getString("Dimension7"));
+            journalExportDetailRecord.setTransDimension8(resultSet.getString("Dimension8"));
+
+
+            return  journalExportDetailRecord;
+        }
+    }
 }
+
+
