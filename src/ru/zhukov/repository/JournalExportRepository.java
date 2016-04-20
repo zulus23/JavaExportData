@@ -13,7 +13,7 @@ public interface JournalExportRepository {
 
     List<JournalExportHeader>  loadJournal(String dimension);
 
-    void delete(long recNo);
+    void delete(String parentRecId);
 
     List<JournalExportDetail> loadDetailJournal(String parentJournal);
 }

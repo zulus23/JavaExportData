@@ -2,16 +2,36 @@
   {
     "Name": "Готэк",
     "NameInDB": "ait_db",
-    "NameinAxapta": "г01"
+    "NameinAxapta": "Г011"
+  },
+  {
+    "Name": "Полипак",
+    "NameInDB": "polypack",
+    "NameinAxapta": "Г021"
+  },
+  {
+    "Name": "Готэк-Принт",
+    "NameInDB": "g_print",
+    "NameinAxapta": "Г031"
+  },
+  {
+    "Name": "Готэк-Литар",
+    "NameInDB": "litar",
+    "NameinAxapta": "Г041"
   },
   {
     "Name": "Готэк-ЦПУ",
     "NameInDB": "ait_cpu",
-    "NameinAxapta": "г05"
+    "NameinAxapta": "Г051"
   },
   {
     "Name": "Готэк-Инвест",
     "NameInDB": "g_invst",
-    "NameinAxapta": "г05"
+    "NameinAxapta": "Г061"
+  },
+  {
+    "Name": "Готэк-Северо-Запад",
+    "NameInDB": "ait_sp",
+    "NameinAxapta": "Г0111"
   }
 ]

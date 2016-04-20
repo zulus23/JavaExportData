@@ -1,5 +1,7 @@
 package ru.zhukov.export;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,6 +60,9 @@ public class JournalExportController implements Initializable {
     private TableColumn<JournalExportDetail,String> tdDimension7;
 
 
+    private ObjectProperty<JournalExportHeader> journalExportHeaderObjectProperty;
+
+
 
     private final JournalExportDataService dataService;
     private String dimension;
@@ -70,6 +75,8 @@ public class JournalExportController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        journalExportHeaderObjectProperty = new SimpleObjectProperty<>();
 
         thNumberOrder.setCellValueFactory(new PropertyValueFactory<JournalExportHeader,Long>("recNo"));
         thNumberJournal.setCellValueFactory(new PropertyValueFactory<JournalExportHeader,String>("parentRecId"));
@@ -92,8 +99,14 @@ public class JournalExportController implements Initializable {
         tHeader.getItems().addAll(dataService.allJournal(dimension));
 
 
+        tHeader.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            tDetail.getItems().addAll(dataService.listDetailJournal(newValue.getParentRecId()));
+            journalExportHeaderObjectProperty.set(newValue);
+        });
+
+        /*
         ObservableList<JournalExportHeader> observableList = tHeader.getSelectionModel().getSelectedItems();
-        observableList.addListener(new ListChangeListener<JournalExportHeader>() {
+        observableList.addListener( new ListChangeListener<JournalExportHeader>() {
             @Override
             public void onChanged(Change<? extends JournalExportHeader> c) {
                  System.out.println("----------------------------------------------------");
@@ -102,9 +115,15 @@ public class JournalExportController implements Initializable {
                         c.getList().stream().map(e -> e.getParentRecId()).findAny().orElse("")));
             }
         });
-
+         */
     }
 
+    public JournalExportHeader getJournalExportHeaderObjectProperty() {
+        return journalExportHeaderObjectProperty.get();
+    }
 
+    public ObjectProperty<JournalExportHeader> journalExportHeaderObjectPropertyProperty() {
+        return journalExportHeaderObjectProperty;
+    }
 
 }

@@ -62,8 +62,13 @@ public class ReadFileWithDatabase {
                 .serializeNulls()
                 .create();
         List<Database> databaseList = new ArrayList<>();
-        databaseList.add(new Database("Готэк","ait_db","г01"));
-        databaseList.add(new Database("Готэк-ЦПУ","ait_cpu","Г05"));
+        databaseList.add(new Database("Готэк","ait_db","Г011"));
+        databaseList.add(new Database("Полипак","polypack","Г021"));
+        databaseList.add(new Database("Готэк-Принт","g_print","Г031"));
+        databaseList.add(new Database("Готэк-Литар","litar","Г041"));
+        databaseList.add(new Database("Готэк-ЦПУ","ait_cpu","Г051"));
+        databaseList.add(new Database("Готэк-Инвест","g_invst","Г061"));
+        databaseList.add(new Database("Готэк-Северо-Запад","ait_sp","Г0111"));
 
         try(FileWriter fileWriter = new FileWriter(Paths.get(System.getProperty("user.dir")+"/database/database.json").toString())){
            fileWriter.write(mapper.toJson(databaseList));

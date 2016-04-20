@@ -35,9 +35,11 @@
            <items>
              <MenuItem fx:id="miViewAccount" mnemonicParsing="false" text="%menu.title.view.account"></MenuItem>
              <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport"></MenuItem>
+             <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="Алементы в сбербанк"></MenuItem>
+             <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="Перечисления в банк"></MenuItem>
            </items>
         </Menu>
-        <!--<Menu mnemonicParsing="false" text="Edit">
+       <!-- <Menu mnemonicParsing="false" text="Edit">
           <items>
             <MenuItem mnemonicParsing="false" text="Undo" />
             <MenuItem mnemonicParsing="false" text="Redo" />
@@ -50,12 +52,14 @@
             <MenuItem mnemonicParsing="false" text="Select All" />
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
-        </Menu>
-        -->
+        </Menu>-->
+
         <Menu mnemonicParsing="false" text="%menu.title.action">
           <items>
           <MenuItem mnemonicParsing="false" text="%menu.title.createaccount"  fx:id="miCreateAccountRecord"/>
           <MenuItem mnemonicParsing="false" text="%menu.title.exportaccount"  fx:id="miExportAccountRecord"/>
+          <SeparatorMenuItem mnemonicParsing="false" />
+          <MenuItem mnemonicParsing="false" text="%menu.title.delete" disable="true" fx:id="miDeleteRecord" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="%menu.title.help">

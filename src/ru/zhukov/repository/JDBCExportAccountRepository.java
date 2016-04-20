@@ -94,10 +94,11 @@ public class JDBCExportAccountRepository implements  JournalExportRepository {
     }
 
     @Override
-    public void delete(long recNo) {
-        String deleteS = "delete from EXP_LEDGERJOURNALTABLE where RecNo = :recNo";
+    public void delete(String parentRecId) {
+
+        String deleteS = "delete from EXP_LEDGERJOURNALTABLE where ParentRecId = :parentRecId";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("recNo",recNo);
+        parameters.put("parentRecId",parentRecId);
 
         this.jdbcTemplate.update(deleteS, parameters);
 

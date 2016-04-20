@@ -73,6 +73,9 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miExportAccountRecord;
 
     @FXML
+    private MenuItem miDeleteRecord;
+
+    @FXML
     private MenuItem miClose;
 
 
@@ -122,7 +125,7 @@ public class BasicApplicationController implements Initializable {
         miViewAccount.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/account_book-customer.png").toExternalForm())));
         miViewAccount.setOnAction(this::showAccountRecordView);
         miViewJournalExport.setOnAction(this::showJournalExport);
-
+        miDeleteRecord.setOnAction(this::deleteJournalExport);
 
         miCreateAccountRecord.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image16/contract-execute.png").toExternalForm())));
         miCreateAccountRecord.setOnAction(this::createAccountRecord);
@@ -180,6 +183,11 @@ public class BasicApplicationController implements Initializable {
 
 
     }
+
+    private void deleteJournalExport(ActionEvent event) {
+        //TODO Удаление журнала
+    }
+
     private void bindTaskCreateAccountRecord(){
         mainWindow.sceneProperty().getValue().getWindow().widthProperty().addListener( e ->{
             if(createAccountRecordTask.isRunning()){
@@ -238,6 +246,11 @@ public class BasicApplicationController implements Initializable {
             tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);
             tpWindowContainer.getTabs().addAll(tabJournalExport);
+            //TODO Необходимо сохранять ссылку на контроллер
+            miDeleteRecord.disableProperty().bind(journalExportController.journalExportHeaderObjectPropertyProperty().isNull());
+            journalExportController.journalExportHeaderObjectPropertyProperty().addListener((observable, oldValue, newValue) -> {
+                 System.out.println(newValue);
+            });
 
 
         } catch (IOException e) {
