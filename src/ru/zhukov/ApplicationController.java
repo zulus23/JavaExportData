@@ -118,7 +118,7 @@ public class ApplicationController  {
 
                                      .handleAsync((user,ex)->{
            if(user==null){
-               Platform.runLater(()-> exceptionReporter(new SQLException("Ошибка базы данных")));
+               Platform.runLater(()-> exceptionReporter(new SQLException("Ошибка идентификации.\nПопробуйте еще раз.")));
            } else{
                currentUser = (CurrentUser) user;
 

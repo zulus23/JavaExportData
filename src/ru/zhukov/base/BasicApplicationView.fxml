@@ -35,8 +35,8 @@
            <items>
              <MenuItem fx:id="miViewAccount" mnemonicParsing="false" text="%menu.title.view.account"></MenuItem>
              <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport"></MenuItem>
-             <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="Алементы в сбербанк"></MenuItem>
-             <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="Перечисления в банк"></MenuItem>
+             <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="%menu.title.view.alimentjournal"></MenuItem>
+             <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="%menu.title.view.transfermoney"></MenuItem>
            </items>
         </Menu>
        <!-- <Menu mnemonicParsing="false" text="Edit">

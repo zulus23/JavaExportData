@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane id="pLoginWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="265.0" prefWidth="351.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -24,8 +25,11 @@
                <children>
                   <Group>
                      <children>
-                        <Region prefHeight="77.0" prefWidth="365.0" style="-fx-background-color: #E57373;" />
-                        <Label fx:id="tError" layoutX="43.0" layoutY="15.0" prefHeight="48.0" prefWidth="201.0" text="Label" visible="false" />
+                        <Region layoutY="-5.0" prefHeight="77.0" prefWidth="365.0" style="-fx-background-color: #E57373;" />
+                        <Label fx:id="tError" layoutX="25.0" layoutY="5.0" prefHeight="58.0" prefWidth="315.0" text="Label" visible="false" wrapText="true" alignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font></Label>
                      </children>
                   </Group>
                   <GridPane alignment="CENTER" prefHeight="107.0" prefWidth="365.0">

@@ -1,0 +1,38 @@
+/* Алименты*/
+
+SELECT DISTINCT (x.brief_Name + ' '+ X.naz_otd + ' ') as NameOtdel ,
+C.tabel_n,(RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))AS FIO,
+
+(case when isnull(c.sprm4,'')<> '' then c.sprm4 else case
+when isnull(c.sprm5,'')<> '' then c.sprm5 else c.sprm6 end
+end) as schet,
+R.CODE,R.SUMMA,
+(RTrim(a.fami)+' '+Rtrim(a.imya)+' '+Rtrim(a.otchesvto)) AS poluch,
+a.nomer_schet schet_sb,
+
+ RTrim(a.fami)  as name,
+ Rtrim(a.imya)  as first_name,
+ Rtrim(a.otchesvto)  as sec_name,
+
+V.CODENAME, a.date_end
+FROM CONST C
+JOIN XCHECK X ON C.N_OTD = X.N_OTD
+AND  X.N_OTD IN (SELECT N_OTD FROM PERMISSIONS P
+                  WHERE P.USER_ID = (SELECT ID FROM USERS U
+                                     WHERE U.USER_NM = :USER_NM
+                  ))
+
+LEFT JOIN ARHIV_RAS R ON R.PERS_ID = C.PERS_ID
+AND R.YY = DATEPART(yy,:DATEBEGIN) and R.MM = DATEPART(mm,:DATEBEGIN)
+LEFT JOIN SPRAV V ON V.CODE = R.CODE
+
+left join alim a on r.pers_id = a.pers_id and a.date_end > '01-march-09' and (r.summa = a.summa or r.prc = a.summa)
+
+where  r.code ='710' and isnull(a.pochta,0) = 0 and isnull(a.bank,'')<> ''
+/*and (isnull(a.bank,'') <> '' or isnull(p.bank,'') <> '')
+*/
+ORDER BY (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))
+
+
+select  * from contracts
+/* */

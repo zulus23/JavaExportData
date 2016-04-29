@@ -44,7 +44,9 @@ import java.util.WeakHashMap;
 public class BasicApplicationController implements Initializable {
 
     private Map<Tab,AccountRecordController> accountRecordControllerWeakHashMap  = new WeakHashMap<>();
+    private Map<Tab,JournalExportController> journalExportControllerWeakHashMap  = new WeakHashMap<>();
 
+    private JournalExportController currentJournalExportController;
 
     private ResourceBundle resourceBundle;
 
@@ -177,7 +179,12 @@ public class BasicApplicationController implements Initializable {
 
 
         miCreateAccountRecord.disableProperty().bindBidirectional(createAccountRecordButton.disableProperty());
-
+        tpWindowContainer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            JournalExportController journalExportController = journalExportControllerWeakHashMap.get(newValue);
+                if ( journalExportController != null){
+                   currentJournalExportController = journalExportController;
+                }
+        });
 
 
 
@@ -245,14 +252,15 @@ public class BasicApplicationController implements Initializable {
             tabJournalExport.setContent(splitPane);
             tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);
-            tpWindowContainer.getTabs().addAll(tabJournalExport);
+
             //TODO Необходимо сохранять ссылку на контроллер
+
             miDeleteRecord.disableProperty().bind(journalExportController.journalExportHeaderObjectPropertyProperty().isNull());
             journalExportController.journalExportHeaderObjectPropertyProperty().addListener((observable, oldValue, newValue) -> {
                  System.out.println(newValue);
             });
-
-
+            journalExportControllerWeakHashMap.putIfAbsent(tabJournalExport,journalExportController);
+            tpWindowContainer.getTabs().addAll(tabJournalExport);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,36 @@
+SELECT DISTINCT (x.brief_Name + ' '+ X.naz_otd + ' ') as NameOtdel ,
+C.tabel_n,(RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))AS FIO,
+
+(case when isnull(c.sprm4,'')<> '' then c.sprm4 else case
+when isnull(c.sprm5,'')<> '' then c.sprm5 else c.sprm6 end
+end) as schet,
+R.CODE,R.SUMMA,
+(RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name)) AS poluch,
+
+p.number_schet as schet_sb,
+
+ RTrim(c.name)  as name,
+ Rtrim(c.first_name)  as first_name,
+ Rtrim(c.sec_name)  as sec_name,
+V.CODENAME, '01.12.1998'
+FROM CONST C
+JOIN XCHECK X ON C.N_OTD = X.N_OTD
+AND  X.N_OTD IN (SELECT N_OTD FROM PERMISSIONS P
+                  WHERE P.USER_ID = (SELECT ID FROM USERS U
+                                     WHERE U.USER_NM = :USER_NM
+                  ))
+
+LEFT JOIN ARHIV_RAS R ON R.PERS_ID = C.PERS_ID
+AND R.YY = DATEPART(yy,:DATEBEGIN) and R.MM = DATEPART(mm,:DATEBEGIN)
+LEFT JOIN SPRAV V ON V.CODE = R.CODE
+
+left join perech p on r.pers_id = p.pers_id
+
+where  r.code ='701'
+and isnull(p.bank,'') <> ''
+
+ORDER BY (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))
+
+
+
+select  * from contracts
