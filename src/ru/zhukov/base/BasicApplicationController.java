@@ -23,6 +23,7 @@ import ru.zhukov.action.Action;
 import ru.zhukov.config.ApplicationContextConfig;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
+import ru.zhukov.employee.AccrualEmployeeController;
 import ru.zhukov.export.JournalExportController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.service.AccountRecordDataService;
@@ -67,6 +68,10 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miViewAccount;
     @FXML
     private MenuItem miViewJournalExport;
+
+
+    @FXML
+    private MenuItem miViewTransferMoneyBankJournal;
 
 
     @FXML
@@ -186,9 +191,42 @@ public class BasicApplicationController implements Initializable {
                 }
         });
 
+        miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
 
 
+    }
 
+    private void showTransferMoneyBankJournal(ActionEvent event) {
+        month = datePicker.getValue().getMonthValue();
+        year = datePicker.getValue().getYear();
+        FXMLLoader fxmlTransferMoneyBankJournal = new FXMLLoader(getClass().getResource("/ru/zhukov/export/JournalExportView.fxml"));
+
+        AccrualEmployeeController accrualEmployeeController = new AccrualEmployeeController(dataService,month,year);
+        fxmlTransferMoneyBankJournal.setController(accrualEmployeeController);
+        try {
+            AnchorPane transferAnchorPane =  fxmlTransferMoneyBankJournal.load();
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(transferAnchorPane, 0.0);
+            AnchorPane.setLeftAnchor(transferAnchorPane, 0.0);
+            AnchorPane.setRightAnchor(transferAnchorPane, 0.0);
+            AnchorPane.setBottomAnchor(transferAnchorPane, 0.0);
+
+            anchorPane.getChildren().add(transferAnchorPane);
+
+            Tab tabJournalTransferTab = new Tab();
+
+            tabJournalTransferTab.setText("Журнал перечисления в банк");
+            tabJournalTransferTab.setContent(transferAnchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+
+
+            tpWindowContainer.getTabs().addAll(tabJournalTransferTab);
+
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteJournalExport(ActionEvent event) {

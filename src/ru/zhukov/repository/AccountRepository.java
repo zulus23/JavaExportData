@@ -2,6 +2,7 @@ package ru.zhukov.repository;
 
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.domain.AccountRecordExport;
+import ru.zhukov.domain.AccrualEmployee;
 import ru.zhukov.dto.ExportJournal;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public interface AccountRepository {
 
 
     void exportAccountRecord(int month, int year, ExportJournal journal);
+
+    List<AccrualEmployee> accrualEmployeeList(int month, int year);
 
 
 

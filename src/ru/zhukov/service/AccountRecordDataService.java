@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.zhukov.domain.AccountRecord;
+import ru.zhukov.domain.AccrualEmployee;
 import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.repository.AccountRepository;
 
@@ -31,6 +32,12 @@ public class AccountRecordDataService {
         return  accountRecords;
     }
 
+
+  public ObservableList<AccrualEmployee> accrualEmployeeListByMonthAndYear(int month, int year) {
+      ObservableList<AccrualEmployee> accrualEmployees = FXCollections.observableArrayList();
+      accrualEmployees.addAll(accountRepository.accrualEmployeeList(month,year));
+      return accrualEmployees;
+  }
 
 
 

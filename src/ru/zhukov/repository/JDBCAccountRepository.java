@@ -2,6 +2,7 @@ package ru.zhukov.repository;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.domain.AccountRecordExport;
+import ru.zhukov.domain.AccrualEmployee;
 import ru.zhukov.dto.ExportJournal;
 
 import javax.sql.DataSource;
@@ -95,6 +97,39 @@ public class JDBCAccountRepository implements AccountRepository{
     }
 
 
+    public  List<AccrualEmployee> accrualEmployeeList(int month, int year){
+        String query = "SELECT DISTINCT c.pers_id as persId, (x.brief_Name + ' '+ X.naz_otd + ' ') as NameOtdel ,\n" +
+                       "C.tabel_n,(RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))AS NameEmployee,\n" +
+                       "(case when isnull(c.sprm4,'')<> '' then c.sprm4 else case\n" +
+                         "when isnull(c.sprm5,'')<> '' then c.sprm5 else c.sprm6 end end) as schet,\n" +
+                         "R.CODE,R.SUMMA,  (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name)) AS poluch,\n" +
+                         "p.number_schet as schet_sb,\n" +
+                         " RTrim(c.name)  as name,\n" +
+                         " Rtrim(c.first_name)  as first_name,\n" +
+                         " Rtrim(c.sec_name)  as sec_name,\n" +
+                         "V.CODENAME FROM CONST C\n" +
+                       "JOIN XCHECK X ON C.N_OTD = X.N_OTD\n" +
+                       "AND  X.N_OTD IN (SELECT N_OTD FROM PERMISSIONS P\n" +
+                       "                  WHERE P.USER_ID = (SELECT ID FROM USERS U\n" +
+                       "                                     WHERE U.USER_NM = :USER_NM\n" +
+                       "                  ))\n" +
+                       "LEFT JOIN ARHIV_RAS R ON R.PERS_ID = C.PERS_ID\n" +
+                       "AND R.YY = :VYEAR and R.MM = :VMES\n" +
+                       "LEFT JOIN SPRAV V ON V.CODE = R.CODE\n" +
+                       "left join perech p on r.pers_id = p.pers_id\n" +
+                       "where  r.code ='701'\n" +
+                       "and isnull(p.bank,'') <> ''\n" +
+                       "ORDER BY (RTrim(c.name)+' '+Rtrim(c.first_name)+' '+Rtrim(c.sec_name))\n";
+
+
+        Map<String,Object> nameParameters = new HashMap<>();
+        nameParameters.put("VMES",month);
+        nameParameters.put("VYEAR",year);
+
+        return jdbcTemplate.query(query,nameParameters,new AccrualEmployeeMapper());
+
+    }
+
 
 
 
@@ -138,6 +173,26 @@ public class JDBCAccountRepository implements AccountRepository{
 
             return  recordExport;
 
+        }
+    }
+
+    private class AccrualEmployeeMapper implements RowMapper<AccrualEmployee> {
+        @Override
+        public AccrualEmployee mapRow(ResultSet resultSet, int i) throws SQLException {
+            AccrualEmployee accrualEmployee = new AccrualEmployee();
+            accrualEmployee.setPersId(resultSet.getString("persId"));
+            accrualEmployee.setNameEmployee(resultSet.getString("FIO"));
+            accrualEmployee.setDepartment(resultSet.getString("NameOtdel"));
+            accrualEmployee.setAccountNumber(resultSet.getString("schet"));
+            accrualEmployee.setReceiverName(resultSet.getString("name"));
+            accrualEmployee.setReceiverFirstName(resultSet.getString("first_name"));
+            accrualEmployee.setReceiverSecondtName(resultSet.getString("second_name"));
+            accrualEmployee.setAccountByBank(resultSet.getString("schet_sb"));
+            accrualEmployee.setCode(resultSet.getString("code"));
+            accrualEmployee.setCodeName(resultSet.getString("codename"));
+            accrualEmployee.setSumma(resultSet.getDouble("summa"));
+
+            return accrualEmployee;
         }
     }
 }
