@@ -66,8 +66,19 @@ public class AccrualEmployeeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        tabelN.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("tabel"));
+
         department.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("department"));
         employee.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("nameEmployee"));
+        code.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("code"));
+        codeName.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("codeName"));
+        account.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("accountNumber"));
+        accountReceiver.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("accountByBank"));
+        office.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("office"));
+        branchOffice.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("branchOffice"));
+        summa.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,Double>("summa"));
+
+        receiver.setCellValueFactory(new PropertyValueFactory<AccrualEmployee,String>("fullNameReceiver"));
 
         CompletableFuture.runAsync(()->{
             Platform.runLater(()->{

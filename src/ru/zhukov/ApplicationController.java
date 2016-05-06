@@ -81,7 +81,7 @@ public class ApplicationController  {
             ex.printStackTrace();
         }
     }
-    public void createApplicationWindow(){
+    public void createApplicationWindow(String nameEnterprise){
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
             fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
@@ -97,7 +97,7 @@ public class ApplicationController  {
             stage.setMaximized(true);
             stage.getIcons().add(new Image(getClass().getResource("/ru/zhukov/assests/image/proforma-to_employee.png").toExternalForm()));
             Scene scene = new Scene(app);
-            stage.setTitle("Передача данных из АиТ");
+            stage.setTitle(String.format("Передача данных из АиТ - %s",nameEnterprise));
 
             stage.setScene(scene);
             stage.show();
@@ -122,7 +122,7 @@ public class ApplicationController  {
            } else{
                currentUser = (CurrentUser) user;
 
-               Platform.runLater(()->this.createApplicationWindow());
+               Platform.runLater(()->this.createApplicationWindow(database.getName()));
            }
             return "";
 

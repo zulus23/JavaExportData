@@ -199,7 +199,7 @@ public class BasicApplicationController implements Initializable {
     private void showTransferMoneyBankJournal(ActionEvent event) {
         month = datePicker.getValue().getMonthValue();
         year = datePicker.getValue().getYear();
-        FXMLLoader fxmlTransferMoneyBankJournal = new FXMLLoader(getClass().getResource("/ru/zhukov/export/JournalExportView.fxml"));
+        FXMLLoader fxmlTransferMoneyBankJournal = new FXMLLoader(getClass().getResource("/ru/zhukov/employee/AccrualEmployeeView.fxml"));
 
         AccrualEmployeeController accrualEmployeeController = new AccrualEmployeeController(dataService,month,year);
         fxmlTransferMoneyBankJournal.setController(accrualEmployeeController);
@@ -216,7 +216,7 @@ public class BasicApplicationController implements Initializable {
             Tab tabJournalTransferTab = new Tab();
 
             tabJournalTransferTab.setText("Журнал перечисления в банк");
-            tabJournalTransferTab.setContent(transferAnchorPane);
+            tabJournalTransferTab.setContent(anchorPane);
             tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);
 
@@ -332,8 +332,8 @@ public class BasicApplicationController implements Initializable {
 
             tabAccount.setText(String.format("Проводки за %s ",datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY"))));
             tabAccount.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            tpWindowContainer.setTabMinWidth(180);
+            tpWindowContainer.setTabMaxWidth(180);
             tpWindowContainer.getTabs().addAll(tabAccount);
             accountRecordControllerWeakHashMap.putIfAbsent(tabAccount,accountRecordController);
 

@@ -109,10 +109,10 @@ public class JDBCAccountRepository implements AccountRepository{
                          " Rtrim(c.sec_name)  as sec_name,\n" +
                          "V.CODENAME FROM CONST C\n" +
                        "JOIN XCHECK X ON C.N_OTD = X.N_OTD\n" +
-                       "AND  X.N_OTD IN (SELECT N_OTD FROM PERMISSIONS P\n" +
+                       "/*AND  X.N_OTD IN (SELECT N_OTD FROM PERMISSIONS P\n" +
                        "                  WHERE P.USER_ID = (SELECT ID FROM USERS U\n" +
                        "                                     WHERE U.USER_NM = :USER_NM\n" +
-                       "                  ))\n" +
+                       "                  ))*/\n" +
                        "LEFT JOIN ARHIV_RAS R ON R.PERS_ID = C.PERS_ID\n" +
                        "AND R.YY = :VYEAR and R.MM = :VMES\n" +
                        "LEFT JOIN SPRAV V ON V.CODE = R.CODE\n" +
@@ -181,12 +181,13 @@ public class JDBCAccountRepository implements AccountRepository{
         public AccrualEmployee mapRow(ResultSet resultSet, int i) throws SQLException {
             AccrualEmployee accrualEmployee = new AccrualEmployee();
             accrualEmployee.setPersId(resultSet.getString("persId"));
-            accrualEmployee.setNameEmployee(resultSet.getString("FIO"));
+            accrualEmployee.setTabel(resultSet.getString("tabel_n"));
+            accrualEmployee.setNameEmployee(resultSet.getString("NameEmployee"));
             accrualEmployee.setDepartment(resultSet.getString("NameOtdel"));
             accrualEmployee.setAccountNumber(resultSet.getString("schet"));
             accrualEmployee.setReceiverName(resultSet.getString("name"));
             accrualEmployee.setReceiverFirstName(resultSet.getString("first_name"));
-            accrualEmployee.setReceiverSecondtName(resultSet.getString("second_name"));
+            accrualEmployee.setReceiverSecondtName(resultSet.getString("sec_name"));
             accrualEmployee.setAccountByBank(resultSet.getString("schet_sb"));
             accrualEmployee.setCode(resultSet.getString("code"));
             accrualEmployee.setCodeName(resultSet.getString("codename"));

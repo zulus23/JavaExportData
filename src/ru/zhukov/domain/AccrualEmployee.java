@@ -6,7 +6,9 @@ package ru.zhukov.domain;
 public class AccrualEmployee {
 
 
+    private static final String CODE_BANK_OFFICE = "8596";
     private String persId;
+    private String tabel;
     private String department;
     private String nameEmployee;
 
@@ -19,6 +21,16 @@ public class AccrualEmployee {
     private String code;
     private String codeName;
     private Double summa;
+
+
+    private String office;
+    private String branchOffice;
+
+    private String fullNameReceiver;
+
+    public String getFullNameReceiver() {
+        return String.format("%s %s %s",receiverName.trim(),receiverFirstName.trim(),receiverSecondtName.trim());
+    }
 
     public String getDepartment() {
         return department;
@@ -45,7 +57,7 @@ public class AccrualEmployee {
     }
 
     public String getAccountByBank() {
-        return accountByBank;
+        return accountByBank.trim();
     }
 
     public void setAccountByBank(String accountByBank) {
@@ -77,7 +89,7 @@ public class AccrualEmployee {
     }
 
     public String getAccountNumber() {
-        return accountNumber;
+        return accountNumber.trim();
     }
 
     public void setAccountNumber(String accountNumber) {
@@ -106,5 +118,21 @@ public class AccrualEmployee {
 
     public void setSumma(Double summa) {
         this.summa = summa;
+    }
+
+    public String getTabel() {
+        return tabel;
+    }
+
+    public void setTabel(String tabel) {
+        this.tabel = tabel;
+    }
+
+    public String getBranchOffice() {
+        return CODE_BANK_OFFICE;
+    }
+
+    public String getOffice() {
+        return CODE_BANK_OFFICE;
     }
 }

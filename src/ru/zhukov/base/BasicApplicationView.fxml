@@ -60,7 +60,11 @@
           <MenuItem mnemonicParsing="false" text="%menu.title.exportaccount"  fx:id="miExportAccountRecord"/>
           <SeparatorMenuItem mnemonicParsing="false" />
           <MenuItem mnemonicParsing="false" text="%menu.title.delete" disable="true" fx:id="miDeleteRecord" />
+          <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="%menu.title.createFile" disable="true" fx:id="miCreateFile" />
           </items>
+
+
         </Menu>
         <Menu mnemonicParsing="false" text="%menu.title.help">
           <items>
