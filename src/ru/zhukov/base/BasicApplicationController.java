@@ -2,7 +2,10 @@ package ru.zhukov.base;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,8 +38,11 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
+
+import static javax.swing.UIManager.get;
 
 /**
  * Created by Gukov on 24.03.2016.
@@ -47,7 +53,7 @@ public class BasicApplicationController implements Initializable {
     private Map<Tab,AccountRecordController> accountRecordControllerWeakHashMap  = new WeakHashMap<>();
     private Map<Tab,JournalExportController> journalExportControllerWeakHashMap  = new WeakHashMap<>();
 
-    private JournalExportController currentJournalExportController;
+    private ObjectProperty<JournalExportController> currentJournalExportController;
 
     private ResourceBundle resourceBundle;
 
@@ -118,6 +124,7 @@ public class BasicApplicationController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         this.resourceBundle = resources;
         miExit.setOnAction(Action::exit);
         miExit.setAccelerator(KeyCombination.keyCombination("Ctrl+F4"));
@@ -181,14 +188,20 @@ public class BasicApplicationController implements Initializable {
         tToolBar.getItems().add(datePicker);
         tToolBar.getItems().add(preferencesButton);
        // tToolBar.getItems().add(new Separator(Orientation.VERTICAL));
+        currentJournalExportController = new SimpleObjectProperty<>();
 
 
         miCreateAccountRecord.disableProperty().bindBidirectional(createAccountRecordButton.disableProperty());
         tpWindowContainer.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            JournalExportController journalExportController = journalExportControllerWeakHashMap.get(newValue);
-                if ( journalExportController != null){
-                   currentJournalExportController = journalExportController;
-                }
+
+              currentJournalExportController.set(journalExportControllerWeakHashMap.get(newValue));
+               BooleanBinding bindings = Bindings.isNull(currentJournalExportController);
+               if (currentJournalExportController.get() != null){
+                 bindings =  Bindings.isNull(currentJournalExportController).and(currentJournalExportController.get().journalExportHeaderObjectPropertyProperty().isNull());
+               }
+               miDeleteRecord.disableProperty().bind(bindings);
+
+
         });
 
         miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
@@ -230,7 +243,20 @@ public class BasicApplicationController implements Initializable {
     }
 
     private void deleteJournalExport(ActionEvent event) {
+        String numberDocument = currentJournalExportController.get().getJournalExportHeaderObjectProperty().getParentRecId();
+
         //TODO Удаление журнала
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, String.format("Удалить журнал %s?",numberDocument));
+        alert.setTitle("Внимание");
+        alert.setHeaderText("");
+        alert.showAndWait().filter(e -> e.getButtonData() == ButtonBar.ButtonData.OK_DONE).ifPresent(response -> {
+
+            exportDataService.deleteJournal(currentJournalExportController.get().getJournalExportHeaderObjectProperty().getParentRecId(),
+                    currentUser.getDatabase().getNameinAxapta());
+            currentJournalExportController.get().refreshData();
+
+        });
+
     }
 
     private void bindTaskCreateAccountRecord(){
@@ -293,10 +319,12 @@ public class BasicApplicationController implements Initializable {
 
             //TODO Необходимо сохранять ссылку на контроллер
 
-            miDeleteRecord.disableProperty().bind(journalExportController.journalExportHeaderObjectPropertyProperty().isNull());
-            journalExportController.journalExportHeaderObjectPropertyProperty().addListener((observable, oldValue, newValue) -> {
+            //miDeleteRecord.disableProperty().bind(journalExportController.journalExportHeaderObjectPropertyProperty().isNull());
+            //miDeleteRecord.disableProperty().bind(bindings);
+          /*  journalExportController.journalExportHeaderObjectPropertyProperty().addListener((observable, oldValue, newValue) -> {
                  System.out.println(newValue);
             });
+            */
             journalExportControllerWeakHashMap.putIfAbsent(tabJournalExport,journalExportController);
             tpWindowContainer.getTabs().addAll(tabJournalExport);
         } catch (IOException e) {

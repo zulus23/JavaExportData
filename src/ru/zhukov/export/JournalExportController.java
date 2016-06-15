@@ -73,6 +73,13 @@ public class JournalExportController implements Initializable {
         this.dimension = dimension;
     }
 
+    public void refreshData(){
+        tDetail.getItems().clear();
+        tHeader.getItems().clear();
+        tHeader.getItems().addAll(dataService.allJournal(dimension));
+
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -100,8 +107,11 @@ public class JournalExportController implements Initializable {
 
 
         tHeader.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            tDetail.getItems().addAll(dataService.listDetailJournal(newValue.getParentRecId()));
-            journalExportHeaderObjectProperty.set(newValue);
+            if (newValue != null) {
+                tDetail.getItems().addAll(dataService.listDetailJournal(newValue.getParentRecId()));
+            }
+                journalExportHeaderObjectProperty.set(newValue);
+
         });
 
         /*

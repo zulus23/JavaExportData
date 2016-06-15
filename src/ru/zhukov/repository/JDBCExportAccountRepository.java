@@ -94,13 +94,21 @@ public class JDBCExportAccountRepository implements  JournalExportRepository {
     }
 
     @Override
-    public void delete(String parentRecId) {
+    public void delete(String parentRecId,String dimension) {
 
-        String deleteS = "delete from EXP_LEDGERJOURNALTABLE where ParentRecId = :parentRecId";
+        String deleteTrans = "delete from EXP_LEDGERJOURNALTRANS where ParentRecId in (select parentRecId from  EXP_LEDGERJOURNALTABLE where ParentRecId = :parentRecId and Dimension = :dimension) " +
+                         " and  dimension = :dimension";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("parentRecId",parentRecId);
+        parameters.put("dimension",dimension);
+        this.jdbcTemplate.update(deleteTrans, parameters);
 
-        this.jdbcTemplate.update(deleteS, parameters);
+        String deleteTable = "delete from EXP_LEDGERJOURNALTABLE where ParentRecId = :parentRecId and Dimension = :dimension";
+        parameters.put("parentRecId",parentRecId);
+        parameters.put("dimension",dimension);
+        this.jdbcTemplate.update(deleteTable, parameters);
+
+
 
     }
 

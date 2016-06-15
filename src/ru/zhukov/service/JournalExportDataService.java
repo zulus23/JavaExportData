@@ -28,8 +28,8 @@ public class JournalExportDataService {
         return exportRepository.loadDetailJournal(parentJournal);
     }
 
-    public void deleteJournal(String parentRecId){
-        exportRepository.delete(parentRecId);
+    public void deleteJournal(String parentRecId,String dimension){
+        exportRepository.delete(parentRecId,dimension);
     }
 
 }

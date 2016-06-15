@@ -15,6 +15,7 @@ import ru.zhukov.dto.ExportJournal;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -49,7 +50,7 @@ public class ExportAccountRecordController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String code = String.format("ZARP-%s-%s",this.month,this.year);
+        String code = String.format("ZARP-%s-%s-%s-%s",this.month,this.year,this.dimensionDb, LocalTime.now().getSecond());
         String name = String.format("Запрлата за %s",LocalDate.of(this.year,this.month,1).format(DateTimeFormatter.ofPattern("MM-YYYY")));
         String description = String.format("Предача данных по запрлате за %s",LocalDate.of(this.year,this.month,1).format(DateTimeFormatter.ofPattern("MM-YYYY")));
         tDate.setValue(LocalDate.now());
