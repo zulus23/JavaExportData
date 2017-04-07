@@ -2,7 +2,7 @@
   <library name="org.controlsfx:controlsfx:8.40.10" type="repository">
     <properties maven-id="org.controlsfx:controlsfx:8.40.10" />
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.11-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.12.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

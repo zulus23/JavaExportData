@@ -66,6 +66,15 @@
 
 
         </Menu>
+        <Menu mnemonicParsing="false" text="%menu.title.helper">
+          <items>
+            <MenuItem mnemonicParsing="false" text="%menu.title.helpcost" fx:id="miCostHelper"/>
+            <MenuItem mnemonicParsing="false" text="%menu.title.helpdepartment" fx:id="miDepartmentSetup"/>
+            <MenuItem mnemonicParsing="false" text="%menu.title.helpaccount" fx:id="miAccountHelper"/>
+          </items>
+        </Menu>
+
+
         <Menu mnemonicParsing="false" text="%menu.title.help">
           <items>
             <MenuItem mnemonicParsing="false" text="%menu.title.about" />

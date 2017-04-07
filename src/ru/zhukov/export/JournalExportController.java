@@ -15,6 +15,7 @@ import ru.zhukov.service.JournalExportDataService;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -107,7 +108,7 @@ public class JournalExportController implements Initializable {
 
 
         tHeader.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            if (Optional.ofNullable(newValue).isPresent()) {
                 tDetail.getItems().addAll(dataService.listDetailJournal(newValue.getParentRecId()));
             }
                 journalExportHeaderObjectProperty.set(newValue);

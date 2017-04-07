@@ -91,6 +91,18 @@ public class BasicApplicationController implements Initializable {
     @FXML
     private MenuItem miClose;
 
+    /* ------- Справочники -----------*/
+    @FXML
+    private MenuItem miCostHelper;
+    @FXML
+    private MenuItem miDepartmentSetup;
+    @FXML
+    private MenuItem miAccountHelper;
+
+    /* ----------------------------- */
+
+
+
 
     @FXML
     private VBox mainWindow;
@@ -206,7 +218,39 @@ public class BasicApplicationController implements Initializable {
 
         miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
 
+        miDepartmentSetup.setOnAction(this::showDepartmentSetupTransfer);
 
+
+    }
+
+    private void showDepartmentSetupTransfer(ActionEvent actionEvent) {
+        FXMLLoader fxmlDepartmentSetupTransfer = new FXMLLoader(getClass().getResource("/ru/zhukov/transfer/SetupDepartmentTransferView.fxml"));
+        try{
+
+            AnchorPane departmentSetup =  fxmlDepartmentSetupTransfer.load();
+
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(departmentSetup, 0.0);
+            AnchorPane.setLeftAnchor(departmentSetup, 0.0);
+            AnchorPane.setRightAnchor(departmentSetup, 0.0);
+            AnchorPane.setBottomAnchor(departmentSetup, 0.0);
+
+            anchorPane.getChildren().add(departmentSetup);
+
+            Tab tabDepartmentSetupTransfer = new Tab();
+
+            tabDepartmentSetupTransfer.setText("Настройка соотвествия подразделений");
+            tabDepartmentSetupTransfer.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+
+
+            tpWindowContainer.getTabs().addAll(tabDepartmentSetupTransfer);
+
+
+        }catch(IOException ex){
+           ex.printStackTrace();
+        }
     }
 
     private void showTransferMoneyBankJournal(ActionEvent event) {
