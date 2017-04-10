@@ -14,5 +14,11 @@ public class SetupDepartmentForTransfer {
   @EmbeddedId
   private DepartmentTransferKey departmentTransferKey;
 
+    public DepartmentTransferKey getDepartmentTransferKey() {
+        return departmentTransferKey;
+    }
 
+    public void setDepartmentTransferKey(DepartmentTransferKey departmentTransferKey) {
+        this.departmentTransferKey = departmentTransferKey;
+    }
 }

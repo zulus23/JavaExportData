@@ -46,12 +46,14 @@ public class ApplicationController  {
 
     private AccountRepository accountRepository;
 
-    {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
-    }
+
     private AccountRecordDataService getDataService(){
         accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser),
                                                       ApplicationContextConfig.dataSourceAxapta());
+        ApplicationContextConfig.setCurrentUser(currentUser);
+
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+
 
         EntityManagerFactory managerFactory = ApplicationContextConfig.entityManagerFactory(ApplicationContextConfig.dataSource(currentUser)).getNativeEntityManagerFactory();
 

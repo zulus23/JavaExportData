@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import ru.zhukov.dto.CurrentUser;
@@ -12,6 +13,7 @@ import ru.zhukov.utils.ApplicationUtils;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Created by Gukov on 28.03.2016.
@@ -31,9 +33,12 @@ public class ApplicationContextConfig{
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
         jpaVendorAdapter.setShowSql(true);
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("eclipselink.weaving",true);
 
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-        factoryBean.setPackagesToScan("ru.zhukov.entity","ru.zhukov.dto");
+        factoryBean.setPackagesToScan("ru.zhukov.domain");
+        factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
         return  factoryBean;
     }
 
@@ -60,7 +65,17 @@ public class ApplicationContextConfig{
         return dataSource;
     }
 
+    @Bean
+    public static CurrentUser currentUser(){
+        return  currentUser;
+    }
 
-
-
+    public static void setCurrentUser(CurrentUser currentUser) {
+        ApplicationContextConfig.currentUser = currentUser;
+    }
+    @Bean
+    public InstrumentationLoadTimeWeaver loadTimeWeaver()  throws Throwable {
+        InstrumentationLoadTimeWeaver loadTimeWeaver = new InstrumentationLoadTimeWeaver();
+        return loadTimeWeaver;
+    }
 }
