@@ -8,7 +8,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Repository;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
 import ru.zhukov.config.ApplicationContextConfig;
@@ -17,9 +20,11 @@ import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.login.LoginController;
 import ru.zhukov.repository.AccountRepository;
 import ru.zhukov.repository.JDBCAccountRepository;
+import ru.zhukov.repository.TransferJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.DBAuthenticationService;
 
+import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -32,6 +37,8 @@ import java.util.ResourceBundle;
 public class ApplicationController  {
     private static final ApplicationController applicationController = new ApplicationController();
 
+    @Autowired
+    private TransferJpaRepository transferJpaRepository;
     //private Stage loginStage;
     private LoginController loginController;
     private BasicApplicationController baseWindowController;
@@ -39,10 +46,14 @@ public class ApplicationController  {
 
     private AccountRepository accountRepository;
 
+    {
+        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+    }
     private AccountRecordDataService getDataService(){
         accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser),
                                                       ApplicationContextConfig.dataSourceAxapta());
 
+        EntityManagerFactory managerFactory = ApplicationContextConfig.entityManagerFactory(ApplicationContextConfig.dataSource(currentUser)).getNativeEntityManagerFactory();
 
 
          return new AccountRecordDataService(accountRepository);

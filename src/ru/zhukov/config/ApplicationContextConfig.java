@@ -2,7 +2,9 @@ package ru.zhukov.config;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import ru.zhukov.dto.CurrentUser;
@@ -16,7 +18,8 @@ import javax.sql.DataSource;
  */
 
 @Configuration
-
+@EnableJpaRepositories(basePackages = "ru.zhukov.repository")
+@ComponentScan(basePackages = "ru.zhukov.repository")
 public class ApplicationContextConfig{
 
 

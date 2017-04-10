@@ -1,6 +1,8 @@
 package ru.zhukov.domain;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -8,8 +10,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Gtk_Department_Transfer")
-
 public class SetupDepartmentForTransfer {
+  @EmbeddedId
+  private DepartmentTransferKey departmentTransferKey;
 
 
 }

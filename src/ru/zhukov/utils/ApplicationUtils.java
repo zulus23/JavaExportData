@@ -17,7 +17,7 @@ public class ApplicationUtils {
                 .findFirst().ifPresent(e -> {
             if (e.toUpperCase().contains("Zhukov-PC".toUpperCase())) {
                 dataSource.setServerName("Zhukov-PC");
-                dataSource.setInstanceName("MSSQLSERVER2012");
+                dataSource.setInstanceName("MSSQL2014_DEV");
 
 
             }else{
