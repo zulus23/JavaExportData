@@ -1,11 +1,13 @@
 package ru.zhukov.dto;
 
 import com.sun.istack.internal.NotNull;
+import org.springframework.context.annotation.Bean;
 import ru.zhukov.domain.Database;
 
 /**
  * Created by Zhukov on 22.03.2016.
  */
+
 public class CurrentUser {
 
     @NotNull

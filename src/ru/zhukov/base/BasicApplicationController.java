@@ -31,6 +31,7 @@ import ru.zhukov.export.JournalExportController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.JournalExportDataService;
+import ru.zhukov.transfer.SetupDepartmentTransferController;
 import ru.zhukov.utils.ImportIntoXLS;
 
 import java.io.IOException;
@@ -225,10 +226,12 @@ public class BasicApplicationController implements Initializable {
 
     private void showDepartmentSetupTransfer(ActionEvent actionEvent) {
         FXMLLoader fxmlDepartmentSetupTransfer = new FXMLLoader(getClass().getResource("/ru/zhukov/transfer/SetupDepartmentTransferView.fxml"));
+        SetupDepartmentTransferController transferController = new SetupDepartmentTransferController();
+        fxmlDepartmentSetupTransfer.setController(transferController);
+
         try{
 
             AnchorPane departmentSetup =  fxmlDepartmentSetupTransfer.load();
-
             AnchorPane anchorPane = new AnchorPane();
             AnchorPane.setTopAnchor(departmentSetup, 0.0);
             AnchorPane.setLeftAnchor(departmentSetup, 0.0);

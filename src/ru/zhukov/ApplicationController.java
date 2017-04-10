@@ -3,16 +3,12 @@ package ru.zhukov;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
 import ru.zhukov.config.ApplicationContextConfig;
@@ -25,16 +21,14 @@ import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.DBAuthenticationService;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Created by Zhukov on 18.03.2016.
  */
-@Configuration
+
 public class ApplicationController  {
     private static final ApplicationController applicationController = new ApplicationController();
 
@@ -48,6 +42,8 @@ public class ApplicationController  {
     private AccountRecordDataService getDataService(){
         accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser),
                                                       ApplicationContextConfig.dataSourceAxapta());
+
+
 
          return new AccountRecordDataService(accountRepository);
     }
@@ -178,8 +174,10 @@ public class ApplicationController  {
     }
 */
 
-
-
+@Bean
+ public CurrentUser currentUser(){
+     return  currentUser;
+ }
 
 
 
