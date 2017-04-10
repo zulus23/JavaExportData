@@ -25,7 +25,11 @@ public class ApplicationContextConfig{
     @Bean
     public static LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource){
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-        factoryBean.setJpaVendorAdapter(new EclipseLinkJpaVendorAdapter());
+        factoryBean.setDataSource(dataSource);
+        EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
+        jpaVendorAdapter.setShowSql(true);
+
+        factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setPackagesToScan("ru.zhukov.entity","ru.zhukov.dto");
         return  factoryBean;
     }
