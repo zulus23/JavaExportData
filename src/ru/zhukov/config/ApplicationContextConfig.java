@@ -1,6 +1,7 @@
 package ru.zhukov.config;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import ru.zhukov.utils.ApplicationUtils;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -33,11 +36,14 @@ public class ApplicationContextConfig{
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
         jpaVendorAdapter.setShowSql(true);
-        Properties jpaProperties = new Properties();
-        jpaProperties.put("eclipselink.weaving",true);
-
+        jpaVendorAdapter.setGenerateDdl(true);
+        Map props = new HashMap();
+        props.put(PersistenceUnitProperties.DDL_SQL_SCRIPT_GENERATION,"sql-script");
+       // props.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_BOTH_GENERATION);
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setPackagesToScan("ru.zhukov.domain");
+        factoryBean.setJpaPropertyMap(props);
+
         factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
         return  factoryBean;
     }
