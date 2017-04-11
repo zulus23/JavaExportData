@@ -36,16 +36,14 @@ public class ApplicationContextConfig{
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
         jpaVendorAdapter.setShowSql(true);
-        jpaVendorAdapter.setGenerateDdl(true);
-        Map props = new HashMap();
-        props.put(PersistenceUnitProperties.DDL_SQL_SCRIPT_GENERATION,"sql-script");
-       // props.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_BOTH_GENERATION);
+        jpaVendorAdapter.setGenerateDdl(false);
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setPackagesToScan("ru.zhukov.domain");
-        factoryBean.setJpaPropertyMap(props);
+
 
         factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-        return  factoryBean;
+        return factoryBean;
+
     }
 
     @Bean
