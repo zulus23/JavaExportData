@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
@@ -36,6 +37,7 @@ import java.util.ResourceBundle;
 
 public class ApplicationController  {
     private static final ApplicationController applicationController = new ApplicationController();
+    private AnnotationConfigApplicationContext ctx;
 
     @Autowired
     private TransferJpaRepository transferJpaRepository;
@@ -52,10 +54,11 @@ public class ApplicationController  {
                                                       ApplicationContextConfig.dataSourceAxapta());
         ApplicationContextConfig.setCurrentUser(currentUser);
 
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+        this.ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+        ctx.scan("ru.zhukov");
 
 
-        EntityManagerFactory managerFactory = ApplicationContextConfig.entityManagerFactory(ApplicationContextConfig.dataSource(currentUser)).getNativeEntityManagerFactory();
+        ApplicationContextConfig.entityManagerFactory(ApplicationContextConfig.dataSource(currentUser));
 
 
          return new AccountRecordDataService(accountRepository);
@@ -192,6 +195,7 @@ public class ApplicationController  {
      return  currentUser;
  }
 
-
-
+    public  AnnotationConfigApplicationContext getCtx() {
+        return ctx;
+    }
 }

@@ -11,9 +11,12 @@ import java.io.Serializable;
  */
 @Embeddable
 public class DepartmentTransferKey implements Serializable{
-    @Column
+
+    @Column(name = "From_Department")
     private String fromDepartment;
-    @Column
+
+
+    @Column(name = "Into_Department")
      private String toDepartment;
 
     public DepartmentTransferKey() {

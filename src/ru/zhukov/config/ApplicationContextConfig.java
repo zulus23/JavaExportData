@@ -7,13 +7,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.utils.ApplicationUtils;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.transaction.TransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +27,8 @@ import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "ru.zhukov.repository")
-@ComponentScan(basePackages = "ru.zhukov.repository")
+@ComponentScan(basePackages = "ru.zhukov")
+@EnableTransactionManagement
 public class ApplicationContextConfig{
 
 
@@ -68,6 +72,14 @@ public class ApplicationContextConfig{
         dataSource.setPassword("dbimpexp");
         return dataSource;
     }
+
+   @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
+    }
+
 
     @Bean
     public static CurrentUser currentUser(){

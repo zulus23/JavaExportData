@@ -13,8 +13,8 @@
          <children>
             <TableView fx:id="setupDepartmentTransfer" prefHeight="248.0" prefWidth="600.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="departmentAit" prefWidth="75.0" text="Отдел в АиТ" />
-                <TableColumn fx:id="departmentTransfer" prefWidth="75.0" text="Отдел в 1С" />
+                <TableColumn fx:id="fromDepartment" prefWidth="75.0" text="Отдел в АиТ" />
+                <TableColumn fx:id="intoDepartment" prefWidth="75.0" text="Отдел в 1С" />
 
               </columns>
                <columnResizePolicy>
