@@ -16,11 +16,13 @@
                <children>
                   <AnchorPane VBox.vgrow="ALWAYS">
                      <children>
-                        <TableView fx:id="setupDepartmentTransfer" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="setupAccountTransferTableView" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-                            <TableColumn fx:id="fromDepartment" prefWidth="75.0" text="Отдел в АиТ" />
-                            <TableColumn fx:id="intoDepartment" prefWidth="75.0" text="Отдел в 1С" />
-                            <TableColumn fx:id="fromDepartmentCFO" prefWidth="75.0" text="ЦФО Axapta" />
+                            <TableColumn fx:id="zatrFromAit" prefWidth="75.0" text="Затраты в АиТ" />
+                            <TableColumn fx:id="zatrTo1C" prefWidth="75.0" text="Затраты в 1С" />
+                            <TableColumn fx:id="debit" prefWidth="75.0" text="Дебит в АиТ" />
+                            <TableColumn fx:id="credit" prefWidth="75.0" text="Credit в АиТ" />
+                            <TableColumn fx:id="code" prefWidth="75.0" text="Код начисления в АиТ" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

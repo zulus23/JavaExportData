@@ -1,6 +1,7 @@
 package ru.zhukov.config;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,23 +12,24 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.utils.ApplicationUtils;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by Gukov on 28.03.2016.
  */
 
 @Configuration
+@ComponentScan(basePackages = {"ru.zhukov.domain","ru.zhukov.service","ru.zhukov.repository"})
 @EnableJpaRepositories(basePackages = "ru.zhukov.repository")
-@ComponentScan(basePackages = "ru.zhukov")
 @EnableTransactionManagement
 public class ApplicationContextConfig{
 
@@ -37,22 +39,34 @@ public class ApplicationContextConfig{
     @Bean
     public static LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource){
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        Map<String,Object> map =  new HashMap<>();
+        map.putAll(factoryBean.getJpaPropertyMap());
+
+        map.put(PersistenceUnitProperties.WEAVING,"false");
+        factoryBean.setJpaPropertyMap(map);
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
+
         jpaVendorAdapter.setShowSql(true);
         jpaVendorAdapter.setGenerateDdl(false);
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-        factoryBean.setPackagesToScan("ru.zhukov.domain");
+        factoryBean.setPackagesToScan("ru.zhukov.domain","ru.zhukov.utils");
 
 
-        factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
+        //factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
         return factoryBean;
 
     }
 
     @Bean
     public static DataSource dataSource( CurrentUser currentUser ){
+        currentUser = Optional.ofNullable(currentUser).orElseGet(() -> {
+            return  new CurrentUser("report","report",new Database("","ait_db",""));
+
+        });
+
         ApplicationContextConfig.currentUser = currentUser;
+
         SQLServerDataSource dataSource = new SQLServerDataSource();
 
         dataSource = ApplicationUtils.setupServerAndHostDb(currentUser, dataSource);
@@ -89,9 +103,9 @@ public class ApplicationContextConfig{
     public static void setCurrentUser(CurrentUser currentUser) {
         ApplicationContextConfig.currentUser = currentUser;
     }
-    @Bean
+   /* @Bean
     public InstrumentationLoadTimeWeaver loadTimeWeaver()  throws Throwable {
         InstrumentationLoadTimeWeaver loadTimeWeaver = new InstrumentationLoadTimeWeaver();
         return loadTimeWeaver;
-    }
+    }*/
 }

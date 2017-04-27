@@ -1,9 +1,9 @@
 package ru.zhukov.base;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
@@ -13,37 +13,49 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.util.StringConverter;
+import org.controlsfx.control.MaskerPane;
+import ru.zhukov.ApplicationController;
 import ru.zhukov.account.AccountRecordController;
 import ru.zhukov.account.ExportAccountRecordController;
 import ru.zhukov.action.Action;
 import ru.zhukov.config.ApplicationContextConfig;
+import ru.zhukov.domain.TransferAccount;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.employee.AccrualEmployeeController;
 import ru.zhukov.export.JournalExportController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
+import ru.zhukov.repository.TransferJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.JournalExportDataService;
+import ru.zhukov.transfer.SetupAccountTransferController;
+import ru.zhukov.transfer.SetupCostItemTransferController;
 import ru.zhukov.transfer.SetupDepartmentTransferController;
 import ru.zhukov.utils.ImportIntoXLS;
+import ru.zhukov.utils.XLSFileTransferTo1c;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 
-import static javax.swing.UIManager.get;
 
 /**
  * Created by Gukov on 24.03.2016.
@@ -55,6 +67,9 @@ public class BasicApplicationController implements Initializable {
     private Map<Tab,JournalExportController> journalExportControllerWeakHashMap  = new WeakHashMap<>();
 
     private ObjectProperty<JournalExportController> currentJournalExportController;
+
+
+    private TransferJpaRepository repository;
 
     private ResourceBundle resourceBundle;
 
@@ -102,14 +117,21 @@ public class BasicApplicationController implements Initializable {
 
     /* ----------------------------- */
 
+    /* ------------ Action ---------*/
+    @FXML
+    private MenuItem miCreateFileTransferTo1C;
+
 
 
 
     @FXML
-    private VBox mainWindow;
+    private AnchorPane mainWindow;
 
     @FXML
     private TabPane tpWindowContainer;
+    @FXML
+    StackPane stackPane;
+
 
     private CreateAccountRecordTask createAccountRecordTask;
     private Button createAccountRecordButton;
@@ -128,10 +150,17 @@ public class BasicApplicationController implements Initializable {
 
     private CurrentUser currentUser;
 
+    private MaskerPane masker;
+
     public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
+        this.repository = ApplicationController.getInstance().getCtx().getBean(TransferJpaRepository.class);
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;
+
+        masker = new MaskerPane();
+        masker.setVisible(false);
+        masker.setText("Формирую файл. Ожидайте...");
 
     }
 
@@ -172,20 +201,6 @@ public class BasicApplicationController implements Initializable {
         showAccountRecordView.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image32/account_book-customer.png").toExternalForm())));
         showAccountRecordView.setOnAction(this::showAccountRecordView);
 
-
-        //preferencesButton.setTooltip(new Tooltip("Выход из приложения"));
-        //preferencesButton.setOnAction(Action::exit);
-        preferencesButton.setOnAction(Action::createAccountRecord);
-
-
-
-       /* Button exitButton = new Button();
-
-        exitButton.setGraphic(new ImageView(new Image(getClass().getResource("/ru/zhukov/assests/image/toolbar/folder_next.png").toExternalForm())));
-
-        exitButton.setTooltip(new Tooltip("Выход из приложения"));
-        exitButton.setOnAction(Action::exit);
- */
          datePicker = new DatePicker();
         datePicker.setTooltip(new Tooltip("Период"));
         datePicker.setValue(LocalDate.now());
@@ -220,8 +235,93 @@ public class BasicApplicationController implements Initializable {
         miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
 
         miDepartmentSetup.setOnAction(this::showDepartmentSetupTransfer);
+        miAccountHelper.setOnAction(this::showAccountSetupTransfer);
+        miCreateFileTransferTo1C.setOnAction(this::CreateFileTransferTo1C);
+        miCostHelper.setOnAction(this::showCostItemSetupTransfer);
+
+        stackPane.getChildren().add(masker);
+
+    }
+
+    private void showCostItemSetupTransfer(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/transfer/SetupCostItemTransferView.fxml")));
+        SetupCostItemTransferController costItemTransferController = new SetupCostItemTransferController();
+        fxmlLoader.setController(costItemTransferController);
+
+        try{
+            AnchorPane accountSetup = fxmlLoader.load();
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(accountSetup, 0.0);
+            AnchorPane.setLeftAnchor(accountSetup, 0.0);
+            AnchorPane.setRightAnchor(accountSetup, 0.0);
+            AnchorPane.setBottomAnchor(accountSetup, 0.0);
+
+            anchorPane.getChildren().add(accountSetup);
+
+            Tab tabCostItemSetupTransfer = new Tab();
+
+            tabCostItemSetupTransfer.setText("Настройка соотвествия статей затрат...");
+            tabCostItemSetupTransfer.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
 
 
+            tpWindowContainer.getTabs().addAll(tabCostItemSetupTransfer);
+
+        }catch (IOException ex ){
+
+        }
+    }
+
+    private void CreateFileTransferTo1C(ActionEvent actionEvent) {
+        Platform.runLater(()-> {
+            masker.setVisible(true);
+            Path pathTemp = Paths.get(".").toAbsolutePath().resolve(Paths.get("template/PayFromAit_To_1C.xlsx"));
+            Path pathOut = Paths.get(".").toAbsolutePath().resolve(Paths.get(String.format("outxls/PayFromAit_To_1C_%s.xlsx",System.nanoTime())));
+            List<TransferAccount> transferAccounts =  repository.createAccountsForTransfer(datePicker.getValue().getYear(),datePicker.getValue().getMonthValue());
+            XLSFileTransferTo1c transferTo1c =  new XLSFileTransferTo1c(pathTemp,transferAccounts);
+            transferTo1c.openXlsFile();
+            transferTo1c.writeFile(pathOut);
+
+            try {
+                Desktop.getDesktop().open(pathOut.normalize().toFile());
+
+                //masker.setVisible(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+
+    }
+
+    private void showAccountSetupTransfer(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/transfer/SetupAccountTransferView.fxml")));
+        SetupAccountTransferController accountTransferController = new SetupAccountTransferController();
+        fxmlLoader.setController(accountTransferController);
+        try{
+            AnchorPane accountSetup = fxmlLoader.load();
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(accountSetup, 0.0);
+            AnchorPane.setLeftAnchor(accountSetup, 0.0);
+            AnchorPane.setRightAnchor(accountSetup, 0.0);
+            AnchorPane.setBottomAnchor(accountSetup, 0.0);
+
+            anchorPane.getChildren().add(accountSetup);
+
+            Tab tabAccountSetupTransfer = new Tab();
+
+            tabAccountSetupTransfer.setText("Настройка соотвествия счетов");
+            tabAccountSetupTransfer.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+
+
+            tpWindowContainer.getTabs().addAll(tabAccountSetupTransfer);
+
+        }catch (IOException ex){
+            //TODO необходимо прописать лог
+        }
     }
 
     private void showDepartmentSetupTransfer(ActionEvent actionEvent) {

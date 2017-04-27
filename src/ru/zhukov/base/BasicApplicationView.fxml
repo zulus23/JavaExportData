@@ -7,93 +7,106 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="mainWindow" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainWindow" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+  <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
-      <menus>
-        <Menu mnemonicParsing="false" text="%menu.title.file">
-          <items>
-            <MenuItem fx:id="miNewDocument" mnemonicParsing="false" text="%menu.title.new" />
-            <MenuItem mnemonicParsing="false" text="%menu.title.open" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="miClose" mnemonicParsing="false" text="%menu.title.close" />
-            <MenuItem mnemonicParsing="false" text="%menu.title.save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="miPrintDocument" mnemonicParsing="false" text="%menu.title.print" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="miPreferences" mnemonicParsing="false" text="%menu.title.preferences"  disable="true"/>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="miExit" mnemonicParsing="false" text="%menu.title.quit" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="%menu.title.view">
-           <items>
-             <MenuItem fx:id="miViewAccount" mnemonicParsing="false" text="%menu.title.view.account"></MenuItem>
-             <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport"></MenuItem>
-             <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="%menu.title.view.alimentjournal"></MenuItem>
-             <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="%menu.title.view.transfermoney"></MenuItem>
-           </items>
-        </Menu>
-       <!-- <Menu mnemonicParsing="false" text="Edit">
-          <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
-          </items>
-        </Menu>-->
-
-        <Menu mnemonicParsing="false" text="%menu.title.action">
-          <items>
-          <MenuItem mnemonicParsing="false" text="%menu.title.createaccount"  fx:id="miCreateAccountRecord"/>
-          <MenuItem mnemonicParsing="false" text="%menu.title.exportaccount"  fx:id="miExportAccountRecord"/>
-          <SeparatorMenuItem mnemonicParsing="false" />
-          <MenuItem mnemonicParsing="false" text="%menu.title.delete" disable="true" fx:id="miDeleteRecord" />
-          <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="%menu.title.createFile" disable="true" fx:id="miCreateFile" />
-          </items>
-
-
-        </Menu>
-        <Menu mnemonicParsing="false" text="%menu.title.helper">
-          <items>
-            <MenuItem mnemonicParsing="false" text="%menu.title.helpcost" fx:id="miCostHelper"/>
-            <MenuItem mnemonicParsing="false" text="%menu.title.helpdepartment" fx:id="miDepartmentSetup"/>
-            <MenuItem mnemonicParsing="false" text="%menu.title.helpaccount" fx:id="miAccountHelper"/>
-          </items>
-        </Menu>
-
-
-        <Menu mnemonicParsing="false" text="%menu.title.help">
-          <items>
-            <MenuItem mnemonicParsing="false" text="%menu.title.about" />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
-      <ToolBar fx:id="tToolBar" prefHeight="40.0" prefWidth="200.0">
+      
+      <VBox fx:id="mainVboxWindow" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="640.0">
+        <children>
+          <MenuBar VBox.vgrow="NEVER">
+            <menus>
+              <Menu mnemonicParsing="false" text="%menu.title.file">
+                <items>
+                  <MenuItem fx:id="miNewDocument" mnemonicParsing="false" text="%menu.title.new" />
+                  <MenuItem mnemonicParsing="false" text="%menu.title.open" />
+                  <Menu mnemonicParsing="false" text="Open Recent" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miClose" mnemonicParsing="false" text="%menu.title.close" />
+                  <MenuItem mnemonicParsing="false" text="%menu.title.save" />
+                  <MenuItem mnemonicParsing="false" text="Save As…" />
+                  <MenuItem mnemonicParsing="false" text="Revert" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miPrintDocument" mnemonicParsing="false" text="%menu.title.print" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miPreferences" disable="true" mnemonicParsing="false" text="%menu.title.preferences" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miExit" mnemonicParsing="false" text="%menu.title.quit" />
+                </items>
+              </Menu>
+              <Menu mnemonicParsing="false" text="%menu.title.view">
+                 <items>
+                   <MenuItem fx:id="miViewAccount" mnemonicParsing="false" text="%menu.title.view.account" />
+                   <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport" />
+                   <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="%menu.title.view.alimentjournal" />
+                   <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="%menu.title.view.transfermoney" />
+      
+                 </items>
+              </Menu>
+             <!-- <Menu mnemonicParsing="false" text="Edit">
+                <items>
+                  <MenuItem mnemonicParsing="false" text="Undo" />
+                  <MenuItem mnemonicParsing="false" text="Redo" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Cut" />
+                  <MenuItem mnemonicParsing="false" text="Copy" />
+                  <MenuItem mnemonicParsing="false" text="Paste" />
+                  <MenuItem mnemonicParsing="false" text="Delete" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Select All" />
+                  <MenuItem mnemonicParsing="false" text="Unselect All" />
+                </items>
+              </Menu>-->
+      
+              <Menu mnemonicParsing="false" text="%menu.title.action">
+                <items>
+                  <MenuItem fx:id="miCreateAccountRecord" mnemonicParsing="false" text="%menu.title.createaccount" />
+                  <MenuItem fx:id="miExportAccountRecord" mnemonicParsing="false" text="%menu.title.exportaccount" />
+                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miDeleteRecord" disable="true" mnemonicParsing="false" text="%menu.title.delete" />
+                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miCreateFile" disable="true" mnemonicParsing="false" text="%menu.title.createFile" />
+                   <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miCreateFileTransferTo1C" disable="false" mnemonicParsing="false" text="%menu.title.action.createFileTo1C" />
+                </items>
+      
+      
+              </Menu>
+              <Menu mnemonicParsing="false" text="%menu.title.helper">
+                <items>
+                  <MenuItem fx:id="miCostHelper" mnemonicParsing="false" text="%menu.title.helpcost" />
+                  <MenuItem fx:id="miDepartmentSetup" mnemonicParsing="false" text="%menu.title.helpdepartment" />
+                  <MenuItem fx:id="miAccountHelper" mnemonicParsing="false" text="%menu.title.helpaccount" />
+                </items>
+              </Menu>
+      
+      
+              <Menu mnemonicParsing="false" text="%menu.title.help">
+                <items>
+                  <MenuItem mnemonicParsing="false" text="%menu.title.about" />
+                </items>
+              </Menu>
+            </menus>
+          </MenuBar>
+            <ToolBar fx:id="tToolBar" prefHeight="40.0" prefWidth="200.0">
 
       </ToolBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-         <children>
-            <TabPane fx:id="tpWindowContainer" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <tabs>
+          <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <TabPane fx:id="tpWindowContainer" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <tabs>
 
                </tabs>
-            </TabPane>
-         </children>
-    </AnchorPane>
-  </children>
-
-</VBox>
+                  </TabPane>
+               </children>
+          </AnchorPane>
+        </children>
+      
+      </VBox>
+    </children>
+    </StackPane>
+   </children>
+</AnchorPane>

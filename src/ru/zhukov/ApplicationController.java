@@ -11,8 +11,6 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.zhukov.action.Action;
 import ru.zhukov.base.BasicApplicationController;
 import ru.zhukov.config.ApplicationContextConfig;
@@ -21,11 +19,10 @@ import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.login.LoginController;
 import ru.zhukov.repository.AccountRepository;
 import ru.zhukov.repository.JDBCAccountRepository;
-import ru.zhukov.repository.TransferJpaRepository;
+import ru.zhukov.repository.TransferDepartmentJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.DBAuthenticationService;
 
-import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Locale;
@@ -40,7 +37,7 @@ public class ApplicationController  {
     private AnnotationConfigApplicationContext ctx;
 
     @Autowired
-    private TransferJpaRepository transferJpaRepository;
+    private TransferDepartmentJpaRepository transferDepartmentJpaRepository;
     //private Stage loginStage;
     private LoginController loginController;
     private BasicApplicationController baseWindowController;
@@ -99,7 +96,7 @@ public class ApplicationController  {
             fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
             baseWindowController = new BasicApplicationController(this.getDataService(),this.currentUser);
             fxmlAppLoader.setController(baseWindowController);
-            VBox app = fxmlAppLoader.load();
+            AnchorPane app = fxmlAppLoader.load();
             Stage stage = new Stage();
             stage.setOnCloseRequest(Action::exit);
             stage.initOwner(null);

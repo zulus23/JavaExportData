@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.zhukov.domain.SetupDepartmentForTransfer;
-import ru.zhukov.repository.TransferJpaRepository;
+import ru.zhukov.repository.TransferDepartmentJpaRepository;
 
 import java.util.List;
 
@@ -15,10 +15,16 @@ import java.util.List;
 public class TransferDepartmentService {
 
     @Autowired
-    private TransferJpaRepository repository;
+    private TransferDepartmentJpaRepository repository;
 
     @Transactional(readOnly = true)
     public List<SetupDepartmentForTransfer> findAll(){
         return repository.findAll();
     }
+
+    @Transactional
+    public SetupDepartmentForTransfer save(SetupDepartmentForTransfer transfer){
+        return  repository.save(transfer);
+    }
+
 }

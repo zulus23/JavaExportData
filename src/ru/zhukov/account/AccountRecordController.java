@@ -139,7 +139,7 @@ public class AccountRecordController  implements Initializable{
                           .thenAcceptAsync(e ->Platform.runLater(()->{
                               masker.setVisible(false);
                               this.accountRecordTable.getItems().addAll(e);
-                              tableFilter = new TableFilter(accountRecordTable);
+                              tableFilter =  TableFilter.forTableView(accountRecordTable).apply();
                               setListener();
                           }
                           ));

@@ -82,8 +82,6 @@ public class CreateXMLFile {
     }
 
 
-    public static void main(String... args){
-        new CreateXMLFile(null).createFileForBank();
-    }
+
 }
 

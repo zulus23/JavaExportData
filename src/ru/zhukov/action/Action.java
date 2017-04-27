@@ -20,9 +20,9 @@ public class Action {
 
 
     public static <T extends Event> void exit(T actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
-        alert.setTitle("Внимание");
-        alert.setHeaderText("Закрыть программу");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Вы действительно хотите закрыть программу?");
+        alert.setTitle("Подтверждение закрытия");
+        alert.setHeaderText("");
         alert.showAndWait().ifPresent(response ->{
             if(response== ButtonType.CANCEL && actionEvent.getEventType().getName()== WindowEvent.WINDOW_CLOSE_REQUEST.getName()){
                 actionEvent.consume();
@@ -35,11 +35,7 @@ public class Action {
         });
     }
 
-    public static void createAccountRecord(ActionEvent event){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Закрыть программу?");
 
-
-    }
 
 
 }
