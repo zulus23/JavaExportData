@@ -31,7 +31,7 @@ public class UpdateAccount91 {
     private AccountImport accountImportRepository;
 
     public UpdateAccount91() {
-        currentUser = new CurrentUser("report","report",new Database("","ait_cpu",""));
+        currentUser = new CurrentUser("report","report",new Database("","ait_center",""));
         ApplicationContextConfig.setCurrentUser(currentUser);
 
         this.ctx = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);

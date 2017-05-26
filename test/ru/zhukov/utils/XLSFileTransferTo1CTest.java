@@ -40,31 +40,7 @@ public class XLSFileTransferTo1CTest {
     }
 
 
-    @Test
-    public void readFileTemplate(){
-        XLSFileTransferTo1c transferTo1c = new XLSFileTransferTo1c(path.normalize(),accountList);
 
-        assertNotNull(transferTo1c.openXlsFile());
-
-    }
-
-    @Test
-    public void firstRowNameMustBeNumber(){
-        XLSFileTransferTo1c transferTo1c = new XLSFileTransferTo1c(path.normalize(),accountList);
-        assertNotNull(transferTo1c.openXlsFile());
-        assertTrue(transferTo1c.firstRowForWriteXLSFile(transferTo1c.openXlsFile()).getCell(0).toString().equals("№"));
-
-
-    }
-
-    @Test
-    public void writeDataInFirstRow(){
-        XLSFileTransferTo1c transferTo1c = new XLSFileTransferTo1c(path.normalize(),accountList);
-        assertNotNull(transferTo1c.openXlsFile());
-        transferTo1c.writeFile(pathOut);
-        assertTrue(Files.exists(pathOut));
-
-    }
 
 
 

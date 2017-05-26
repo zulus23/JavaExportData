@@ -21,6 +21,8 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Gukov on 29.03.2016.
@@ -76,7 +78,7 @@ public class AccountRecordController  implements Initializable{
         return year;
     }
 
-    private TableFilter tableFilter;
+   // private TableFilter tableFilter;
 
     public AccountRecordController(AccountRecordDataService dataService,int month, int year){
         this.dataService = dataService;
@@ -132,19 +134,39 @@ public class AccountRecordController  implements Initializable{
 
           //allSumma.layoutXProperty().bind(summa.getProperties().);
         //masker.setVisible(true);
-        CompletableFuture.supplyAsync(()-> {
-                                             Platform.runLater(()-> masker.setVisible(true));
-                                             return dataService.accountRecordListByMonthAndYear(month,year);})
 
-                          .thenAcceptAsync(e ->Platform.runLater(()->{
-                              masker.setVisible(false);
-                              this.accountRecordTable.getItems().addAll(e);
-                              tableFilter =  TableFilter.forTableView(accountRecordTable).apply();
-                              setListener();
-                          }
-                          ));
+        ExecutorService service = Executors.newFixedThreadPool(2);
+        service.submit(() ->{
+            Platform.runLater(()-> masker.setVisible(true));
+            List<AccountRecord> accountRecords = dataService.accountRecordListByMonthAndYear(month,year);
+            Platform.runLater(()-> {
+                this.accountRecordTable.getItems().addAll(accountRecords);
+                TableFilter tableFilter = TableFilter.forTableView(accountRecordTable).lazy(true).apply();
+                this.setListener(tableFilter.getFilteredList());
+            });
 
 
+            Platform.runLater(()-> masker.setVisible(false));
+
+        });
+
+
+        if (service != null) service.shutdown();
+
+
+//        CompletableFuture.supplyAsync(()-> {
+//                                             Platform.runLater(()-> masker.setVisible(true));
+//                                             return dataService.accountRecordListByMonthAndYear(month,year);})
+//
+//                          .thenAcceptAsync(e ->Platform.runLater(()->{
+//                              masker.setVisible(false);
+//                              this.accountRecordTable.getItems().addAll(e);
+//                              tableFilter =  TableFilter.forTableView(accountRecordTable).apply();
+//                              setListener(tableFilter.getFilteredList());
+//                          }
+//                          ));
+//
+//
 
         //  this.accountRecordTable.getItems().addAll(dataService.accountRecordListByMonthAndYear(month,year));
 
@@ -154,20 +176,21 @@ public class AccountRecordController  implements Initializable{
 
     }
 
-    private void setListener(){
-        ObservableList<AccountRecord> accountRecords =  tableFilter.getFilteredList();
-        accountRecords.addListener(new ListChangeListener<AccountRecord>() {
+    private void setListener(FilteredList list){
+        //ObservableList<AccountRecord> accountRecords =  tableFilter.getFilteredList();
+        list.addListener(new ListChangeListener<AccountRecord>() {
             @Override
             public void onChanged(Change<? extends AccountRecord> c) {
-              FilteredList<AccountRecord> filteredList =  tableFilter.getFilteredList();
+
+              //FilteredList<AccountRecord> filteredList =  tableFilter.getFilteredList();
                 NumberFormat f = DecimalFormat.getInstance();
                 f.setGroupingUsed(true);
-                allSumma.setText( f.format( filteredList.stream().mapToDouble(a -> a.getSumma()).sum()));
+                allSumma.setText( f.format( c.getList().stream().mapToDouble(a -> a.getSumma()).sum()));
             }
         });
     }
 
-    public List<AccountRecord> getAccountRecordTable() {
-        return tableFilter.getFilteredList();
-    }
+//    public List<AccountRecord> getAccountRecordTable() {
+//        return tableFilter.getFilteredList();
+//    }
 }

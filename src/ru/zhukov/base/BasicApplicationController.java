@@ -7,7 +7,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
+import javafx.event.*;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,6 +34,7 @@ import ru.zhukov.domain.TransferAccount;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.employee.AccrualEmployeeController;
+import ru.zhukov.exeption.ExcelFileTransferException;
 import ru.zhukov.export.JournalExportController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.repository.TransferJpaRepository;
@@ -41,20 +43,18 @@ import ru.zhukov.service.JournalExportDataService;
 import ru.zhukov.transfer.SetupAccountTransferController;
 import ru.zhukov.transfer.SetupCostItemTransferController;
 import ru.zhukov.transfer.SetupDepartmentTransferController;
-import ru.zhukov.utils.ImportIntoXLS;
-import ru.zhukov.utils.XLSFileTransferTo1c;
+import ru.zhukov.utils.FileTransferBuilder;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -152,11 +152,15 @@ public class BasicApplicationController implements Initializable {
 
     private MaskerPane masker;
 
+    private Locale localeApplication;
+
+
     public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
         this.repository = ApplicationController.getInstance().getCtx().getBean(TransferJpaRepository.class);
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;
+        localeApplication = new Locale("ru","RU");
 
         masker = new MaskerPane();
         masker.setVisible(false);
@@ -232,6 +236,8 @@ public class BasicApplicationController implements Initializable {
 
         });
 
+
+
         miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
 
         miDepartmentSetup.setOnAction(this::showDepartmentSetupTransfer);
@@ -267,6 +273,7 @@ public class BasicApplicationController implements Initializable {
 
 
             tpWindowContainer.getTabs().addAll(tabCostItemSetupTransfer);
+            tpWindowContainer.setVisible(true);
 
         }catch (IOException ex ){
 
@@ -274,25 +281,37 @@ public class BasicApplicationController implements Initializable {
     }
 
     private void CreateFileTransferTo1C(ActionEvent actionEvent) {
+        masker.setVisible(true);
+        ExecutorService service = Executors.newFixedThreadPool(1);
+         service.submit(()->{
+             List<TransferAccount> transferAccounts =  repository.createAccountsForTransfer(datePicker.getValue().getYear(),datePicker.getValue().getMonthValue());
+             FileTransferBuilder transferBuilder =
+                     new FileTransferBuilder().withDatasource(transferAccounts);
+             try {
+
+                 Path fileCreateForTransfer = transferBuilder.build().createFile();
+                 Desktop.getDesktop().open(fileCreateForTransfer.normalize().toFile());
+             } catch (ExcelFileTransferException| IOException e) {
+
+                 Platform.runLater(()-> {
+                     Action.showErrorInformation(String.format("Файл не сформирован. Причина %s%n",e.getMessage()));
+                 });
+
+                 e.printStackTrace();
+             } finally {
+                 setMarkerNotVisible();
+             }
+         });
+         if(service !=null) service.shutdown();
+
+
+
+    }
+
+    private void setMarkerNotVisible() {
         Platform.runLater(()-> {
-            masker.setVisible(true);
-            Path pathTemp = Paths.get(".").toAbsolutePath().resolve(Paths.get("template/PayFromAit_To_1C.xlsx"));
-            Path pathOut = Paths.get(".").toAbsolutePath().resolve(Paths.get(String.format("outxls/PayFromAit_To_1C_%s.xlsx",System.nanoTime())));
-            List<TransferAccount> transferAccounts =  repository.createAccountsForTransfer(datePicker.getValue().getYear(),datePicker.getValue().getMonthValue());
-            XLSFileTransferTo1c transferTo1c =  new XLSFileTransferTo1c(pathTemp,transferAccounts);
-            transferTo1c.openXlsFile();
-            transferTo1c.writeFile(pathOut);
-
-            try {
-                Desktop.getDesktop().open(pathOut.normalize().toFile());
-
-                //masker.setVisible(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            masker.setVisible(false);
         });
-
-
     }
 
     private void showAccountSetupTransfer(ActionEvent actionEvent) {
@@ -318,6 +337,7 @@ public class BasicApplicationController implements Initializable {
 
 
             tpWindowContainer.getTabs().addAll(tabAccountSetupTransfer);
+            tpWindowContainer.setVisible(true);
 
         }catch (IOException ex){
             //TODO необходимо прописать лог
@@ -349,7 +369,7 @@ public class BasicApplicationController implements Initializable {
 
 
             tpWindowContainer.getTabs().addAll(tabDepartmentSetupTransfer);
-
+            tpWindowContainer.setVisible(true);
 
         }catch(IOException ex){
            ex.printStackTrace();
@@ -430,7 +450,7 @@ public class BasicApplicationController implements Initializable {
     private void printFile(ActionEvent event) {
 
         //AccountRecordController accountRecordController = getCurrentAccountRecordController();
-        new ImportIntoXLS().CreateXLS(getCurrentAccountRecordController().getAccountRecordTable());
+       // new ImportIntoXLS().CreateXLS(getCurrentAccountRecordController().getAccountRecordTable());
     }
 
     private AccountRecordController getCurrentAccountRecordController() {
@@ -482,39 +502,54 @@ public class BasicApplicationController implements Initializable {
 
     public void  showAccountRecordView(ActionEvent event){
         try {
+
+
+
             month = datePicker.getValue().getMonthValue();
             year = datePicker.getValue().getYear();
-
-            FXMLLoader fxmlAccountLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/AccountRecordView.fxml"));
-
-            AccountRecordController accountRecordController = new AccountRecordController(dataService,month,year);
-            fxmlAccountLoader.setController(accountRecordController);
+             Optional<Tab> tabOptional = accountRecordControllerWeakHashMap.keySet().stream()
+                                                       .filter(e -> e.getText().contains(String.format("Проводки за %s ",datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY")))))
+                                                       .findFirst();
 
 
+             if(tabOptional.isPresent()){
+                 tpWindowContainer.getSelectionModel().select(tabOptional.get());
+             }else {
 
-            AnchorPane app = fxmlAccountLoader.load();
-            //  app.setMinWidth(tabPane.getTabMaxWidth());
-            // app.setMinHeight(tabPane.getTabMaxHeight());
-            AnchorPane anchorPane = new AnchorPane();
-            AnchorPane.setTopAnchor(app, 0.0);
-            AnchorPane.setLeftAnchor(app, 0.0);
-            AnchorPane.setRightAnchor(app, 0.0);
-            AnchorPane.setBottomAnchor(app, 0.0);
+                 FXMLLoader fxmlAccountLoader = new FXMLLoader(getClass().getResource("/ru/zhukov/account/AccountRecordView.fxml"));
 
-            anchorPane.getChildren().add(app);
+                 AccountRecordController accountRecordController = new AccountRecordController(dataService, month, year);
+                 fxmlAccountLoader.setController(accountRecordController);
 
-            Tab tabAccount = new Tab();
 
-            tabAccount.setText(String.format("Проводки за %s ",datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY"))));
-            tabAccount.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(180);
-            tpWindowContainer.setTabMaxWidth(180);
-            tpWindowContainer.getTabs().addAll(tabAccount);
-            accountRecordControllerWeakHashMap.putIfAbsent(tabAccount,accountRecordController);
+                 AnchorPane app = fxmlAccountLoader.load();
+                 //  app.setMinWidth(tabPane.getTabMaxWidth());
+                 // app.setMinHeight(tabPane.getTabMaxHeight());
+                 AnchorPane anchorPane = new AnchorPane();
+                 AnchorPane.setTopAnchor(app, 0.0);
+                 AnchorPane.setLeftAnchor(app, 0.0);
+                 AnchorPane.setRightAnchor(app, 0.0);
+                 AnchorPane.setBottomAnchor(app, 0.0);
 
+                 anchorPane.getChildren().add(app);
+
+                 Tab tabAccount = new Tab();
+                 tabAccount.setOnClosed(this::closeTabAction);
+                 tabAccount.setText(String.format("Проводки за %s ", datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY"))));
+                 tabAccount.setContent(anchorPane);
+                 tpWindowContainer.setTabMinWidth(180);
+                 tpWindowContainer.setTabMaxWidth(180);
+                 tpWindowContainer.getTabs().addAll(tabAccount);
+                 accountRecordControllerWeakHashMap.putIfAbsent(tabAccount, accountRecordController);
+             }
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    private void closeTabAction(Event event) {
+        accountRecordControllerWeakHashMap.computeIfPresent(((Tab)event.getSource()),(k,v)-> null);
+        System.gc();
     }
 
     public void createAccountRecord(ActionEvent event){

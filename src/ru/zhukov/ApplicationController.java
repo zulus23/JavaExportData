@@ -44,7 +44,7 @@ public class ApplicationController  {
     private CurrentUser currentUser;
 
     private AccountRepository accountRepository;
-
+    private Locale localeRU  = new Locale("ru","RU");
 
     private AccountRecordDataService getDataService(){
         accountRepository = new JDBCAccountRepository(ApplicationContextConfig.dataSource(currentUser),
@@ -93,7 +93,7 @@ public class ApplicationController  {
     public void createApplicationWindow(String nameEnterprise){
         try {
             FXMLLoader fxmlAppLoader = new FXMLLoader(ApplicationController.class.getResource("base/BasicApplicationView.fxml"));
-            fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", Locale.getDefault()));
+            fxmlAppLoader.setResources(ResourceBundle.getBundle("Application", localeRU));
             baseWindowController = new BasicApplicationController(this.getDataService(),this.currentUser);
             fxmlAppLoader.setController(baseWindowController);
             AnchorPane app = fxmlAppLoader.load();

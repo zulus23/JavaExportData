@@ -58,7 +58,7 @@ public class SetupCostItemTransferController implements Initializable {
         ObservableList<SetupCostItemTransfer> setupCostItemTransfers = FXCollections.observableArrayList(costItemService.findAll());
 
         setupAccountTransferTableView.setItems(setupCostItemTransfers);
-         TableFilter.forTableView(this.setupAccountTransferTableView).apply();
+         TableFilter.forTableView(this.setupAccountTransferTableView).lazy(true).apply();
 
     }
 }

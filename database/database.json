@@ -33,5 +33,10 @@
     "Name": "Готэк-Северо-Запад",
     "NameInDB": "ait_sp",
     "NameinAxapta": "Г0111"
+  },
+  {
+    "Name": "Готэк-Новомосковск",
+    "NameInDB": "ait_center",
+    "NameinAxapta": "Г071"
   }
 ]

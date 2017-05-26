@@ -35,6 +35,7 @@ public class TransferAccount implements Serializable {
     private Double summaAccount;
     private Double  summaTaxDebit;
     private Double summaTaxCredit;
+    private Double summaPRDebit;
 
     public Integer getNumberOrder() {
         return numberOrder;
@@ -146,5 +147,13 @@ public class TransferAccount implements Serializable {
 
     public void setSummaTaxCredit(Double summaTaxCredit) {
         this.summaTaxCredit = summaTaxCredit;
+    }
+
+    public Double getSummaPRDebit() {
+        return summaPRDebit;
+    }
+
+    public void setSummaPRDebit(Double summaPRDebit) {
+        this.summaPRDebit = summaPRDebit;
     }
 }

@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import org.controlsfx.control.table.TableFilter;
 import ru.zhukov.ApplicationController;
 import ru.zhukov.domain.SetupAccountForTransfer;
 import ru.zhukov.domain.SetupDepartmentForTransfer;
@@ -36,7 +37,7 @@ public class SetupDepartmentTransferController implements Initializable {
     }
 
     private SetupDepartmentForTransfer departmentForTransfer;
-
+    private TableFilter tableFilter;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
          //departmentAit.getCellFactory(ComboBoxTableCell.forTableColumn())
@@ -64,5 +65,6 @@ public class SetupDepartmentTransferController implements Initializable {
         });
 
         setupDepartmentTransfer.getItems().addAll(service.findAll());
+        TableFilter.forTableView(setupDepartmentTransfer).lazy(true).apply();
     }
 }

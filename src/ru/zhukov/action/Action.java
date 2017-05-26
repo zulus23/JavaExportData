@@ -36,6 +36,13 @@ public class Action {
     }
 
 
+    public static  void  showErrorInformation(String s){
+        Alert alert = new Alert(Alert.AlertType.ERROR, s);
+        alert.setTitle("Ошибка");
+        alert.setHeaderText("");
+        alert.show();
+    }
+
 
 
 }

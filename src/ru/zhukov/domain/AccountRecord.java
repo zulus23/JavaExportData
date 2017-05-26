@@ -5,7 +5,7 @@ package ru.zhukov.domain;
  * Проводка в АиТ
  */
 public class AccountRecord {
-
+    private int id;
     private String department;
     private String employee;
     private String debit;
@@ -124,6 +124,14 @@ public class AccountRecord {
         this.description = description;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "AccountRecord{" +
@@ -135,5 +143,20 @@ public class AccountRecord {
                 ", month=" + month +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccountRecord)) return false;
+
+        AccountRecord that = (AccountRecord) o;
+
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
     }
 }

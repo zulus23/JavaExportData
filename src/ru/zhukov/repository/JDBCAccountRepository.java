@@ -128,6 +128,7 @@ public class JDBCAccountRepository implements AccountRepository{
         @Override
         public AccountRecord mapRow(ResultSet resultSet, int i) throws SQLException {
             AccountRecord accountRecord = new AccountRecord();
+            accountRecord.setId(resultSet.getInt("idKey"));
             accountRecord.setDepartment(resultSet.getString("Otdel"));
             accountRecord.setEmployee(resultSet.getString("employee"));
             accountRecord.setDebit(resultSet.getString("debit"));

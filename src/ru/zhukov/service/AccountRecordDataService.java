@@ -24,12 +24,15 @@ public class AccountRecordDataService {
       this.accountRepository = repository;
   }
 
-  public ObservableList<AccountRecord> accountRecordListByMonthAndYear(int month, int year) {
-
-        ObservableList<AccountRecord> accountRecords = FXCollections.observableArrayList();
-        accountRecords.addAll(accountRepository.listAccountRecordsByMonthAndYear(month,year));
-
-        return  accountRecords;
+//  public ObservableList<AccountRecord> accountRecordListByMonthAndYear(int month, int year) {
+//
+//        ObservableList<AccountRecord> accountRecords = FXCollections.observableArrayList();
+//        accountRecords.addAll(accountRepository.listAccountRecordsByMonthAndYear(month,year));
+//
+//        return  accountRecords;
+//    }
+    public List<AccountRecord> accountRecordListByMonthAndYear(int month, int year) {
+        return  accountRepository.listAccountRecordsByMonthAndYear(month,year);
     }
 
 

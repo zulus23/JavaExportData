@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import org.controlsfx.control.table.TableFilter;
 import ru.zhukov.ApplicationController;
 import ru.zhukov.domain.SetupAccountForTransfer;
 import ru.zhukov.service.TransferAccountService;
@@ -70,16 +71,8 @@ public class SetupAccountTransferController implements Initializable {
         accountIn.setCellFactory(TextFieldTableCell.<SetupAccountForTransfer>forTableColumn());
         accountIn.setStyle("-fx-alignment: CENTER;");
         nameAnalytic.setCellValueFactory(new PropertyValueFactory<SetupAccountForTransfer,String>("nameAnalytic"));
-
-        observableList = FXCollections.observableArrayList(service.findAll());
-        setupAccountTransferTableView.setItems(observableList);
-        observableList.addListener(new ListChangeListener<SetupAccountForTransfer>() {
-            @Override
-            public void onChanged(Change<? extends SetupAccountForTransfer> c) {
-                System.out.println(c);
-            }
-        });
-
+        setupAccountTransferTableView.getItems().addAll(service.findAll());
+        TableFilter.forTableView(setupAccountTransferTableView).lazy(true).apply();
 
     }
 }
