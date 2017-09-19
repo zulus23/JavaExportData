@@ -32,17 +32,16 @@ public class FeeTest {
 
 
     @Test
-    public void selectKindPay(){
-        List<KindPay> pays = kindPayRepository.queryKindPayByCodeIsLessThan("500");
+    public void selectMustNotContainsKindPayGreath500(){
+        List<KindPay> pays = kindPayRepository.queryKindPayByCodeIsLessThan();
         KindPay kindPay =  new KindPay();
         kindPay.setCode("001");
         kindPay.setName("");
         assertTrue(pays.contains(kindPay));
-
-        /*kindPay =  new KindPay();
+        kindPay =  new KindPay();
         kindPay.setCode("500");
-        kindPay.setName("Итого начислено");
-        assertFalse(pays.contains(kindPay));*/
+        kindPay.setName("");
+        assertFalse(pays.contains(kindPay));
 
     }
 }
