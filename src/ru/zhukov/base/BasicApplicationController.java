@@ -36,6 +36,7 @@ import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.employee.AccrualEmployeeController;
 import ru.zhukov.exeption.ExcelFileTransferException;
 import ru.zhukov.export.JournalExportController;
+import ru.zhukov.fee.SetupIncreaseFeeAccountController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.repository.TransferJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
@@ -114,6 +115,9 @@ public class BasicApplicationController implements Initializable {
     private MenuItem miDepartmentSetup;
     @FXML
     private MenuItem miAccountHelper;
+
+    @FXML
+    private MenuItem miAccountInPay;
 
     /* ----------------------------- */
 
@@ -244,8 +248,40 @@ public class BasicApplicationController implements Initializable {
         miAccountHelper.setOnAction(this::showAccountSetupTransfer);
         miCreateFileTransferTo1C.setOnAction(this::CreateFileTransferTo1C);
         miCostHelper.setOnAction(this::showCostItemSetupTransfer);
-
+        miAccountInPay.setOnAction(this::showAccountInPay);
         stackPane.getChildren().add(masker);
+
+    }
+
+    private void showAccountInPay(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/fee/SetupIncreaseFeeAccountView.fxml")));
+        SetupIncreaseFeeAccountController costItemTransferController = new SetupIncreaseFeeAccountController();
+        fxmlLoader.setController(costItemTransferController);
+        try{
+            AnchorPane accountSetup = fxmlLoader.load();
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(accountSetup, 0.0);
+            AnchorPane.setLeftAnchor(accountSetup, 0.0);
+            AnchorPane.setRightAnchor(accountSetup, 0.0);
+            AnchorPane.setBottomAnchor(accountSetup, 0.0);
+
+            anchorPane.getChildren().add(accountSetup);
+
+            Tab tabSetupFeeAccount = new Tab();
+
+            tabSetupFeeAccount.setText("Настройка видов начислений для доплат");
+            tabSetupFeeAccount.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+
+
+            tpWindowContainer.getTabs().addAll(tabSetupFeeAccount);
+            tpWindowContainer.setVisible(true);
+
+        }catch (IOException ex ){
+
+        }
+
 
     }
 

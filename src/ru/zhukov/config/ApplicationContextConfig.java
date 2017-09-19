@@ -1,16 +1,19 @@
 package ru.zhukov.config;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
@@ -19,6 +22,7 @@ import ru.zhukov.utils.ApplicationUtils;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 import java.util.*;
@@ -46,8 +50,10 @@ public class ApplicationContextConfig{
         factoryBean.setJpaPropertyMap(map);
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
+       // HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
 
         jpaVendorAdapter.setShowSql(true);
+
         jpaVendorAdapter.setGenerateDdl(false);
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setPackagesToScan("ru.zhukov.domain","ru.zhukov.utils");
@@ -67,7 +73,7 @@ public class ApplicationContextConfig{
 
         ApplicationContextConfig.currentUser = currentUser;
 
-        SQLServerDataSource dataSource = new SQLServerDataSource();
+        JtdsDataSource dataSource = new JtdsDataSource();
 
         dataSource = ApplicationUtils.setupServerAndHostDb(currentUser, dataSource);
 
@@ -76,7 +82,7 @@ public class ApplicationContextConfig{
         return dataSource;
     }
     public static DataSource dataSourceAxapta(){
-        SQLServerDataSource dataSource = new SQLServerDataSource();
+        JtdsDataSource dataSource = new JtdsDataSource();
 
         dataSource.setServerName("SRV-AXDB");
         dataSource.setDatabaseName("DBImpExp");

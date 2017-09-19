@@ -1,6 +1,7 @@
 package ru.zhukov.utils;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
+import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 import ru.zhukov.dto.CurrentUser;
 
 import javax.sql.DataSource;
@@ -10,20 +11,20 @@ import javax.sql.DataSource;
  */
 public class ApplicationUtils {
 
-    public  static SQLServerDataSource setupServerAndHostDb(CurrentUser currentUser, SQLServerDataSource dataSource) {
+    public  static JtdsDataSource setupServerAndHostDb(CurrentUser currentUser, JtdsDataSource dataSource) {
         dataSource.setDatabaseName(currentUser.getDatabase().getNameInDB());
         System.getenv().entrySet().stream().filter(e -> e.getKey().contains("HOSTNAME")|| e.getKey().contains("COMPUTERNAME"))
                 .map(e->e.getValue())
                 .findFirst().ifPresent(e -> {
             if (e.toUpperCase().contains("Zhukov-PC".toUpperCase())) {
                 dataSource.setServerName("Zhukov-PC");
-                dataSource.setInstanceName("MSSQL2014_DEV");
+                dataSource.setInstance("MSSQL2014_DEV");
 
 
             }else{
 
                 dataSource.setServerName("SRV-SQLBOX");
-                dataSource.setInstanceName("AIT");
+                dataSource.setInstance("AIT");
 
             }});
 

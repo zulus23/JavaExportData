@@ -80,6 +80,8 @@
                   <MenuItem fx:id="miCostHelper" mnemonicParsing="false" text="%menu.title.helpcost" />
                   <MenuItem fx:id="miDepartmentSetup" mnemonicParsing="false" text="%menu.title.helpdepartment" />
                   <MenuItem fx:id="miAccountHelper" mnemonicParsing="false" text="%menu.title.helpaccount" />
+                  <SeparatorMenuItem mnemonicParsing="false"/>
+                  <MenuItem fx:id="miAccountInPay" mnemonicParsing="false" text="%menu.title.helpaccountTarif%"/>
                 </items>
               </Menu>
       

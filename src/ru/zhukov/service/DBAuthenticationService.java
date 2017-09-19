@@ -1,8 +1,9 @@
 package ru.zhukov.service;
 
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
 import com.sun.istack.internal.NotNull;
 
+import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.service.auth.Authentication;
@@ -55,7 +56,8 @@ public class DBAuthenticationService implements Authentication {
 
     private Supplier<Optional<CurrentUser>> getConnectSupplier(String username, String password, Database database) {
         return ()-> {
-            SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
+            //SQLServerDataSource sqlServerDataSource = new SQLServerDataSource();
+            JtdsDataSource  sqlServerDataSource = new JtdsDataSource();
             sqlServerDataSource.setDatabaseName(database.getNameInDB());
 
             sqlServerDataSource = ApplicationUtils.setupServerAndHostDb(new CurrentUser(username,password,database),sqlServerDataSource);
