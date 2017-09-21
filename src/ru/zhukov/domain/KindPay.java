@@ -5,10 +5,11 @@ package ru.zhukov.domain;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "sprav")
-public class KindPay {
+public class KindPay  implements Serializable{
     @Id
     @Column(name = "code")
     private String code;

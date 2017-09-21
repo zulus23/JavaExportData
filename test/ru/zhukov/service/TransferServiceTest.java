@@ -72,7 +72,7 @@ public class TransferServiceTest {
 
         System.out.println("employee.getFirstName().length() = " + employee.getFirstName().length());
         assertEquals ("Жуков", employee.getName().trim());
-        assertEquals(29440,employee.getStaffTable().get(0).getSalary().intValue());
+
 
     }
     @Test

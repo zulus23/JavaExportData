@@ -4,8 +4,12 @@ package ru.zhukov.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "const")
@@ -23,12 +27,24 @@ public class Employee {
     private String secondName;
     @Column(name = "oklad")
     private BigDecimal salary;
-    @OneToMany(mappedBy = "employee")
-    private List<StaffTable> staffTable;
+
+    @Column(name = "date_out")
+    private Date dateDissmissal;
+
 
     @ManyToOne
     @JoinColumn(name = "n_otd")
     private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "dolsn")
+    private Position position;
+
+    @OneToOne
+    @JoinColumns({@JoinColumn(name = "ets_r",referencedColumnName = "level_row"),
+                 @JoinColumn(name = "ets_c",referencedColumnName = "step_column")})
+    private Tariff tariff;
+
 
     public String getId() {
         return id;
@@ -87,11 +103,40 @@ public class Employee {
         this.department = department;
     }
 
-    public List<StaffTable> getStaffTable() {
-        return staffTable;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setStaffTable(List<StaffTable> staffTable) {
-        this.staffTable = staffTable;
+    public void setPosition(Position position) {
+        this.position = position;
     }
+
+    public Date getDateDissmissal() {
+        return dateDissmissal;
+    }
+
+    public void setDateDissmissal(Date dateDissmissal) {
+        this.dateDissmissal = dateDissmissal;
+    }
+
+    public Tariff getTariff() {
+        return tariff;
+    }
+
+    public void setTariff(Tariff tariff) {
+        this.tariff = tariff;
+    }
+
+    public Integer getCurrentRank(){
+        Pattern pattern = Pattern.compile("\\d");
+        return  Optional.ofNullable(position).map(r ->  {
+            Matcher matcher = pattern.matcher(r.getDescription());
+            if (matcher.find()){
+                return Integer.valueOf(matcher.group());
+            }
+
+            return  -100;
+        }).orElse(-100);
+    }
+
 }

@@ -19,10 +19,7 @@ import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.utils.ApplicationUtils;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.*;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 import java.util.*;
@@ -58,7 +55,7 @@ public class ApplicationContextConfig{
         factoryBean.setJpaVendorAdapter(jpaVendorAdapter);
         factoryBean.setPackagesToScan("ru.zhukov.domain","ru.zhukov.utils");
 
-
+        factoryBean.setPersistenceUnitName("testUnit");
         //factoryBean.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
         return factoryBean;
 
