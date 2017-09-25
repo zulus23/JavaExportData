@@ -16,6 +16,7 @@ public class KindPay  implements Serializable{
     @Column(name = "codename")
     private String name;
 
+
     public String getCode() {
         return code;
     }
@@ -33,6 +34,7 @@ public class KindPay  implements Serializable{
     }
 
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,5 +48,10 @@ public class KindPay  implements Serializable{
     @Override
     public int hashCode() {
         return getCode() != null ? getCode().hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s",code,name);
     }
 }

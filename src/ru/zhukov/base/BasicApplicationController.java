@@ -40,6 +40,7 @@ import ru.zhukov.fee.SetupIncreaseFeeAccountController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.repository.TransferJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
+import ru.zhukov.service.IncreaseFeeAccountService;
 import ru.zhukov.service.JournalExportDataService;
 import ru.zhukov.transfer.SetupAccountTransferController;
 import ru.zhukov.transfer.SetupCostItemTransferController;
@@ -148,6 +149,9 @@ public class BasicApplicationController implements Initializable {
 
     private JournalExportDataService exportDataService;
 
+    private IncreaseFeeAccountService increaseFeeAccountService;
+
+
 
     private int month;
     private int year;
@@ -161,6 +165,7 @@ public class BasicApplicationController implements Initializable {
 
     public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
         this.repository = ApplicationController.getInstance().getCtx().getBean(TransferJpaRepository.class);
+        this.increaseFeeAccountService = ApplicationController.getInstance().getCtx().getBean(IncreaseFeeAccountService.class);
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;
@@ -255,7 +260,7 @@ public class BasicApplicationController implements Initializable {
 
     private void showAccountInPay(ActionEvent actionEvent) {
         FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/fee/SetupIncreaseFeeAccountView.fxml")));
-        SetupIncreaseFeeAccountController costItemTransferController = new SetupIncreaseFeeAccountController();
+        SetupIncreaseFeeAccountController costItemTransferController = new SetupIncreaseFeeAccountController(increaseFeeAccountService);
         fxmlLoader.setController(costItemTransferController);
         try{
             AnchorPane accountSetup = fxmlLoader.load();

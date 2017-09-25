@@ -12,6 +12,7 @@ public class IncreaseKindPay {
     @Column(name = "id")
     private Integer id;
 
+
     @OneToOne
     @JoinColumn(name = "code")
     private KindPay kindPay;

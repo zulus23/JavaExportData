@@ -19,7 +19,7 @@
                         <TableView fx:id="setupAccountFee" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn fx:id="codeAccount" prefWidth="75.0" text="Код начисления" />
-                            <TableColumn fx:id="nameAccount" prefWidth="75.0" text="Наиманование" />
+                            <TableColumn fx:id="nameAccount" prefWidth="75.0" text="Наименование" />
 
                           </columns>
                            <columnResizePolicy>
