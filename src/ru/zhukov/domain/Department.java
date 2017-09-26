@@ -14,6 +14,9 @@ public class Department {
     @Column(name = "naz_otd")
     private String name;
 
+    @Column(name = "brief_name")
+    private String briefName;
+
     public String getId() {
         return id;
     }
@@ -28,5 +31,13 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBriefName() {
+        return briefName;
+    }
+
+    public void setBriefName(String briefName) {
+        this.briefName = briefName;
     }
 }

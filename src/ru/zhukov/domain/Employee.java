@@ -46,6 +46,17 @@ public class Employee {
     private Tariff tariff;
 
 
+    @OneToOne
+    @JoinColumn(name = "category")
+    private Category category;
+
+    @Transient
+    private String fullName;
+
+    @Transient
+    private Tariff nextTariff;
+
+
     public String getId() {
         return id;
     }
@@ -127,6 +138,14 @@ public class Employee {
         this.tariff = tariff;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public Integer getCurrentRank(){
         Pattern pattern = Pattern.compile("\\d");
         return  Optional.ofNullable(position).map(r ->  {
@@ -137,6 +156,34 @@ public class Employee {
 
             return  -100;
         }).orElse(-100);
+    }
+
+    public Integer getRankByTariff(){
+        return tariff.getRank();
+    }
+
+
+    public String getFullName(){
+        return String.format("%s %s %s",name.trim(),firstName.trim(),secondName.trim());
+    }
+
+    public String getDepartmentName(){
+        return String.format("%s - %s",department.getBriefName(), department.getName().trim());
+    }
+    public String getPositionName(){
+        return String.format("%s",position.getDescription().trim());
+    }
+
+    public Tariff getNextTariff() {
+        return nextTariff;
+    }
+
+    public void setNextTariff(Tariff nextTariff) {
+        this.nextTariff = nextTariff;
+    }
+
+    public BigDecimal getSalaryByPosition(){
+        return  nextTariff.getSumma();
     }
 
 }

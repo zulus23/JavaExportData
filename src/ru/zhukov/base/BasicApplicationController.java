@@ -36,12 +36,14 @@ import ru.zhukov.dto.ExportJournal;
 import ru.zhukov.employee.AccrualEmployeeController;
 import ru.zhukov.exeption.ExcelFileTransferException;
 import ru.zhukov.export.JournalExportController;
+import ru.zhukov.fee.CalculateIncreaseFreeController;
 import ru.zhukov.fee.SetupIncreaseFeeAccountController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.repository.TransferJpaRepository;
 import ru.zhukov.service.AccountRecordDataService;
 import ru.zhukov.service.IncreaseFeeAccountService;
 import ru.zhukov.service.JournalExportDataService;
+import ru.zhukov.service.TariffIncreaseService;
 import ru.zhukov.transfer.SetupAccountTransferController;
 import ru.zhukov.transfer.SetupCostItemTransferController;
 import ru.zhukov.transfer.SetupDepartmentTransferController;
@@ -96,6 +98,10 @@ public class BasicApplicationController implements Initializable {
 
     @FXML
     private MenuItem miViewTransferMoneyBankJournal;
+    @FXML
+    private MenuItem miViewCalculateIncreaseFeeByRank;
+
+
 
 
     @FXML
@@ -151,6 +157,7 @@ public class BasicApplicationController implements Initializable {
 
     private IncreaseFeeAccountService increaseFeeAccountService;
 
+    private TariffIncreaseService tariffIncreaseService;
 
 
     private int month;
@@ -166,6 +173,7 @@ public class BasicApplicationController implements Initializable {
     public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
         this.repository = ApplicationController.getInstance().getCtx().getBean(TransferJpaRepository.class);
         this.increaseFeeAccountService = ApplicationController.getInstance().getCtx().getBean(IncreaseFeeAccountService.class);
+        this.tariffIncreaseService = ApplicationController.getInstance().getCtx().getBean(TariffIncreaseService.class);
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;
@@ -248,13 +256,45 @@ public class BasicApplicationController implements Initializable {
 
 
         miViewTransferMoneyBankJournal.setOnAction(this::showTransferMoneyBankJournal);
-
+        miViewCalculateIncreaseFeeByRank.setOnAction(this::showCaclulateIncreaseFeeByRank);
         miDepartmentSetup.setOnAction(this::showDepartmentSetupTransfer);
         miAccountHelper.setOnAction(this::showAccountSetupTransfer);
         miCreateFileTransferTo1C.setOnAction(this::CreateFileTransferTo1C);
         miCostHelper.setOnAction(this::showCostItemSetupTransfer);
         miAccountInPay.setOnAction(this::showAccountInPay);
         stackPane.getChildren().add(masker);
+
+    }
+
+    private void showCaclulateIncreaseFeeByRank(ActionEvent actionEvent) {
+        FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/fee/CalculateIncreaseFeeView.fxml")));
+
+        CalculateIncreaseFreeController calculateIncreaseFreeController = new CalculateIncreaseFreeController(tariffIncreaseService,datePicker.getValue().atStartOfDay());
+        fxmlLoader.setController(calculateIncreaseFreeController);
+        try{
+            AnchorPane calculateIncreaseFee = fxmlLoader.load();
+            AnchorPane anchorPane = new AnchorPane();
+            AnchorPane.setTopAnchor(calculateIncreaseFee, 0.0);
+            AnchorPane.setLeftAnchor(calculateIncreaseFee, 0.0);
+            AnchorPane.setRightAnchor(calculateIncreaseFee, 0.0);
+            AnchorPane.setBottomAnchor(calculateIncreaseFee, 0.0);
+
+            anchorPane.getChildren().add(calculateIncreaseFee);
+
+            Tab tabCalculateIncreaseFee = new Tab();
+
+            tabCalculateIncreaseFee.setText("Расчет доплат за разряд");
+            tabCalculateIncreaseFee.setContent(anchorPane);
+            tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);
+
+
+            tpWindowContainer.getTabs().addAll(tabCalculateIncreaseFee);
+            tpWindowContainer.setVisible(true);
+
+        }catch (IOException ex ){
+            ex.printStackTrace();
+        }
 
     }
 

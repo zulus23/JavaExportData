@@ -43,6 +43,9 @@
                    <MenuItem fx:id="miViewJournalExport" mnemonicParsing="false" text="%menu.title.view.journalexport" />
                    <MenuItem fx:id="miViewAlimentJournal" mnemonicParsing="false" text="%menu.title.view.alimentjournal" />
                    <MenuItem fx:id="miViewTransferMoneyBankJournal" mnemonicParsing="false" text="%menu.title.view.transfermoney" />
+                   <SeparatorMenuItem  mnemonicParsing="false"/>
+                   <MenuItem fx:id="miViewCalculateIncreaseFeeByRank" mnemonicParsing="false" text="%menu.title.view.calculateincreasefee"/>
+
       
                  </items>
               </Menu>
