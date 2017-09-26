@@ -44,6 +44,7 @@ public class ApplicationContextConfig{
         map.putAll(factoryBean.getJpaPropertyMap());
 
         map.put(PersistenceUnitProperties.WEAVING,"false");
+        map.put(PersistenceUnitProperties.CACHE_TYPE_+"Employee", CacheType.NONE);
         factoryBean.setJpaPropertyMap(map);
         factoryBean.setDataSource(dataSource);
         EclipseLinkJpaVendorAdapter jpaVendorAdapter = new EclipseLinkJpaVendorAdapter();
