@@ -45,6 +45,15 @@ public class Employee {
                  @JoinColumn(name = "ets_c",referencedColumnName = "step_column")})
     private Tariff tariff;
 
+    @OneToMany
+    @JoinColumn(name = "pers_id")
+    private List<CaclucateFee> caclucateFees;
+
+    @OneToMany
+    @JoinColumn(name = "pers_id")
+    private List<EmployeeFee> employeeFees;
+
+
 
     @OneToOne
     @JoinColumn(name = "category")
@@ -55,6 +64,17 @@ public class Employee {
 
     @Transient
     private Tariff nextTariff;
+
+    @Transient
+    private BigDecimal coefficient;
+
+    @Transient
+    private BigDecimal increaseSummaFee;
+
+    @Column(name = "brv")
+    private String graphWork;
+
+
 
 
     public String getId() {
@@ -146,6 +166,22 @@ public class Employee {
         this.category = category;
     }
 
+    public List<CaclucateFee> getCaclucateFees() {
+        return caclucateFees;
+    }
+
+    public void setCaclucateFees(List<CaclucateFee> caclucateFees) {
+        this.caclucateFees = caclucateFees;
+    }
+
+    public List<EmployeeFee> getEmployeeFees() {
+        return employeeFees;
+    }
+
+    public void setEmployeeFees(List<EmployeeFee> employeeFees) {
+        this.employeeFees = employeeFees;
+    }
+
     public Integer getCurrentRank(){
         Pattern pattern = Pattern.compile("\\d");
         return  Optional.ofNullable(position).map(r ->  {
@@ -186,4 +222,27 @@ public class Employee {
         return  nextTariff.getSumma();
     }
 
+    public BigDecimal getCoefficient() {
+        return coefficient;
+    }
+
+    public BigDecimal getIncreaseSummaFee() {
+        return increaseSummaFee;
+    }
+
+    public void setIncreaseSummaFee(BigDecimal increaseSummaFee) {
+        this.increaseSummaFee = increaseSummaFee;
+    }
+
+    public String getGraphWork() {
+        return graphWork;
+    }
+
+    public void setGraphWork(String graphWork) {
+        this.graphWork = graphWork;
+    }
+
+    public void setCoefficient(BigDecimal coefficient) {
+        this.coefficient = coefficient;
+    }
 }

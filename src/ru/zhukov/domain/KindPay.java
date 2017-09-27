@@ -15,6 +15,12 @@ public class KindPay  implements Serializable{
     private String code;
     @Column(name = "codename")
     private String name;
+    @Column(name = "finoper")
+    private String financeOperation;
+    @Column(name = "tip")
+    private String tip;
+
+
 
 
     public String getCode() {
@@ -33,7 +39,21 @@ public class KindPay  implements Serializable{
         this.name = name;
     }
 
+    public String getFinanceOperation() {
+        return financeOperation;
+    }
 
+    public void setFinanceOperation(String financeOperation) {
+        this.financeOperation = financeOperation;
+    }
+
+    public String getTip() {
+        return tip;
+    }
+
+    public void setTip(String tip) {
+        this.tip = tip;
+    }
 
     @Override
     public boolean equals(Object o) {

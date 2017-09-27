@@ -1,28 +1,26 @@
 package ru.zhukov.config;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
+import org.eclipse.persistence.config.CacheType;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
-import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.zhukov.domain.Database;
 import ru.zhukov.dto.CurrentUser;
 import ru.zhukov.utils.ApplicationUtils;
 
-import javax.persistence.*;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import javax.transaction.TransactionManager;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by Gukov on 28.03.2016.

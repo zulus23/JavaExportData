@@ -77,7 +77,22 @@ public class EmployeeTest extends AbstractTest {
                                                                Date.from(localDateEnd.atZone(ZoneId.systemDefault()).toInstant())
                                                                );
         assertTrue(employeeList.size() > 0);
+
+        assertTrue(employeeList.get(0).getCaclucateFees().size()> 0);
+
     }
+
+
+    @Test
+    public void employeeMustHaveVari(){
+        List<Employee> employees =  employeeRepository.findByNameIsContaining("Жуков");
+        assertFalse(employees.isEmpty());
+        assertTrue(employees.get(0).getEmployeeFees().size() > 0);
+    }
+
+
+
+
 
 
 

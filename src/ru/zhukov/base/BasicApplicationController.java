@@ -263,6 +263,8 @@ public class BasicApplicationController implements Initializable {
         miCostHelper.setOnAction(this::showCostItemSetupTransfer);
         miAccountInPay.setOnAction(this::showAccountInPay);
         stackPane.getChildren().add(masker);
+        tpWindowContainer.setTabMinWidth(250);
+        tpWindowContainer.setTabMaxWidth(250);
 
     }
 
@@ -285,8 +287,8 @@ public class BasicApplicationController implements Initializable {
 
             tabCalculateIncreaseFee.setText("Расчет доплат за разряд");
             tabCalculateIncreaseFee.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            /*tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);*/
 
 
             tpWindowContainer.getTabs().addAll(tabCalculateIncreaseFee);
@@ -316,8 +318,7 @@ public class BasicApplicationController implements Initializable {
 
             tabSetupFeeAccount.setText("Настройка видов начислений для доплат");
             tabSetupFeeAccount.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+
 
 
             tpWindowContainer.getTabs().addAll(tabSetupFeeAccount);
@@ -349,8 +350,8 @@ public class BasicApplicationController implements Initializable {
 
             tabCostItemSetupTransfer.setText("Настройка соотвествия статей затрат...");
             tabCostItemSetupTransfer.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            /*tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);*/
 
 
             tpWindowContainer.getTabs().addAll(tabCostItemSetupTransfer);
@@ -413,8 +414,8 @@ public class BasicApplicationController implements Initializable {
 
             tabAccountSetupTransfer.setText("Настройка соотвествия счетов");
             tabAccountSetupTransfer.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            /*tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);*/
 
 
             tpWindowContainer.getTabs().addAll(tabAccountSetupTransfer);
@@ -445,8 +446,8 @@ public class BasicApplicationController implements Initializable {
 
             tabDepartmentSetupTransfer.setText("Настройка соотвествия подразделений");
             tabDepartmentSetupTransfer.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            /*tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);*/
 
 
             tpWindowContainer.getTabs().addAll(tabDepartmentSetupTransfer);
@@ -478,8 +479,8 @@ public class BasicApplicationController implements Initializable {
 
             tabJournalTransferTab.setText("Журнал перечисления в банк");
             tabJournalTransferTab.setContent(anchorPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+            /*tpWindowContainer.setTabMinWidth(160);
+            tpWindowContainer.setTabMaxWidth(160);*/
 
 
             tpWindowContainer.getTabs().addAll(tabJournalTransferTab);
@@ -562,8 +563,8 @@ public class BasicApplicationController implements Initializable {
 
             tabJournalExport.setText("Журнал экспорта");
             tabJournalExport.setContent(splitPane);
-            tpWindowContainer.setTabMinWidth(160);
-            tpWindowContainer.setTabMaxWidth(160);
+//            tpWindowContainer.setTabMinWidth(160);
+//            tpWindowContainer.setTabMaxWidth(160);
 
             //TODO Необходимо сохранять ссылку на контроллер
 
@@ -618,8 +619,8 @@ public class BasicApplicationController implements Initializable {
                  tabAccount.setOnClosed(this::closeTabAction);
                  tabAccount.setText(String.format("Проводки за %s ", datePicker.getValue().format(DateTimeFormatter.ofPattern("MMM-YYYY"))));
                  tabAccount.setContent(anchorPane);
-                 tpWindowContainer.setTabMinWidth(180);
-                 tpWindowContainer.setTabMaxWidth(180);
+//                 tpWindowContainer.setTabMinWidth(180);
+//                 tpWindowContainer.setTabMaxWidth(180);
                  tpWindowContainer.getTabs().addAll(tabAccount);
                  accountRecordControllerWeakHashMap.putIfAbsent(tabAccount, accountRecordController);
              }
