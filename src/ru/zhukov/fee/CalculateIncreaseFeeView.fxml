@@ -26,7 +26,7 @@
                      <children>
                         <TableView fx:id="employeeIncreaseFee" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-
+                            <TableColumn fx:id="employeeNumber" prefWidth="40" minWidth="35" text="Табельный номер"/>
                             <TableColumn fx:id="employee" prefWidth="120.0" text="Сотрудник" />
                             <TableColumn fx:id="department" prefWidth="120.0" text="Подразделение" />
                             <TableColumn fx:id="position" prefWidth="120.0" text="Должность" />

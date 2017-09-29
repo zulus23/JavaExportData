@@ -14,7 +14,7 @@ public abstract class AbstractTest {
 
 
     public AbstractTest() {
-        currentUser = new CurrentUser("report","report",new Database("ИНВЕСТ","g_invst_tarif",""));
+        currentUser = new CurrentUser("report","report",new Database("ИНВЕСТ","ait_db_tarif",""));
         ApplicationContextConfig.setCurrentUser(currentUser);
     }
 }

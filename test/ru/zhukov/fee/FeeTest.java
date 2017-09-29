@@ -9,17 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.zhukov.config.ApplicationContextConfig;
-import ru.zhukov.domain.Database;
-import ru.zhukov.domain.IncreaseKindPay;
-import ru.zhukov.domain.KindPay;
+import ru.zhukov.domain.*;
 import ru.zhukov.dto.CurrentUser;
+import ru.zhukov.repository.EmployeeFeeRepository;
+import ru.zhukov.repository.EmployeeRepository;
 import ru.zhukov.repository.IncreaseKindPayRepository;
 import ru.zhukov.repository.KindPayRepository;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationContextConfig.class})
@@ -31,6 +34,11 @@ public class FeeTest {
     private KindPayRepository kindPayRepository;
     @Autowired
     private IncreaseKindPayRepository increaseKindPayRepository;
+
+    @Autowired
+    private EmployeeFeeRepository employeeFeeRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public FeeTest() {
         currentUser = new CurrentUser("report","report",new Database("ИНВЕСТ","g_invst_tarif",""));
@@ -72,6 +80,39 @@ public class FeeTest {
 
 
     }
+    @Test
+    public void makeIncreaseFee(){
+        Employee e = employeeRepository.findByTabelNumber("0401");
+        KindPay kindPay = kindPayRepository.findOne("017");
+        LocalDateTime workDate = LocalDateTime.now();
+        assertNotNull(e);
+        assertNotNull(kindPay);
+        EmployeeFee employeeFee = new EmployeeFee();
+        employeeFee.setDay(new BigDecimal(0));
+        employeeFee.setFinanceOperation(kindPay.getFinanceOperation());
+        employeeFee.setGraphWork(e.getGraphWork());
+        employeeFee.setHour(new BigDecimal(0));
+        employeeFee.setKindPay(kindPay);
+        employeeFee.setMonth(workDate.getMonthValue());
+        employeeFee.setYear(workDate.getYear());
+        employeeFee.setProcent(new BigDecimal(100));
+        employeeFee.setTip(kindPay.getTip());
+        employeeFee.setDepartment(e.getDepartment());
+        employeeFee.setEmployee(e);
+        employeeFee.setEmployeeBase(e);
+        employeeFee.setCategory(e.getCategory());
+        employeeFee.setStatus(Status.ACCRUE);
+        employeeFee.setActive(Active.ACTIVE);
+        employeeFee.setCodeProfit(kindPay.getCodeProfit());
+        employeeFee.setCreateDate(Date.from(workDate.atZone(ZoneId.systemDefault()).toInstant()));
+        employeeFee.setSumma(new BigDecimal(250.45));
+
+        employeeFeeRepository.save(employeeFee);
+        assertNotNull(employeeFee.getId());
+        System.out.println(" id = "+employeeFee.getId());
+    }
+
+
 
     private void createKindPay008() {
         KindPay kindPay =  new KindPay();

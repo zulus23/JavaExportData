@@ -47,6 +47,7 @@ import ru.zhukov.service.TariffIncreaseService;
 import ru.zhukov.transfer.SetupAccountTransferController;
 import ru.zhukov.transfer.SetupCostItemTransferController;
 import ru.zhukov.transfer.SetupDepartmentTransferController;
+import ru.zhukov.utils.CreateExcelFileForIncreaseFee;
 import ru.zhukov.utils.FileTransferBuilder;
 
 import java.awt.*;
@@ -57,6 +58,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -69,6 +71,7 @@ public class BasicApplicationController implements Initializable {
 
     private Map<Tab,AccountRecordController> accountRecordControllerWeakHashMap  = new WeakHashMap<>();
     private Map<Tab,JournalExportController> journalExportControllerWeakHashMap  = new WeakHashMap<>();
+    private final Map<Tab,CalculateIncreaseFreeController> calculateIncreaseFreeControllerWeakHashMap  = new WeakHashMap<>();
 
     private ObjectProperty<JournalExportController> currentJournalExportController;
 
@@ -269,35 +272,44 @@ public class BasicApplicationController implements Initializable {
     }
 
     private void showCaclulateIncreaseFeeByRank(ActionEvent actionEvent) {
-        FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/fee/CalculateIncreaseFeeView.fxml")));
+        Optional<Tab> tabOptional = calculateIncreaseFreeControllerWeakHashMap.keySet().stream()
+                .filter(e -> e.getText().contains("Расчет доплат за разряд"))
+                .findFirst();
 
-        CalculateIncreaseFreeController calculateIncreaseFreeController = new CalculateIncreaseFreeController(tariffIncreaseService,datePicker.getValue().atStartOfDay());
-        fxmlLoader.setController(calculateIncreaseFreeController);
-        try{
-            AnchorPane calculateIncreaseFee = fxmlLoader.load();
-            AnchorPane anchorPane = new AnchorPane();
-            AnchorPane.setTopAnchor(calculateIncreaseFee, 0.0);
-            AnchorPane.setLeftAnchor(calculateIncreaseFee, 0.0);
-            AnchorPane.setRightAnchor(calculateIncreaseFee, 0.0);
-            AnchorPane.setBottomAnchor(calculateIncreaseFee, 0.0);
+        if(tabOptional.isPresent()){
+            tpWindowContainer.getSelectionModel().select(tabOptional.get());
+        } else {
 
-            anchorPane.getChildren().add(calculateIncreaseFee);
+            FXMLLoader fxmlLoader = new FXMLLoader((getClass().getResource("/ru/zhukov/fee/CalculateIncreaseFeeView.fxml")));
 
-            Tab tabCalculateIncreaseFee = new Tab();
+            CalculateIncreaseFreeController calculateIncreaseFreeController = new CalculateIncreaseFreeController(tariffIncreaseService, datePicker.getValue().atStartOfDay());
+            fxmlLoader.setController(calculateIncreaseFreeController);
+            try {
+                AnchorPane calculateIncreaseFee = fxmlLoader.load();
+                AnchorPane anchorPane = new AnchorPane();
+                AnchorPane.setTopAnchor(calculateIncreaseFee, 0.0);
+                AnchorPane.setLeftAnchor(calculateIncreaseFee, 0.0);
+                AnchorPane.setRightAnchor(calculateIncreaseFee, 0.0);
+                AnchorPane.setBottomAnchor(calculateIncreaseFee, 0.0);
 
-            tabCalculateIncreaseFee.setText("Расчет доплат за разряд");
-            tabCalculateIncreaseFee.setContent(anchorPane);
+                anchorPane.getChildren().add(calculateIncreaseFee);
+
+                Tab tabCalculateIncreaseFee = new Tab();
+
+                tabCalculateIncreaseFee.setText("Расчет доплат за разряд");
+                tabCalculateIncreaseFee.setContent(anchorPane);
             /*tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);*/
 
 
-            tpWindowContainer.getTabs().addAll(tabCalculateIncreaseFee);
-            tpWindowContainer.setVisible(true);
+                tpWindowContainer.getTabs().addAll(tabCalculateIncreaseFee);
+                tpWindowContainer.setVisible(true);
+                calculateIncreaseFreeControllerWeakHashMap.putIfAbsent(tabCalculateIncreaseFee,calculateIncreaseFreeController);
 
-        }catch (IOException ex ){
-            ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-
     }
 
     private void showAccountInPay(ActionEvent actionEvent) {
@@ -530,9 +542,29 @@ public class BasicApplicationController implements Initializable {
 
     //TODO необходимо проверка на то что tab существует
     private void printFile(ActionEvent event) {
+        Tab selectedTab = tpWindowContainer.getSelectionModel().getSelectedItem();
+        if(selectedTab.getText().contains("Расчет доплат за разряд")) {
 
-        //AccountRecordController accountRecordController = getCurrentAccountRecordController();
-       // new ImportIntoXLS().CreateXLS(getCurrentAccountRecordController().getAccountRecordTable());
+            CompletableFuture.supplyAsync(() -> {
+                Platform.runLater(() -> masker.setVisible(true));
+                CreateExcelFileForIncreaseFee excelFileForIncreaseFee = new CreateExcelFileForIncreaseFee();
+                return excelFileForIncreaseFee.generateReportFromData(calculateIncreaseFreeControllerWeakHashMap.get(selectedTab).printDataSource());
+
+
+            }).whenComplete((path, err) -> {
+                setMarkerNotVisible();
+                if (err != null) {
+                    Action.showErrorInformation(String.format("Файл не сформирован. Причина %s%n", err.getMessage()));
+                }
+                try {
+                    Desktop.getDesktop().open(path.normalize().toFile());
+                } catch (Exception e) {
+                    Action.showErrorInformation(String.format("Не могу открыть файл. Причина %s%n", e.getMessage()));
+
+                }
+            });
+
+        }
     }
 
     private AccountRecordController getCurrentAccountRecordController() {

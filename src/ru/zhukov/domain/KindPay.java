@@ -20,6 +20,10 @@ public class KindPay  implements Serializable{
     @Column(name = "tip")
     private String tip;
 
+    @Column(name = "vid_dohods")
+    private String codeProfit;
+
+
 
 
 
@@ -53,6 +57,14 @@ public class KindPay  implements Serializable{
 
     public void setTip(String tip) {
         this.tip = tip;
+    }
+
+    public String getCodeProfit() {
+        return codeProfit;
+    }
+
+    public void setCodeProfit(String codeProfit) {
+        this.codeProfit = codeProfit;
     }
 
     @Override

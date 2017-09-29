@@ -16,14 +16,11 @@ import org.controlsfx.control.MaskerPane;
 import org.controlsfx.control.table.TableFilter;
 import ru.zhukov.action.Action;
 import ru.zhukov.domain.Employee;
-import ru.zhukov.domain.KindPay;
 import ru.zhukov.service.TariffIncreaseService;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -32,8 +29,13 @@ public class CalculateIncreaseFreeController implements Initializable{
 
     private TariffIncreaseService increaseService;
 
+
+
+
     @FXML
     private TableView<Employee> employeeIncreaseFee;
+    @FXML
+    private TableColumn<Employee,String>  employeeNumber;
     @FXML
     private TableColumn<Employee,String> employee;
     @FXML
@@ -96,11 +98,8 @@ public class CalculateIncreaseFreeController implements Initializable{
         stackPane.getChildren().add(masker);
 
         CompletableFuture.supplyAsync(() -> {
-            Platform.runLater(()-> {
-                bMakeAddToPersonCart.setDisable(true);
-                bCalculate.setDisable(true);
-                masker.setVisible(true);
-            });
+            showMessageAboutWork("Выполняю загрузку. Ожидайте...");
+
            return increaseService.employeeListNeedIncreaseTarif(dateMothCalculate);
         }).thenAcceptAsync((e)->{
             Platform.runLater(()->{
@@ -108,11 +107,8 @@ public class CalculateIncreaseFreeController implements Initializable{
                 TableFilter tableFilter = TableFilter.forTableView(employeeIncreaseFee).lazy(true).apply();
             });
         }).whenComplete((object,erroe)->{
-            Platform.runLater(()-> {
-                bMakeAddToPersonCart.setDisable(false);
-                bCalculate.setDisable(false);
-                masker.setVisible(false);
-            });
+            hideMessageAboutWork();
+            employeeNumber.setCellValueFactory(new PropertyValueFactory<>("tabelNumber"));
             employee.setCellValueFactory(new PropertyValueFactory<>("fullName"));
             department.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
             position.setCellValueFactory(new PropertyValueFactory<>("positionName"));
@@ -123,7 +119,7 @@ public class CalculateIncreaseFreeController implements Initializable{
             coefficient.setCellValueFactory(new PropertyValueFactory<>("coefficient"));
             increaseSummaFee.setCellValueFactory(new PropertyValueFactory<>("increaseSummaFee"));
         });
-
+        employeeNumber.setStyle("-fx-alignment: CENTER-LEFT;");
         employee.setStyle("-fx-alignment: CENTER-LEFT;");
         department.setStyle("-fx-alignment: CENTER-LEFT;");
         position.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -140,20 +136,54 @@ public class CalculateIncreaseFreeController implements Initializable{
 
     }
 
+    public List<Employee> printDataSource(){
+        return new ArrayList<>(employeeIncreaseFee.getItems());
+    }
+
     private void makeAddToPersonCart(ActionEvent actionEvent) {
-        Action.selectKindPay(increaseService.selectKindPayLess500()).ifPresent((e) ->{
-            System.out.println("e.getCode() = " + e.getCode());
+        Action.selectKindPay(increaseService.selectKindPayLess500()).ifPresent((kindPayConsumer) ->{
+            CompletableFuture.runAsync(()->{
+                        showMessageAboutWork("Выполняю начисление. Ожидайте...");
+                        increaseService.makeIncreaseFeeByEmployee(employeeIncreaseFee.getItems(),kindPayConsumer,dateMothCalculate);
+                    })
+                    .whenComplete((obj,err)->{
+                        hideMessageAboutWork();
+                       if (err != null){
+                          Action.showErrorInformation(err.getMessage());
+                       }else{
+
+                       }
+                    });
         });
     }
 
+
+
     private void calculateIncreaseFee(ActionEvent actionEvent) {
-        List<KindPay> kindPays = increaseService.listKindPayIncreaseFee();
-         employeeIncreaseFee.getItems().stream().forEach(e -> {
-             double s =  e.getCaclucateFees().stream().filter(code -> kindPays.contains(code.getKindPay()))
-                                          .mapToDouble(emp->emp.getSumma().doubleValue())
-                                          .sum();
-             e.setIncreaseSummaFee(new BigDecimal(s).multiply(e.getCoefficient().remainder(new BigDecimal(1))).round(new MathContext(4,RoundingMode.HALF_UP)));
-         });
-         employeeIncreaseFee.refresh();
+
+        CompletableFuture.runAsync(()-> {
+            showMessageAboutWork("Выполняю расчет. Ожидайте...");
+            increaseService.calculateIncreaseFee(employeeIncreaseFee.getItems(),dateMothCalculate);
+        }).whenComplete((obj,err)->{
+            employeeIncreaseFee.refresh();
+            hideMessageAboutWork();
+        });
+
+    }
+
+    private void showMessageAboutWork(String message) {
+        Platform.runLater(()-> {
+            masker.setText(message);
+            bMakeAddToPersonCart.setDisable(true);
+            bCalculate.setDisable(true);
+            masker.setVisible(true);
+        });
+    }
+    private void hideMessageAboutWork() {
+        Platform.runLater(()-> {
+            bMakeAddToPersonCart.setDisable(false);
+            bCalculate.setDisable(false);
+            masker.setVisible(false);
+        });
     }
 }

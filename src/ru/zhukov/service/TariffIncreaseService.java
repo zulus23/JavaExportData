@@ -1,19 +1,17 @@
 package ru.zhukov.service;
 
 
+import javafx.scene.control.TableView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.zhukov.domain.Employee;
-import ru.zhukov.domain.KindPay;
-import ru.zhukov.domain.Tariff;
-import ru.zhukov.domain.TariffId;
-import ru.zhukov.repository.EmployeeRepository;
-import ru.zhukov.repository.IncreaseKindPayRepository;
-import ru.zhukov.repository.KindPayRepository;
-import ru.zhukov.repository.TariffRepository;
+import ru.zhukov.domain.*;
+import ru.zhukov.repository.*;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
@@ -34,6 +32,10 @@ public class TariffIncreaseService {
 
     @Autowired
     private IncreaseKindPayRepository increaseKindPayRepository;
+
+    @Autowired
+    private EmployeeFeeRepository employeeFeeRepository;
+
 
 
     @Autowired
@@ -70,4 +72,49 @@ public class TariffIncreaseService {
     }
 
 
+    @Transactional
+    public void makeIncreaseFeeByEmployee(List<Employee> employeeIncreaseFee,KindPay kindPay,LocalDateTime workDate) {
+        employeeIncreaseFee.stream().forEach(e ->{
+            EmployeeFee employeeFee = getEmployeeFee(kindPay, workDate, e);
+            employeeFeeRepository.save(employeeFee);
+        });
+    }
+
+
+
+    public void calculateIncreaseFee(List<Employee> employeeIncreaseFee,LocalDateTime calculateDate){
+        List<KindPay> kindPays = listKindPayIncreaseFee();
+        employeeIncreaseFee.stream().forEach(e -> {
+            double s = e.getCaclucateFees().stream()
+                    .filter(code -> kindPays.contains(code.getKindPay()) &&
+                                                       code.getMonth()==calculateDate.getMonthValue() &&
+                                                       code.getYear() == calculateDate.getYear())
+                    .mapToDouble(emp -> emp.getSumma().doubleValue())
+                    .sum();
+            e.setIncreaseSummaFee(new BigDecimal(s).multiply(e.getCoefficient().remainder(new BigDecimal(1))).round(new MathContext(4, RoundingMode.HALF_UP)));
+        });
+
+    }
+    private EmployeeFee getEmployeeFee(KindPay kindPay, LocalDateTime workDate, Employee employee) {
+        EmployeeFee employeeFee = new EmployeeFee();
+        employeeFee.setDay(new BigDecimal(0));
+        employeeFee.setFinanceOperation(kindPay.getFinanceOperation());
+        employeeFee.setGraphWork(employee.getGraphWork());
+        employeeFee.setHour(new BigDecimal(0));
+        employeeFee.setKindPay(kindPay);
+        employeeFee.setMonth(workDate.getMonthValue());
+        employeeFee.setYear(workDate.getYear());
+        employeeFee.setProcent(new BigDecimal(100));
+        employeeFee.setTip(kindPay.getTip());
+        employeeFee.setDepartment(employee.getDepartment());
+        employeeFee.setEmployee(employee);
+        employeeFee.setEmployeeBase(employee);
+        employeeFee.setCategory(employee.getCategory());
+        employeeFee.setStatus(Status.ACCRUE);
+        employeeFee.setActive(Active.ACTIVE);
+        employeeFee.setCodeProfit(kindPay.getCodeProfit());
+        employeeFee.setCreateDate(java.sql.Date.from(workDate.atZone(ZoneId.systemDefault()).toInstant()));
+        employeeFee.setSumma(employee.getIncreaseSummaFee());
+        return employeeFee;
+    }
 }
