@@ -74,6 +74,8 @@ public class Employee {
     @Column(name = "brv")
     private String graphWork;
 
+    @Column(name = "konst1")
+    private BigDecimal constForTime;
 
 
 
@@ -190,8 +192,8 @@ public class Employee {
                 return Integer.valueOf(matcher.group());
             }
 
-            return  -100;
-        }).orElse(-100);
+            return  0;
+        }).orElse(0);
     }
 
     public Integer getRankByTariff(){
@@ -244,5 +246,14 @@ public class Employee {
 
     public void setCoefficient(BigDecimal coefficient) {
         this.coefficient = coefficient;
+    }
+
+
+    public BigDecimal getConstForTime() {
+        return constForTime;
+    }
+
+    public void setConstForTime(BigDecimal constForTime) {
+        this.constForTime = constForTime;
     }
 }

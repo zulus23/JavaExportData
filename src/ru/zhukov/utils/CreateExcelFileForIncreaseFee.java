@@ -88,22 +88,22 @@ public class CreateExcelFileForIncreaseFee {
             cell = row.createCell(6);
             cell.setCellStyle(rightCenterStyle);
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(employee.getNextTariff().getSumma().doubleValue());
+            cell.setCellValue(Optional.ofNullable(employee.getNextTariff()).map(v -> v.getSumma().doubleValue()).orElse(0.0));
 
             cell = row.createCell(7);
             cell.setCellStyle(rightCenterStyle);
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(employee.getTariff().getSumma().doubleValue());
+            cell.setCellValue(Optional.ofNullable(employee.getTariff()).map(v-> v.getSumma().doubleValue()).orElse(0.0));
 
             cell = row.createCell(8);
             cell.setCellStyle(centerStyle);
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(employee.getCoefficient().doubleValue());
+            cell.setCellValue(Optional.ofNullable(employee.getCoefficient()).map(v -> v.doubleValue()).orElse(0.0));
 
             cell = row.createCell(9);
             cell.setCellStyle(rightCenterStyle);
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(employee.getIncreaseSummaFee().doubleValue());
+            cell.setCellValue(Optional.ofNullable(employee.getIncreaseSummaFee()).map(v -> v.doubleValue()).orElse(0.0));
 
             rowCount++;
         }

@@ -41,8 +41,8 @@ public class XLSFileTransferForIncreaseFee extends AbstractTest {
     @Test
     public void fileMustWillCreated(){
         LocalDateTime dateCalculate = LocalDateTime.of(2017, Month.SEPTEMBER,01,0,0);
-        List<Employee> employees = increaseService.employeeListNeedIncreaseTarif(dateCalculate);
-        increaseService.calculateIncreaseFee(employees,dateCalculate);
+        List<Employee> employees = increaseService.employeeNotNeedIncreaseTarif(dateCalculate);
+        //increaseService.calculateIncreaseFee(employees,dateCalculate);
         CreateExcelFileForIncreaseFee report = new CreateExcelFileForIncreaseFee();
         Path path =  report.generateReportFromData(employees);
 

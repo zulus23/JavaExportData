@@ -16,9 +16,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,22 +46,37 @@ public class TariffIncreaseService {
         return  employeeIncrease;
     }
     public List<Employee> employeeListNeedIncreaseTarif(LocalDateTime dateMonthCalculate){
+        Predicate<Employee> greatRank = e -> e.getTariff().getRank() < e.getCurrentRank();
+        return getEmployees(dateMonthCalculate,greatRank );
+    }
+
+    public List<Employee> employeeNotNeedIncreaseTarif(LocalDateTime dateMonthCalculate){
+        Predicate<Employee> greatRank = e -> e.getTariff().getRank() > e.getCurrentRank();
+        return getEmployees(dateMonthCalculate,greatRank );
+    }
+
+    private List<Employee> getEmployees(LocalDateTime dateMonthCalculate, Predicate<Employee> selectRank) {
         String category = "Рабочие";
         LocalDateTime localDateBegin = LocalDateTime.from(dateMonthCalculate).with(TemporalAdjusters.firstDayOfMonth());
         LocalDateTime localDateEnd = LocalDateTime.from(dateMonthCalculate).with(TemporalAdjusters.lastDayOfMonth());
         List<Employee>  employees = employeeRepository.findByCategory(category, Date.from(localDateBegin.atZone(ZoneId.systemDefault()).toInstant())
                                                                               ,Date.from(localDateEnd.atZone(ZoneId.systemDefault()).toInstant()));
         List<Employee> employeeIncrease = employees.stream()
-                                                   .filter(e -> e.getTariff().getRank() < e.getCurrentRank())
+                                                   .filter(selectRank)
                                                    .sorted(Comparator.comparing(Employee::getFullName)).collect(Collectors.toList());
         employeeIncrease.stream().forEach(e -> {
             TariffId tariffId = new TariffId(e.getTariff().getId().getNumber(),e.getCurrentRank());
-            Tariff tariffNext = tariffRepository.findOne(tariffId);
-            e.setNextTariff(tariffNext);
-            e.setCoefficient(tariffNext.getSumma().divide(e.getSalary(),BigDecimal.ROUND_HALF_UP));
+            //Tariff tariffNext = tariffRepository.findOne(tariffId);
+            Optional.ofNullable(tariffRepository.findOne(tariffId))
+                    .ifPresent(t -> {
+                        e.setNextTariff(t);
+                        e.setCoefficient(t.getSumma().divide(e.getSalary(), BigDecimal.ROUND_HALF_UP));
+                    });
+
         });
         return  employeeIncrease;
     }
+
     public List<KindPay>  selectKindPayLess500(){
         return kindPayRepository.queryKindPayByCodeIsLessThan();
     }
@@ -87,14 +101,39 @@ public class TariffIncreaseService {
         employeeIncreaseFee.stream().forEach(e -> {
             double s = e.getCaclucateFees().stream()
                     .filter(code -> kindPays.contains(code.getKindPay()) &&
-                                                       code.getMonth()==calculateDate.getMonthValue() &&
-                                                       code.getYear() == calculateDate.getYear())
-                    .mapToDouble(emp -> emp.getSumma().doubleValue())
+                                                      code.getMonth() == calculateDate.getMonthValue() &&
+                                                      code.getYear() == calculateDate.getYear())
+                    .mapToDouble(emp -> {
+                        Double summa = 0.0;
+                        if(emp.getKindPay().getCode().equals("060")) {
+                            summa += calculateCodeNumber060(e,emp.getSumma());
+                        } else {
+                            summa += emp.getSumma().doubleValue();
+                        }
+                        return summa;
+                    })
                     .sum();
-            e.setIncreaseSummaFee(new BigDecimal(s).multiply(e.getCoefficient().remainder(new BigDecimal(1))).round(new MathContext(4, RoundingMode.HALF_UP)));
+            e.setIncreaseSummaFee(new BigDecimal(s).multiply(e.getCoefficient()
+                                                   .remainder(new BigDecimal(1)))
+                                                   .round(new MathContext(4, RoundingMode.HALF_UP)));
         });
 
     }
+
+    private Double calculateCodeNumber060(Employee employee, BigDecimal  summaBy060) {
+        Double summa003 =  employee.getCaclucateFees().stream()
+                                   .filter(e -> e.getKindPay().getCode().equals("003"))
+                                   .mapToDouble(e -> e.getSumma().doubleValue())
+                                   .sum() ;
+
+        BigDecimal newSumma =  new BigDecimal(summa003).multiply(employee.getConstForTime().divide(new BigDecimal(100.0)));
+
+
+
+
+        return summaBy060.subtract(newSumma).doubleValue();
+    }
+
     private EmployeeFee getEmployeeFee(KindPay kindPay, LocalDateTime workDate, Employee employee) {
         EmployeeFee employeeFee = new EmployeeFee();
         employeeFee.setDay(new BigDecimal(0));

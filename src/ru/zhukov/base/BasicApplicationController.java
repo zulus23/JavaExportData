@@ -298,6 +298,7 @@ public class BasicApplicationController implements Initializable {
 
                 tabCalculateIncreaseFee.setText("Расчет доплат за разряд");
                 tabCalculateIncreaseFee.setContent(anchorPane);
+                tabCalculateIncreaseFee.setOnClosed(this::closeCalculateIncreaseFee);
             /*tpWindowContainer.setTabMinWidth(160);
             tpWindowContainer.setTabMaxWidth(160);*/
 
@@ -310,6 +311,11 @@ public class BasicApplicationController implements Initializable {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void closeCalculateIncreaseFee(Event event) {
+        calculateIncreaseFreeControllerWeakHashMap.computeIfPresent(((Tab)event.getSource()),(k,v)-> null);
+        System.gc();
     }
 
     private void showAccountInPay(ActionEvent actionEvent) {
@@ -663,6 +669,9 @@ public class BasicApplicationController implements Initializable {
 
     private void closeTabAction(Event event) {
         accountRecordControllerWeakHashMap.computeIfPresent(((Tab)event.getSource()),(k,v)-> null);
+
+
+
         System.gc();
     }
 
