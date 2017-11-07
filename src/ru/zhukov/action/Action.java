@@ -55,7 +55,12 @@ public class Action {
         dialog.setContentText("Каким кодом произвести начисление:");
         return dialog.showAndWait();
     }
-
+    public static Optional<ButtonType> confirmationAction( String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, String.format("Вы действительно хотите выполнить  %s ?",message));
+        alert.setTitle("Подтверждение выполнения");
+        alert.setHeaderText("");
+        return alert.showAndWait();
+    }
 
 
 

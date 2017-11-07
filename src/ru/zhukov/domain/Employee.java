@@ -5,8 +5,8 @@ package ru.zhukov.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,13 +69,22 @@ public class Employee {
     private BigDecimal coefficient;
 
     @Transient
-    private BigDecimal increaseSummaFee;
+    private BigDecimal increaseSummaFeeOne;
+
+
+
+    @Transient
+    private BigDecimal increaseSummaFeeTwo;
+
 
     @Column(name = "brv")
     private String graphWork;
 
     @Column(name = "konst1")
-    private BigDecimal constForTime;
+    private BigDecimal const1;
+
+    @Column(name = "konst2")
+    private BigDecimal const2;
 
 
 
@@ -221,21 +230,30 @@ public class Employee {
     }
 
     public BigDecimal getSalaryByPosition(){
-        return  nextTariff.getSumma();
+        return  Optional.ofNullable(nextTariff).map(e ->e.getSumma()).orElse(new BigDecimal(0.0));
+        //return nextTariff.getSumma();
     }
 
     public BigDecimal getCoefficient() {
         return coefficient;
     }
 
-    public BigDecimal getIncreaseSummaFee() {
-        return increaseSummaFee;
+
+    public BigDecimal getIncreaseSummaFeeOne() {
+        return increaseSummaFeeOne;
     }
 
-    public void setIncreaseSummaFee(BigDecimal increaseSummaFee) {
-        this.increaseSummaFee = increaseSummaFee;
+    public void setIncreaseSummaFeeOne(BigDecimal increaseSummaFeeOne) {
+        this.increaseSummaFeeOne = increaseSummaFeeOne;
     }
 
+    public BigDecimal getIncreaseSummaFeeTwo() {
+        return increaseSummaFeeTwo;
+    }
+
+    public void setIncreaseSummaFeeTwo(BigDecimal increaseSummaFeeTwo) {
+        this.increaseSummaFeeTwo = increaseSummaFeeTwo;
+    }
     public String getGraphWork() {
         return graphWork;
     }
@@ -250,10 +268,18 @@ public class Employee {
 
 
     public BigDecimal getConstForTime() {
-        return constForTime;
+        return Optional.ofNullable(this.const1).orElse(this.const2);
     }
 
-    public void setConstForTime(BigDecimal constForTime) {
-        this.constForTime = constForTime;
+    public void setConst1(BigDecimal const1) {
+        this.const1 = const1;
     }
+
+    public void setConst2(BigDecimal const2) {
+        this.const2 = const2;
+    }
+
+    /*public void setConstForTime(BigDecimal constForTime) {
+        this.constForTime = constForTime;
+    }*/
 }

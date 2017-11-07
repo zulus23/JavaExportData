@@ -10,6 +10,7 @@ import ru.zhukov.domain.TariffId;
 import ru.zhukov.repository.EmployeeRepository;
 import ru.zhukov.repository.TariffRepository;
 import ru.zhukov.service.TariffIncreaseService;
+import ru.zhukov.service.TariffIncreaseServiceable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +31,7 @@ public class EmployeeTest extends AbstractTest {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private TariffIncreaseService increaseService;
+    private TariffIncreaseServiceable increaseService;
 
     @Autowired
     private TariffRepository tariffRepository;
@@ -79,6 +80,7 @@ public class EmployeeTest extends AbstractTest {
         assertTrue(employeeList.size() > 0);
 
         assertTrue(employeeList.get(0).getCaclucateFees().size()> 0);
+        assertTrue(employeeList.stream().allMatch(e -> !e.getCategory().getName().equals("Ученики")));
 
     }
 

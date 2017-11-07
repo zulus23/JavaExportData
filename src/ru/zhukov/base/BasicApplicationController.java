@@ -40,10 +40,7 @@ import ru.zhukov.fee.CalculateIncreaseFreeController;
 import ru.zhukov.fee.SetupIncreaseFeeAccountController;
 import ru.zhukov.repository.JDBCExportAccountRepository;
 import ru.zhukov.repository.TransferJpaRepository;
-import ru.zhukov.service.AccountRecordDataService;
-import ru.zhukov.service.IncreaseFeeAccountService;
-import ru.zhukov.service.JournalExportDataService;
-import ru.zhukov.service.TariffIncreaseService;
+import ru.zhukov.service.*;
 import ru.zhukov.transfer.SetupAccountTransferController;
 import ru.zhukov.transfer.SetupCostItemTransferController;
 import ru.zhukov.transfer.SetupDepartmentTransferController;
@@ -160,7 +157,7 @@ public class BasicApplicationController implements Initializable {
 
     private IncreaseFeeAccountService increaseFeeAccountService;
 
-    private TariffIncreaseService tariffIncreaseService;
+    private TariffIncreaseServiceable tariffIncreaseService;
 
 
     private int month;
@@ -176,7 +173,7 @@ public class BasicApplicationController implements Initializable {
     public BasicApplicationController(AccountRecordDataService dataService, CurrentUser currentUser){
         this.repository = ApplicationController.getInstance().getCtx().getBean(TransferJpaRepository.class);
         this.increaseFeeAccountService = ApplicationController.getInstance().getCtx().getBean(IncreaseFeeAccountService.class);
-        this.tariffIncreaseService = ApplicationController.getInstance().getCtx().getBean(TariffIncreaseService.class);
+        this.tariffIncreaseService = ApplicationController.getInstance().getCtx().getBean(TariffIncreaseServiceable.class);
         this.dataService = dataService;
         createAccountRecordTask = new CreateAccountRecordTask(this.dataService);
         this.currentUser = currentUser;

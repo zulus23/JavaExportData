@@ -9,6 +9,7 @@ import ru.zhukov.exeption.CanNotSaveException;
 import ru.zhukov.repository.IncreaseKindPayRepository;
 import ru.zhukov.repository.KindPayRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +25,9 @@ public class IncreaseFeeAccountService {
     public List<KindPay> kindPayList(){
         return kindPayRepository.queryKindPayByCodeIsLessThan();
     }
+    @Transactional
     public List<IncreaseKindPay> increaseKindPayList(){
+        increaseKindPayRepository.flush();
         return increaseKindPayRepository.findAll();
     }
 

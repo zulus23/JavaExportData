@@ -4,10 +4,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,7 +13,7 @@ import org.controlsfx.control.MaskerPane;
 import org.controlsfx.control.table.TableFilter;
 import ru.zhukov.action.Action;
 import ru.zhukov.domain.Employee;
-import ru.zhukov.service.TariffIncreaseService;
+import ru.zhukov.service.TariffIncreaseServiceable;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -27,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class CalculateIncreaseFreeController implements Initializable{
 
-    private TariffIncreaseService increaseService;
+    private TariffIncreaseServiceable increaseService;
 
 
 
@@ -55,7 +52,9 @@ public class CalculateIncreaseFreeController implements Initializable{
     @FXML
     private TableColumn coefficient;
     @FXML
-    private TableColumn increaseSummaFee;
+    private TableColumn increaseSummaFeeOne;
+    @FXML
+    private TableColumn increaseSummaFeeTwo;
     @FXML
     private Button bCalculate;
     @FXML
@@ -67,9 +66,10 @@ public class CalculateIncreaseFreeController implements Initializable{
     private MaskerPane masker;
 
 
+
     private LocalDateTime dateMothCalculate;
 
-    public CalculateIncreaseFreeController(TariffIncreaseService service, LocalDateTime dateTimeMonth) {
+    public CalculateIncreaseFreeController(TariffIncreaseServiceable service, LocalDateTime dateTimeMonth) {
         this.increaseService = service;
         this.dateMothCalculate = dateTimeMonth;
         masker = new MaskerPane();
@@ -97,6 +97,8 @@ public class CalculateIncreaseFreeController implements Initializable{
         bMakeAddToPersonCart.setOnAction(this::makeAddToPersonCart);
         stackPane.getChildren().add(masker);
 
+
+
         CompletableFuture.supplyAsync(() -> {
             showMessageAboutWork("Выполняю загрузку. Ожидайте...");
 
@@ -106,18 +108,29 @@ public class CalculateIncreaseFreeController implements Initializable{
                 employeeIncreaseFee.getItems().addAll(e);
                 TableFilter tableFilter = TableFilter.forTableView(employeeIncreaseFee).lazy(true).apply();
             });
-        }).whenComplete((object,erroe)->{
+        }).thenAcceptAsync(e -> {
+
+        })
+          .whenComplete((object,error)->{
             hideMessageAboutWork();
-            employeeNumber.setCellValueFactory(new PropertyValueFactory<>("tabelNumber"));
-            employee.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-            department.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
-            position.setCellValueFactory(new PropertyValueFactory<>("positionName"));
-            rankCurrent.setCellValueFactory(new PropertyValueFactory<>("currentRank"));
-            rankByTariff.setCellValueFactory(new PropertyValueFactory<>("rankByTariff"));
-            tariffByPosition.setCellValueFactory(new PropertyValueFactory<>("salaryByPosition"));
-            tariffByPerson.setCellValueFactory(new PropertyValueFactory<>("salary"));
-            coefficient.setCellValueFactory(new PropertyValueFactory<>("coefficient"));
-            increaseSummaFee.setCellValueFactory(new PropertyValueFactory<>("increaseSummaFee"));
+            if(error != null){
+                Platform.runLater(()-> {
+                    Action.showErrorInformation(error.getCause().getMessage());
+                });
+            }
+                  employeeNumber.setCellValueFactory(new PropertyValueFactory<>("tabelNumber"));
+                  employee.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+                  department.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
+                  position.setCellValueFactory(new PropertyValueFactory<>("positionName"));
+                  rankCurrent.setCellValueFactory(new PropertyValueFactory<>("currentRank"));
+                  rankByTariff.setCellValueFactory(new PropertyValueFactory<>("rankByTariff"));
+                  tariffByPosition.setCellValueFactory(new PropertyValueFactory<>("salaryByPosition"));
+                  tariffByPerson.setCellValueFactory(new PropertyValueFactory<>("salary"));
+                  coefficient.setCellValueFactory(new PropertyValueFactory<>("coefficient"));
+                  increaseSummaFeeOne.setCellValueFactory(new PropertyValueFactory<>("increaseSummaFeeOne"));
+                  increaseSummaFeeTwo.setCellValueFactory(new PropertyValueFactory<>("increaseSummaFeeTwo"));
+
+
         });
         employeeNumber.setStyle("-fx-alignment: CENTER-LEFT;");
         employee.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -128,7 +141,8 @@ public class CalculateIncreaseFreeController implements Initializable{
         tariffByPosition.setStyle("-fx-alignment: CENTER;");
         tariffByPerson.setStyle("-fx-alignment: CENTER;");
         coefficient.setStyle("-fx-alignment: CENTER;");
-        increaseSummaFee.setStyle("-fx-alignment: CENTER;");
+        increaseSummaFeeOne.setStyle("-fx-alignment: CENTER;");
+        increaseSummaFeeTwo.setStyle("-fx-alignment: CENTER;");
 
 
 
@@ -141,7 +155,7 @@ public class CalculateIncreaseFreeController implements Initializable{
     }
 
     private void makeAddToPersonCart(ActionEvent actionEvent) {
-        Action.selectKindPay(increaseService.selectKindPayLess500()).ifPresent((kindPayConsumer) ->{
+        /*Action.selectKindPay(increaseService.selectKindPayLess500()).ifPresent((kindPayConsumer) ->{
             CompletableFuture.runAsync(()->{
                         showMessageAboutWork("Выполняю начисление. Ожидайте...");
                         increaseService.makeIncreaseFeeByEmployee(employeeIncreaseFee.getItems(),kindPayConsumer,dateMothCalculate);
@@ -154,7 +168,23 @@ public class CalculateIncreaseFreeController implements Initializable{
 
                        }
                     });
-        });
+        });*/
+        Action.confirmationAction("Наичисление "). ifPresent((response) ->{
+            if(response == ButtonType.OK){
+            CompletableFuture.runAsync(()->{
+                showMessageAboutWork("Выполняю начисление. Ожидайте...");
+
+                increaseService.makeIncreaseFeeByEmployee(employeeIncreaseFee.getItems(),dateMothCalculate);
+            })
+                    .whenComplete((obj,err)->{
+                        hideMessageAboutWork();
+                        if (err != null){
+                            Action.showErrorInformation(err.getMessage());
+                        }else{
+
+                        }
+                    });
+        }});
     }
 
 

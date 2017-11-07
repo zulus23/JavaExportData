@@ -11,11 +11,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.zhukov.config.ApplicationContextConfig;
 import ru.zhukov.domain.*;
 import ru.zhukov.dto.CurrentUser;
-import ru.zhukov.repository.EmployeeFeeRepository;
-import ru.zhukov.repository.EmployeeRepository;
-import ru.zhukov.repository.IncreaseKindPayRepository;
-import ru.zhukov.repository.KindPayRepository;
+import ru.zhukov.repository.*;
+import ru.zhukov.service.TariffIncreaseServiceable;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -36,6 +35,12 @@ public class FeeTest {
     private IncreaseKindPayRepository increaseKindPayRepository;
 
     @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private TariffIncreaseServiceable tariffIncreaseServiceable;
+
+    @Autowired
     private EmployeeFeeRepository employeeFeeRepository;
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -47,9 +52,10 @@ public class FeeTest {
     }
     @Before
     public void setUp(){
-        createKindPay008();
+        /*createKindPay008();*/
 
     }
+
 
 
     @Test
@@ -113,6 +119,21 @@ public class FeeTest {
     }
 
 
+    @Test
+    public void selectIncreaseFee(){
+          List<IncreaseKindPay> increaseKindPays =  increaseKindPayRepository.findAll();
+          assertNotNull(increaseKindPays);
+
+    }
+    @Test
+    public void distinctPayFee(){
+        List<KindPay> kindPays =  tariffIncreaseServiceable.distinctPayIntoIncreaseFee();
+        assertNotNull(kindPays);
+        assertEquals(3,kindPays.size());
+    }
+
+
+
 
     private void createKindPay008() {
         KindPay kindPay =  new KindPay();
@@ -127,7 +148,7 @@ public class FeeTest {
 
     @After
     public void tearDown(){
-       increaseKindPayRepository.deleteAll();
+       //increaseKindPayRepository.deleteAll();
     }
 
 }

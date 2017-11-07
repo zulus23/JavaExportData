@@ -3,7 +3,6 @@ package ru.zhukov.utils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.zhukov.domain.Employee;
-import ru.zhukov.domain.TransferAccount;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -103,7 +102,7 @@ public class CreateExcelFileForIncreaseFee {
             cell = row.createCell(9);
             cell.setCellStyle(rightCenterStyle);
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            cell.setCellValue(Optional.ofNullable(employee.getIncreaseSummaFee()).map(v -> v.doubleValue()).orElse(0.0));
+            cell.setCellValue(Optional.ofNullable(employee.getIncreaseSummaFeeOne()).map(v -> v.doubleValue()).orElse(0.0));
 
             rowCount++;
         }
