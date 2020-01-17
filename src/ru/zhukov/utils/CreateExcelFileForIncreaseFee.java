@@ -104,6 +104,11 @@ public class CreateExcelFileForIncreaseFee {
             cell.setCellType(Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(Optional.ofNullable(employee.getIncreaseSummaFeeOne()).map(v -> v.doubleValue()).orElse(0.0));
 
+            cell = row.createCell(10);
+            cell.setCellStyle(rightCenterStyle);
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellValue(Optional.ofNullable(employee.getIncreaseSummaFeeTwo()).map(v -> v.doubleValue()).orElse(0.0));
+
             rowCount++;
         }
 

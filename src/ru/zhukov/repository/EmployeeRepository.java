@@ -16,8 +16,10 @@ public interface EmployeeRepository extends JpaRepository<Employee,String> {
 
        List<Employee> findBySalaryBetweenAndDateDissmissalIsNullAndTariffIsNotNull(BigDecimal salary, BigDecimal salaryEnd);
 
+       /*@Query("select e from Employee  e  join e.category c  join  e.department d  join  e.tariff t where c.group in (?1) and " +
+               "(e.dateDissmissal is null or e.dateDissmissal between ?2 and ?3) and t.id.number is not null  and c.name not like  '%ченик%'")*/
        @Query("select e from Employee  e  join e.category c  join  e.department d  join  e.tariff t where c.group in (?1) and " +
-               "(e.dateDissmissal is null or e.dateDissmissal between ?2 and ?3) and t.id.number is not null  and c.name not like  '%ченик%'")
+               "(e.dateDissmissal is null or e.dateDissmissal between ?2 and ?3) and t.id.number is not null  and c.id <> '21'")
 
        List<Employee> findByCategory(String categories, Date dateStart, Date dateEnd);
 

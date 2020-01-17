@@ -81,7 +81,7 @@
                   <HBox prefHeight="31.0" prefWidth="338.0" spacing="20.0">
                      <children>
                         <Button id="bCancelLogin" fx:id="bCancelLogin" cancelButton="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" style="-fx-background-color: #FFCC80;" text="Отмена" />
-                        <Button id="bLogin" fx:id="bLogin" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" style="-fx-background-color: #FFCC80;" text="Логин" />
+                        <Button id="bLogin" fx:id="bLogin" defaultButton="true" disable="true" mnemonicParsing="false" prefHeight="31.0" prefWidth="103.0" style="-fx-background-color: #FFCC80;" text="Войти" />
                      </children>
                      <VBox.margin>
                         <Insets left="120.0" top="15.0" />

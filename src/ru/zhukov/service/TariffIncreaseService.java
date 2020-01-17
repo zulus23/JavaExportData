@@ -184,11 +184,15 @@ public class TariffIncreaseService implements TariffIncreaseServiceable {
                                    .sum() ;
 
         BigDecimal newSumma =  new BigDecimal(summa003).multiply(employee.getConstForTime().divide(new BigDecimal(100.0)));
+        Double summa046 =  employee.getCaclucateFees().stream()
+                .filter(e -> e.getKindPay().getCode().equals("046"))
+                .mapToDouble(e -> e.getSumma().doubleValue())
+                .sum() ;
+        BigDecimal newSumma046 =  new BigDecimal(summa046).multiply(employee.getConstForTime().divide(new BigDecimal(100.0)));
 
 
 
-
-        return summaBy060.subtract(newSumma).doubleValue();
+        return summaBy060.subtract(newSumma).subtract(newSumma046).doubleValue();
     }
 
     private EmployeeFee getEmployeeFee(KindPay kindPay, LocalDateTime workDate, Employee employee,BigDecimal summaFee) {

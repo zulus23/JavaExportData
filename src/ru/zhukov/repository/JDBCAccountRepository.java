@@ -3,6 +3,7 @@ package ru.zhukov.repository;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.transaction.annotation.Transactional;
 import ru.zhukov.domain.AccountRecord;
 import ru.zhukov.domain.AccountRecordExport;
 import ru.zhukov.domain.AccrualEmployee;
@@ -54,8 +55,10 @@ public class JDBCAccountRepository implements AccountRepository{
     }
 
     @Override
+    @Transactional
     public void createAccountRecord() {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(dataSource);
+
         jdbcCall.withProcedureName("sp_create_provodki").execute();
     }
 
